@@ -17,7 +17,46 @@
 ###         the script in PART 1 also generates various plots and tables
 ###         along the way.
 ###         The respective steps are outlined in detail below.
-### PART 2: deals with the estimation of impulse-response-functions
+### PART 2: deals with the EPU-index constructed by Baker, Bloom and Davis (2016)
+###         Baker, Bloom and Davis (2016) have dedicated an entire web-page
+###         to their constructed uncertainty measure where they not
+###         only provide several indices for the US, but also several
+###         other countries, categories, etc.
+###         See the home-page at http://www.policyuncertainty.com/us_monthly.html
+###         Because we deal with the US only, we have correspondingly only
+###         downloaded data for the US!
+### Part 3: deals with the GT (Bontempi et al, 2015) and GTU-index
+###         (Castelnuovo and Tran, 2017);
+###         Both contributions use Google-Trends data to contruct
+###         an uncertainty index (with subtle differences in the words
+###         they search for; details see below);
+###         both indices cover the period 2004 - 2018 (to date),
+###         the uncertainty index from Bontempi et al. (2015) 
+###         is available from their dedicated website at
+###         https://sites.google.com/site/uncertaintyindexbasedongt/;
+###         the uncertainty index from Castelnuovo and Tran (2017)
+###         is available on Efrem Castelnuovo's homepage at
+###         https://sites.google.com/site/efremcastelnuovo/home/publications;
+### PART 4: deals with the Macro Uncertainty Index constructed
+###         by Jurado et al. (2015)
+###         The scripts accompanying their paper is available on their
+###         paper's dedicated web presence of the American Economic Review
+###         (see https://www.aeaweb.org/articles?id=10.1257/aer.20131193)
+###         The constructed macro and firm-uncertainty index is available
+###         at Sydney Ludvigson's homepage at
+###         https://www.sydneyludvigson.com/data-and-appendixes/;
+###         There both the original data used for the paper with the data
+###         ranging from 1960 until 2015 as well as updated versions
+###         ranging from 1960 until 2017.
+### PART 5: deals with the plotting of all our analyzed time-series into
+###         one plot (to make them comparable!)
+###         the series which we want to plot together at once are
+###           *) VIX (used by Bloom)
+###           *) Michigan Survey
+###           *) EPU (Baker et al, 2016)
+###           *) GT and GTU (Bontempi et al. 2015/Castelnuovo and Tran, 2017)
+###           *) Macro Uncertainty Index (Jurado et al, 2015)
+### PART 6: deals with the estimation of impulse-response-functions
 ###         following Jordá (2005);
 ###         Thereby the constructed dataset containing, among others,
 ###         the 'Bloom-shocks' is extended with additional 
@@ -128,6 +167,8 @@ library(dynlm)
 library(sandwich)
 library(lmtest)
 library(xlsx)
+library(readxl)
+library(forecast)
 
 # clear workspace
 rm(list = ls())
@@ -847,20 +888,20 @@ sp500_merge_vxo %>%
 # next we group_by shock_ID and extract the respective start-dates and
 # store the retrieved data to a new data-frame
 shocks_start <- as.data.frame(sp500_merge_vxo %>%
-                                    filter(!is.na(shock_ID))  %>%
-                                    group_by(shock_ID) %>%
-                                    filter(row_number()==1) %>%
-                                    mutate(year_start=year, month_start=month, my_start = my) %>%
-                                    dplyr::select(shock_ID, year_start, month_start, my_start))
+          filter(!is.na(shock_ID))  %>%
+          group_by(shock_ID) %>%
+          filter(row_number()==1) %>%
+          mutate(year_start=year, month_start=month, my_start = my) %>%
+          dplyr::select(shock_ID, year_start, month_start, my_start))
 
 # next, we replicate the above query for the end-dates
 # (note that in some scenarios start- and end-dates are identical!)
 shocks_end <- as.data.frame(sp500_merge_vxo %>%
-                                    filter(!is.na(shock_ID))  %>%
-                                    group_by(shock_ID) %>%
-                                    filter(row_number()==n()) %>%
-                                    mutate(year_end=year, month_end=month, my_end = my) %>%
-                                    dplyr::select(shock_ID, year_end, month_end, my_end))
+          filter(!is.na(shock_ID))  %>%
+          group_by(shock_ID) %>%
+          filter(row_number()==n()) %>%
+          mutate(year_end=year, month_end=month, my_end = my) %>%
+          dplyr::select(shock_ID, year_end, month_end, my_end))
                                     
 # next, we can merge the two data-frames from above:
 shocks_start_end <- merge(x = shocks_start, y = shocks_end, by = "shock_ID", all = TRUE, na.rm=T)
@@ -924,8 +965,8 @@ volatility_cycle_shocks2 <- ggplot(sp500_merge_vxo,
                                   aes(x = my, y = mvol_cycle)) +
   # geom_point() + 
   geom_line(size=0.8) + 
-  scale_x_continuous(name = "Year", limits = c(1960, 2020), 
-                     breaks = seq(1960, 2020, by = 5),
+  scale_x_continuous(name = "Year", limits = c(1962, 2019), 
+                     breaks = seq(1962, 2019, by = 5),
                      minor_breaks = NULL) + 
   scale_y_continuous(name = "annualized standard deviation (%), deviations from trend", 
                      limits = c(-20, 50), 
@@ -965,18 +1006,456 @@ shocks_table <- shocks_start_end %>%
 latextable(shocks_table, dp=3)
 
 
-
 ########################################################################
-### PART 2: construction of impulse-responses following Jordá (2005)
+### PART 2: loading and plotting of EPU from Baker, Bloom and Davis (2016)
+### See also their dedicated homepage with latest updates to the 
+### data at: http://www.policyuncertainty.com/us_historical.html
 ########################################################################
 
 ## PART 2 is separated into ....... parts:
 ## (2.1)  2.1 handles ........
-## (1.2)  1.2 handles the .......
+## (2.2)  2.2 handles the .......
 
 
 ###############################
-## (2.1) loading additional_vars.csv;
+## (2.1) loading EPU_USA_Bakeretal2016.xlsx;
+##       the .xlsx-file was directly downloaded from
+##       http://www.policyuncertainty.com/us_historical.html
+##       and on the first sheet the columns 'Year', 'Month' and
+##       'News_Based_Policy_Uncert_Index' are read in
+###############################
+
+## we import the data (sheet 'Main Index' only)
+epu_index <- read_excel("EPU_USA_Bakeretal2016.xlsx", sheet = "Main Index")
+
+## and generate the variable 'my'
+## (note that we first have to convert 'Year' to numeric)
+epu_index$Year <- as.numeric(epu_index$Year)
+epu_index <- as.data.frame(epu_index %>%
+                      mutate(my = Year + Month/12))
+
+## we remove the last row that only consists of NAs
+epu_index <- as.data.frame(epu_index[complete.cases(epu_index), ])
+
+## and finally plot the series
+epu_index_plot <- ggplot(epu_index, 
+                     aes(x = my, y = News_Based_Policy_Uncert_Index)) +
+  # geom_point() + 
+  geom_line(size=0.8) + 
+  # annotation_custom("decreasing %<->% increasing") +
+  scale_x_continuous(name = "Year", limits = c(1985, 2018), 
+                     breaks = seq(1985, 2018, by = 5),
+                     minor_breaks = NULL) + 
+  scale_y_continuous(name = "Policy Uncertainty Index", 
+                     limits = c(0, 330), 
+                     breaks = seq(0, 330, by = 50), 
+                     minor_breaks = NULL) +
+  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14)) + 
+  annotate("text", x=1987.833, y=200, label="Black Monday") + 
+  annotate("text", x=1991.100, y=230, label="Gulf \n War I") + 
+  annotate("text", x=1992.917, y=185, label="Clinton \nElection") + 
+  annotate("text", x=1998, y=185, label="Russian \n Crisis/LTCM") +
+  annotate("text", x=2000.9, y=210, label="Bush Election", angle=90) + 
+  annotate("text", x=2001.9, y=290, label="9/11") +
+  annotate("text", x=2003.3, y=240, label="Gulf \n War II") + 
+  annotate("text", x=2007.5, y=200, label="Stimulus \n Debate") +
+  annotate("text", x=2008.7, y=265, label="Lehman \n and TARP") + 
+  annotate("text", x=2010.55, y=215, label="Euro \n Crisis") +
+  annotate("text", x=2011.6, y=320, label="Debt \n Ceiling \n Dispute") + 
+  annotate("text", x=2013, y=250, label="Fiscal Cliff", angle=90) + 
+  annotate("text", x=2013.8, y=280, label="Govt. Shutdown", angle=90) + 
+  annotate("text", x=2015.667, y=230, label="EU Migration Crisis", angle=90) + 
+  annotate("text", x=2016.42, y=280, label="Coup Turkey", angle=90) + 
+  annotate("text", x=2016.99, y=300, label="Trump Election", angle=90)
+
+epu_index_plot
+
+# and we save the plot to be used in our latex-document
+ggsave("epu_index_plot.pdf")
+
+
+########################################################################
+### PART 3: loading and plotting of GTU and GT-index
+### from Bontempi et al. (2015) and
+### Castelnuovo and Tran (2017); 
+### See also Efrem Castelnuovo's homepage
+### for latest updates to their GTU-index at
+### https://sites.google.com/site/efremcastelnuovo/home/publications
+########################################################################
+## we import the data (sheet 'Foglio1' only)
+GTU_index <- read_excel("GTU_indices_EcLetts.xls", 
+                                     sheet = 1)
+
+
+## make 'month' - variable a 'Date' - type 
+## (instead of POSIXct)
+GTU_index$Month <- as.Date(GTU_index$Month)
+
+## then we rename 'Month' to 'Date'
+GTU_index <- rename(GTU_index,
+                    Date = Month)
+
+# next, we create the three variable 'month', 'year' and 'day' using
+# the 'separate()' - function from the 'tidyr' - package
+GTU_index <- separate(GTU_index, "Date", 
+                      c("year", "month", "day"), sep = "-", 
+                      remove=FALSE, convert=TRUE)
+
+# next we create the variable 'my' which is a numerical representation
+# of yearmon:
+GTU_index <- as.data.frame(GTU_index %>%
+                            mutate(my = year + month/12))
+
+
+## and finally plot the series
+GTU_index_plot <- ggplot() +
+  geom_line(data = GTU_index, 
+            aes(x = my, 
+                y = GTU_US), 
+            color="black", 
+            size=1,linetype = 1) +
+  scale_x_continuous(name = "Year", limits = c(2004, 2016), 
+                     breaks = seq(2004, 2020, by = 1),
+                     minor_breaks = NULL) + 
+  scale_y_continuous(name = "GTU index, US", 
+                     limits = c(0, 250), 
+                     breaks = seq(0, 250, by = 50), 
+                     minor_breaks = NULL) +
+  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14))
+
+GTU_index_plot
+
+# and we save the plot to be used in our latex-document
+ggsave("GTU_index_plot.pdf")
+
+
+########################################################################
+### PART 4: loading and plotting of macro uncertainty index
+### from Jurado et al. (2015); See also Sydney Ludvigson's homepage
+### for latest updates to the data at
+### https://www.sydneyludvigson.com/data-and-appendixes/
+########################################################################
+
+## PART 4 is separated into ....... parts:
+## (4.1)  2.1 handles ........
+## (4.2)  2.2 handles the .......
+
+
+###############################
+## (4.1) loading MacroUncertaintyToCirculate.xlsx;
+##       the .xlsx-file was directly downloaded from
+##       https://www.sydneyludvigson.com/data-and-appendixes/
+##       and comes along together with another data-source
+##       called 'FinancialUncertaintyToCirculate' (not used here!);
+##       on the very first sheet called 'Macro Uncertainty' the columns
+##       Date, h=1, h=3 and h=12 are read in.
+###############################
+
+## we import the data (sheet 'Macro Uncertainty' only)
+macroUncertainty_index <- read_excel("MacroUncertaintyToCirculate.xlsx", 
+                        sheet = "Macro Uncertainty")
+
+## and rename three columns
+macroUncertainty_index <- rename(macroUncertainty_index, 
+                          h1 = "h=1",
+                          h3 = "h=3",
+                          h12 = "h=12")
+
+## make 'Date' - variable a 'Date' - type 
+## (instead of POSIXct)
+macroUncertainty_index$Date <- as.Date(macroUncertainty_index$Date)
+
+# next, we create the three variable 'month', 'year' and 'day' using
+# the 'separate()' - function from the 'tidyr' - package
+macroUncertainty_index <- separate(macroUncertainty_index, "Date", 
+                            c("year", "month", "day"), sep = "-", 
+                            remove=FALSE, convert=TRUE)
+
+# next we create the variable 'my' which is a numerical representation
+# of yearmon:
+macroUncertainty_index <- as.data.frame(macroUncertainty_index %>%
+                                   mutate(my = year + month/12))
+
+
+## and finally plot the series
+macroUncertainty_index_plot <- ggplot() +
+  geom_line(data = macroUncertainty_index, 
+                    aes(x = my, 
+                        y = h1), 
+            color="brown", 
+            size=1,linetype = 1) +
+  geom_line(data = macroUncertainty_index, 
+                    aes(x = my, 
+                        y = h3), 
+            color="blue", size=1, 
+            linetype = 1) +
+  geom_line(data = macroUncertainty_index, 
+            aes(x = my, 
+                y = h12), 
+            color="red", size=1, 
+            linetype = 1) +
+  scale_x_continuous(name = "Year", limits = c(1960, 2020), 
+                     breaks = seq(1960, 2020, by = 5),
+                     minor_breaks = NULL) + 
+  scale_y_continuous(name = "Macro Uncertainty Indices", 
+                     limits = c(0.5, 1.5), 
+                     breaks = seq(0.5, 1.5, by = 0.5), 
+                     minor_breaks = NULL) +
+  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14))
+
+macroUncertainty_index_plot
+
+# and we save the plot to be used in our latex-document
+ggsave("macroUncertainty_index_plot.pdf")
+
+
+########################################################################
+### PART 5: construction of one time-series plot comparing
+### all discussed uncertainty-measures
+########################################################################
+
+## To generate our plot with all the series, we first park all the
+## time series which we want to plot into one data-frame:
+
+## The necessary data-frames are:
+##      * 'macroUncertainty_index' for the measure following Jurado et al. (2015)
+##      * 'GTU_index' for the measure following Castelnuovo and Tran (2017)
+##      * 'epu_index' for the EPU-index following Baker et al. (2016)
+##      * 'sp500_merge_vxo' for the VXO (the cycle-part after detrending
+##          following Bloom (2009))
+##      * Michigan-Survey will follow!
+
+## We combine the relevant variables from the above data-frames into 
+## a new data-frame (note that we only take h=1 from the 
+## three constructed uncertainty-measures of Jurado et al.):
+
+## Because all the series that we want to have a look at have different
+## sample length, we perform a cascading left-join:
+
+## we start with the following data-frame where we store
+## the data from the macro-uncertainty-index:
+comparison_measures <- data.frame("macroUncert" = macroUncertainty_index$h1,
+                                  "my" = macroUncertainty_index$my)
+
+## then we join in the data from the GTU_index:
+comparison_measures <- right_join(x = GTU_index[, c("GTU_US", "my")], 
+                                 y = comparison_measures, 
+                                by = "my")
+## then we join in the data from the epu_index:
+comparison_measures <- right_join(x = epu_index[, 
+                                  c("News_Based_Policy_Uncert_Index","my")],
+                                  y = comparison_measures,
+                                  by = "my")
+## then the data from the VXO (the cycle-part after detrending)
+comparison_measures <- right_join(x = sp500_merge_vxo[, 
+                                                c("mvol_cycle","my")],
+                                  y = comparison_measures,
+                                  by = "my")
+
+## Rename all the variables:
+comparison_measures <- comparison_measures %>%
+                      rename(VXO = mvol_cycle,
+                             EPU = News_Based_Policy_Uncert_Index,
+                             GTU = GTU_US,
+                             Macro = macroUncert)
+
+## finally, we will also join the data with data from the Michigan
+## Survey (once we have it in our data-frame)
+
+## we reorder the varaibles
+comparison_measures <- comparison_measures[c(2, 1, 3, 4, 5)]
+
+## we make a time-series object out of our data-frame
+comparison_measures_ts <- ts(comparison_measures[c(2, 3, 4, 5)],
+                             start = c(1960, 7), frequency = 12)
+
+## note that we also want to add in the NBER recession dates
+## retrieved from https://fred.stlouisfed.org/series/USREC?utm
+## _source=series_page&utm_medium=related_content&utm_term=other_
+## formats&utm_campaign=other_format;
+## therefore we read in the data:
+nber_recessions <- read.csv(file="NBER_Recessions_USA.csv", header=TRUE, sep=",")
+## next, we split the variable 'DATE' into 'year', 'month' and 'day'
+## using
+## the 'separate()' - function from the 'tidyr' - package
+nber_recessions <- separate(nber_recessions, "DATE", 
+                                   c("year", "month", "day"), sep = "-", 
+                                   remove=FALSE, convert=TRUE)
+## we drop the 'day' - variable
+nber_recessions <- nber_recessions %>%
+        select(-day)
+
+## and create the variable 'my'
+nber_recessions <- as.data.frame(nber_recessions %>%
+                                   mutate(my = year + month/12))
+
+
+## the procedure that follows is identical to the procedure
+## that we used to extract the exact start- and end-dates of
+## the bloom-shocks:
+
+# let us first filter for all rows where the recession indicator = 1 
+# to get an overview:
+as.data.frame(nber_recessions %>% filter(USREC == 1))
+
+
+# then we loop through all rows, and first check if the USREC equals 1
+# or not:
+
+# we initialize the grouping variable x as follows:
+x <- 2
+
+# we add an empty column to our data frame nber_recessions:
+nber_recessions["recession_ID"] <- NA
+
+# then we start the loop:
+for (i in 1:nrow(nber_recessions)) {
+  if(nber_recessions$USREC[i] == 1) {
+    # if we detect a shock (i.e., 'USREC' == 1), then we have 
+    # to proceed as follows:
+    # we store the 'my' variable in the column 'start' and 'end'
+    nber_recessions[i, ncol(nber_recessions)] <- x
+    
+  }else{
+    # no shock
+    x <- x + 1
+  }
+}
+
+
+
+nber_recessions %>%
+      filter(!is.na(recession_ID))  %>%
+      group_by(recession_ID) %>%
+      summarise(Count = n())
+
+# next we group_by recession_ID and extract the respective start-dates and
+# store the retrieved data to a new data-frame
+recessions_start <- as.data.frame(nber_recessions %>%
+                filter(!is.na(recession_ID))  %>%
+                group_by(recession_ID) %>%
+                filter(row_number()==1) %>%
+                mutate(year_start=year, month_start=month, my_start = my) %>%
+                dplyr::select(recession_ID, year_start, month_start, my_start))
+
+
+
+# next, we replicate the above query for the end-dates
+# (note that in some scenarios start- and end-dates might be identical!)
+recessions_end <- as.data.frame(nber_recessions %>%
+                filter(!is.na(recession_ID))  %>%
+                group_by(recession_ID) %>%
+                filter(row_number()==n()) %>%
+                mutate(year_end=year, month_end=month, my_end = my) %>%
+                dplyr::select(recession_ID, year_end, month_end, my_end))
+
+# next, we can merge the two data-frames from above:
+recessions_start_end <- merge(x = recessions_start, y = recessions_end, by = "recession_ID", all = TRUE, na.rm=T)
+# and inspect the resulting data-frame:
+recessions_start_end
+
+
+# we re-arrange the sequence of columns
+recessions_start_end <- recessions_start_end %>%
+  dplyr::select(recession_ID, year_start, month_start, year_end, month_end, my_start, my_end)
+
+
+# next, we construct a year-month-variable both out of
+# the pair 'year_start' & 'month_start' and 'year_end' & 'month_end'
+recessions_start_end$yearmon_start <- as.yearmon(recessions_start_end$my_start, "%Y-%B")
+recessions_start_end$yearmon_end <- as.yearmon(recessions_start_end$my_end, "%Y-%B")
+# next, we add a helper-column that we need in the next stage as well:
+recessions_start_end$helper_date <- format(recessions_start_end$yearmon_start, "%b")
+
+
+
+# this means that we can now drop the 'year' and 'month' variables
+recessions_start_end <- recessions_start_end %>%
+  dplyr::select(-c(year_start, year_end, month_start, month_end))
+
+
+# next we add a column that gives us the duration of the shock:
+recessions_start_end <- recessions_start_end %>%
+  mutate(duration = (recessions_start_end$yearmon_end - 
+                       recessions_start_end$yearmon_start) * 12 + 1) %>%
+  dplyr::select(-helper_date)
+
+
+# actually, there is a slight problem, which we fix by adding
+# one month's numeric value to my_end:
+recessions_start_end$my_end <- recessions_start_end$my_end + (1/12)
+# this makes sure that if we refer to an end-month that
+# we assume that we are talking about the last day of that
+# respective month!
+
+
+## after the construction of the NBER recessions from above,
+## we plot all the time-series by making use of
+## of the forecast-package (that reverts back to ggplot2)
+## and add in the NBER-dates;
+
+comparison_plot <- autoplot(comparison_measures_ts, facets = TRUE) + 
+  scale_x_continuous(name = "Year", limits = c(1960, 2020), 
+                     breaks = seq(1960, 2020, by = 5),
+                     minor_breaks = NULL) + 
+  scale_y_continuous(name = "Uncertainty Measures")  +
+  labs(color=NULL) +
+  theme(axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14), panel.grid.major.x = element_blank()) + 
+  # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!
+
+
+comparison_plot
+  
+ggsave("comparison_plot.pdf")
+
+
+## Next, we have to normalize all the series to be able to put
+## them all on the same scale:
+## we use the 'scale' - function on the entire data-frame:
+scaled_comparison_measures_ts <- scale(comparison_measures_ts)
+
+
+autoplot(scaled_comparison_measures_ts) + 
+  geom_line(size=1) + 
+  scale_color_manual(values=c("#CC0000",
+                              "#009900",
+                              "#202020", "#00FFFF")) + 
+  scale_y_continuous(name = "Uncertainty Measures") +
+  scale_x_continuous(name = "Year", limits = c(1960, 2018), 
+                     breaks = seq(1960, 2018, by = 5),
+                     minor_breaks = NULL) + 
+  theme(legend.position="bottom") + 
+  labs(color=NULL) +
+  theme(axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14), panel.grid.major.x = element_blank()) + 
+  # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=+Inf), 
+            fill='#606060', alpha=0.5)
+
+ggsave("comparison_plot_combined.pdf")
+
+
+########################################################################
+### PART 6: construction of impulse-responses following Jordá (2005)
+########################################################################
+
+## PART 6 is separated into ....... parts:
+## (6.1)  6.1 handles ........
+## (6.2)  6.2 handles the .......
+
+
+###############################
+## (6.1) loading additional_vars.csv;
 ##       merge with variables from sp500_merge_vxo
 ##       (most of the data comes from FRED 
 ##       [https://fred.stlouisfed.org/series/])

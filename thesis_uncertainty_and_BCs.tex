@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%HEADER%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%HEADER%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Note: All the options like chapterprefix, pointednumbers, etc affect the way things are represented in the header of each page
-\documentclass[a4paper,12pt,oneside,pointednumbers,numbers=noenddot,bibtotoc,bigheadings,liststotoc,chapterprefix=true]{scrbook}
+\documentclass[a4paper,12pt,oneside,pointednumbers,bibtotoc,bigheadings,liststotoc]{scrbook}
 % note that the expression "numbers=noenddot" remoes the dot after the number in figure captions
 % for details see https://tex.stackexchange.com/questions/27250/remove-dot-after-number-in-figure-captions-while-keeping-the-dot-in-chapter-sect
 \usepackage[utf8]{inputenc} %für Umlaute etc.
@@ -15,7 +15,10 @@
 %den genauen Trick für die untere Zeile kann ich hier nochmal nachlesen: http://tex.stackexchange.com/questions/22240/choosing-font-for-bold-small-caps-or-any-other-particular-familyseriesshape-c
 \DeclareFontShape{T1}{lmr}{bx}{sc} { <-> ssub * cmr/bx/sc }{} 
 \usepackage{a4} %anscheinend besser hier die Formatierung a4 wählen als als Option von documentclass
-\usepackage[bookmarks]{hyperref}
+\usepackage[colorlinks = true,
+		     bookmarks, 
+		     linkcolor = red,
+		     urlcolor = blue]{hyperref}
 %\usepackage{fancyhdr}
 \usepackage[right]{eurosym}
 % the below two lines of code are necessary to make sure that the numbering of figures starts at 1 and then proceeds in steps of 1 instead of floating point numbers etc.
@@ -27,7 +30,7 @@
 \usepackage{amsmath, amssymb, amstext} %für Mathematik
 \usepackage{mathstyle} %mehr Infos: http://www.ctan.org/pkg/mathstyle
 \usepackage{blindtext} %to be able to place blindtext at certain locations
-\usepackage[left=40mm, right=40mm, top=50mm, bottom=30mm]{geometry}%Seitenränder anpassen
+\usepackage[left=35mm, right=35mm, top=50mm, bottom=30mm]{geometry}%Seitenränder anpassen
 \usepackage[onehalfspacing]{setspace} %1.5 Zeilgenabstand
 \usepackage[round, comma]{natbib} %für die Bibliographie
 %all four of the below packages are included for table creation
@@ -35,6 +38,7 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{tabularx}
+\usepackage{lscape}
 \usepackage{mathstyle} %mehr Infos: http://www.ctan.org/pkg/mathstyle
 \usepackage[pdftex]{graphicx} %to include graphics
 \usepackage{microtype} % makes pdf look better
@@ -47,8 +51,8 @@
 \pagestyle{headings}
 % the below code is necessary to be able to customize the font of the Figure caption for figures
 \usepackage{caption} % see https://www.namsu.de/Extra/pakete/Caption.html for more information!
-\captionsetup[table]{font=footnotesize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=centering}
-\captionsetup[figure]{font=footnotesize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=plain, justification=raggedright}%width=\dimexpr\textwidth-2cm\relax}
+\captionsetup[table]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=centering}
+\captionsetup[figure]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=raggedright}%width=\dimexpr\textwidth-2cm\relax}
 %\setlength{\textwidth}{15cm}
 %\setlength{\textheight}{22.5cm}
 %\setlength{\oddsidemargin}{1cm}
@@ -75,10 +79,16 @@
 \usepackage{titlesec}
 %der folgende Befehl ändert die Schriftart des "chapter"-Befehls
 \titleformat{\chapter}{\large\bfseries\filright}{\Huge\thechapter.}{15pt}{\Huge}
-\titleformat*{\section}{\Large\bfseries}
-\titleformat*{\subsection}{\large\bfseries}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
 \titleformat*{\subsubsection}{\large\bfseries}
 \titleformat*{\paragraph}{\small\bfseries}
+% the below command is used to adjust the font-size of in-text block quotations
+\usepackage{lipsum}% http://ctan.org/pkg/lipsum
+\renewenvironment{quote}
+               {\list{}{\rightmargin\leftmargin}%
+                \item\relax\scriptsize\textquotedblleft\ignorespaces}
+               {\unskip\unskip\textquotedblright\endlist}
 
 %---------------------------------------------------------------------- Customizations ---------------------------------------------------------------------
 %--------------------------------
@@ -154,11 +164,33 @@
 \renewcommand\headrule{\vskip-.7\baselineskip\copy\FHline}
 % above is a bunch of code to control the length of the headrule
 
+% the below code creates the opportunity to include a quote at the beginning of a chapter
+% customize chapter format:
+\KOMAoption{headings}{twolinechapter}
+\renewcommand*\chapterformat{\thechapter\autodot}
+
+% add chapter quote to beginning of chatpers
+% see https://tex.stackexchange.com/questions/53377/inspirational-quote-at-start-of-chapter
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+\newcommand\textbox[1]{%
+  \parbox{.333\textwidth}{#1}%
+}
 
 %--------------------------------
 %--------------------------------additional customizations
 %--------------------------------
 \setlength{\parindent}{0pt} %legt die Einrücktiefe der ersten Zeile für alle folgenden Absätze fest
+% adds a command for exceptional paragraph identation!
+\newcommand{\forceindent}{\leavevmode{\parindent=1em\indent}}
 \setlength{\abovecaptionskip}{-15pt plus 3pt minus 2pt} %modify vertical space between figure and caption
 \renewcommand*{\paragraph}[1]{\subsubsection*{#1} \vspace{-3mm}} %mit diesem Befehl kann man ganz einfach
 %PARAGRAPH eingeben und latex macht sofort eine subsubsection ohne Nummerierung usw draus
@@ -180,22 +212,21 @@
         \quad \\[0mm]
         \newcommand{\HRule}{\rule{\linewidth}{0.3mm}} %Befehl zum Erstellen der Linie
         \HRule \\[-1mm]
-        \Huge{\scshape\bfseries Uncertainty and Business Cycles} \\[-5mm]
+        \Huge{\scshape\bfseries Time-Varying Uncertainty and Business Cycles} \\[-5mm]
         \HRule \\[2mm]
-        \Large {\scshape\bfseries An Empirical Analysis using \\
-                   Local Projections \\
-                   (work in progress)} \\[10mm]
-        \large Masterarbeit \\[20mm]
-        \large zur Erlangung des akademischen Grades eines \\ Master of Science (M.Sc.)\\
+        \large {\scshape An Analysis of the Measurement of Uncertainty and its\\
+        				Macroeconomic Effects Using the Example of the US} \\[10mm]
+        \large Master's Thesis \\[10mm]
+        \large in partial fulfillment of the requirements \\for the degree of Master of Science (M.Sc.)\\
                   in Applied Economics \\[10mm]
                   
-        eingereicht bei Herrn\\
+        submitted to\\
         Univ.-Prof. Dr. Johann Scharler \\[10mm]
-        Institut für Wirtschaftstheorie, -politik und -geschichte\\
-        Fakultät für Volkswirtschaft und Statistik\\
+        Department of Economics\\
+        Faculty of Economics and Statistics\\
         Leopold-Franzens-Universität Innsbruck \\[10mm]
-        von \\ Mag. Marcel A. Kropp \\[10mm]
-        Innsbruck, Juli 2018
+        by \\ Mag. Marcel A. Kropp \\[10mm]
+        Innsbruck, July 2018
     \end{center}
 \end{titlepage}
 %----------------------------------------------------------- Ende Titelseite -------------------------------------------------------------------------------
@@ -264,57 +295,139 @@
 %%%%%%%%%%%%%%%%%AB HIER BEGINNT DER INHALT DER ARBEIT%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%AB HIER BEGINNT DER INHALT DER ARBEIT%%%%%%%%%%%%%%%%%%%%%
 \pagenumbering{arabic} %mit diesem Befehl wechseln wir auf 1, 2, 3, usw. zum zählen.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 % the below code making use of "begingroup" etc. is only necessary if I want to customize the font for a particular part of the thesis
 %\begingroup
 %\fontsize{10pt}{12pt}\selectfont
-Similarly to how \citet{bloom:09} has mentioned that studying uncertainty is incredibly topical given the recent Brexit and Trump election outcomes (see \url{https://site.stanford.edu/2018/session-6}), I could start the introduction along similar lines.\footnote{The mentioned link is about a Summer Workshop related to 'Macroeconomics of Uncertainty and Volatility' in which Bloom also briefly mentions that the theoretical and empirical understanding of how uncertainty affects economies as a whole is still limited since macroeconomists only recently have started working on these issues from a more systematic basis. Still, he mentions about 14 recent papers on this topic (which are not yet posted online but which I could include into the literature review as well!)}.
+It can be commonly postulated that being faced with uncertainty is a state inherent to life's existence and in every aspect a natural part of our complex world. \\
+Focussing on \textit{economic} uncertainty, \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.334.4248&rep=rep1&type=pdf}{an investor being concerned about the performance of her assets, an employee being worried about future income streams during retirement or at all still having a job one year from now or a business continuously defending its position on the market are just a few examples} of individuals or a collective being exposed to uncertainty in every-day life. Many of these risks/uncertainties\footnote{Note that we are currently still using these terms interchangeably but will give a brief overview of the discussion and their subtle differences in the literature below.} have given rise to institutions and entire industries as an integral part of today's modern economies: sophisticated financial markets (with their risk-transformation-function being a pivotal element besides the purpose to raise capital) and the finance and insurance industry would not exist (or albeit in a different form) if it was not for the existence of uncertainty. On the academic front, ever more complex models promise remedy to make exposures to uncertainty and foresight calculable and/or manageable.\\
+\\
+On a high level, \citet{dequesh:00} identifies four basic social practices in today's societies that have a stabilizing effect on the coexistence in our (as  he calls it) \textit{economic reality}: (1) legal contracts (that reduce the uncertainty of future values of nominal variables), (2) the 'State' which enforces legal contracts in case one party to a contract would decide to not fulfill its obligations, (3) Market-Makers (a very prominent example being central banks in their roles as lenders of last resort), and lastly, (4) informal institutions including conventions like 'socially shared and/or prescribed standards of thought and behavior'. \\
+Together these features improve subjective and objective uncertainty but can obviously not completely eliminate it. \\
+\\
+Although we do not want to roll up the subject from a philosophical (or even religious) perspective, whoever analyses \textit{uncertainty} and its underlying meaning in the literature hoping to clearly differentiate it from related concepts such as \textit{risk} or \textit{ambiguity}, will quickly realize that an unambiguous definition is not straightforward. Confining ourselves to economics only, there is a vast array of literature starting at the beginning of the 20th century that refers to these concepts in different schools of thought that at their core do have a philosophical component to them. Different parlance within the profession which \href{http://www.economics-ejournal.org/economics/discussionpapers/2015-36/file}{even causes similar concepts to be named differently} or the same term being used for different concepts additionally complicates matters.\\
+\\
+A thorough discussion of every aspect of the related concepts is beyond the scope of this work. But we still want to give a brief overview of a few insights by referring to a few selecting writings:\\
+\forceindent \citet{dow:16} tries to clarify the difference between the mainstream and Keynesian\footnote{Keynes and Knight are often-times regarded as the two prominent figures that introduced the concept of \textit{fundamental uncertainty} into the economic sciences.} understanding of \textit{uncertainty}\footnote{\citet{dow:16} also makes account to von Mises, Hayek and Shackle who have also dealt with uncertainty in their works but focusses on Keynes's views on fundamental uncertainty arguing for it to be the most developed and philosophically-grounded counterpoint to the mainstream theory.}, its distinction from \textit{risk} and the resulting theoretical implications\footnote{Note that there are also schools that reject the distinction between \textit{uncertainty} and \textit{risk} altogether (e.g., \citealp{savage:54}).}. According to her assessment, in the traditional mainstream analysis within a Bayesian framework most knowledge is viewed as known or known to be stochastic in some form (called \textit{risk}), meaning that the state space is known and numerical probabilities can be assigned. Under this approach, mainstream traditional macroeconomic models give only very limited room, if any, to \textit{uncertainty} as a state of absence of such probabilities in the form of exogenous sources of shocks\footnote{\citet[p. 43]{dequesh:00} refers to some economists partly neglecting fundamental uncertainty following the argument that it might lead to 'theoretical nihilism' (see e.g., \citealp{coddington:82}).}. \\
+Read from this dualistic mainstream perspective, \citet{dow:16} asserts that Keynes's standpoint was also for a long time interpreted in a dualistic way, albeit flipped in the sense that only in special circumstances, knowledge (here referred to as \textit{risk}) could be treated as certain and (fundamental) uncertainty was regarded as the general case (see the introduction in \citealp{keynes:21}). This dualistic interpretation was reinforced by Keynes's reflections on long-term expectations~\citep[p. 214/214]{keynes:37}: 
+``About [uncertainty] there is no scientific basis on which to form any calculable probability whatever. We simply do not know.''\\
+\\
+But \citet{dow:16} clarifies that in the meantime it is well-established that Keynes did not give up on scientific knowledge (i.e., did not advocate nihilism) by giving so much weight to uncertainty but that his view on uncertainty is rather multidimensional and consists of various degrees. As an advocate of this view, \citet{dequesh:00} argues that Keynes referred to both ambiguity in his early writings (\citealp{keynes:21})\footnote{According to interpreters, in terms of \citet{keynes:21}, for both ambiguity and fundamental uncertainty there is no basis for the assignment of point, numerical probabilities \citep{dequesh:00}.} and fundamental uncertainty in his later ones (\citealp{keynes:37}) and that simply speaking of Keynesian uncertainty may actually be too vague in most circumstances. \\
+\\
+\citet[p. 330]{camererandweber:92} describe ambiguity as ``uncertainty about probability, created by missing information that is relevant and could be known''. \citet[p. 623]{dequech:14} states that while usually the decision-maker under ambiguity cannot reliably assess the probability of each event, she usually knows all possible events (or it is at least ``predetermined or knowable ex ante``) while the case of fundamental uncertainty ``[...] is characterized by the possibility of creativity and non-predetermined structural change''. So under this concept and ``[w]ithin the bounds imposed by natural laws, the list of possible events is not predetermined or knowable ex ante [...] as \textit{the future is yet to be created}\footnote{Italics added.}'' \citep[p. 623]{dequech:14}. \citet{dequesh:00} sees the work of \citet{shackle:72} as advocating this argument.\\
+\\
+With regard to fundamental uncertainty, \citet{dequesh:00} mentions technological or managerial innovations as examples of human creativity that can disrupt our realities which is closely connected to the process of creative destruction of \citet{schumpeter:42}. Unpredictable structural changes (e.g. historical changes) to our economic reality on the other hand are more typically political, social or cultural disruptions where institutions and technological change play a key-role. Interestingly, the capitalist system as we know it is regarded as endogenously causing uncertainty due to competing economic actors and decision-makers innovating in search for extra profits (see \citealp{kregel:87})\footnote{Despite of the above remarks, Keynes' notion of uncertainty as described in \citet{keynes:21} and its connection to \citet{keynes:37} has been subject to much controversy due to differing interpretations \citep{dequesh:00}.}.\\
+\\
+Coming back to the mainstream view, while the crisis and subsequent Great Recession has triggered a rethinking of the mainstream approach to uncertainty by emphasizing ``institutional impediments to information access (asymmetric information)'' \citep[p. 8]{dow:16}, degrees of uncertainty were only gradually added to the picture: the term 'ambiguity' was acquired as well (also following \citealp[p. 330]{camererandweber:92}) to account for these various degrees of uncertainty while 'unknown unknowns' (i.e. unimaginable events or 'black swans' as dubbed by \citealp{taleb:08}) would have to be seen as \textit{'knowable unknowns'} to still be consistent with the Bayesian framework. The term 'ambiguity' is thereby introduced as falling either into the category of risk or uncertainty depending on the ability to quantify higher-order probabilities.
 \\
 \\
-Some notes to myself when reading through some of the articles:
-\begin{itemize}  
-	\item ``Real GDP has the virtue of being the broadest indicator of real economic activity. Its downside is that it is difficult to measure [...]. For this reason, we also consider two other indicators: industrial production and the unemployment rate. Industrial production has the benefit of being relatively straightforward to measure; unemployment has the benefit of being perhaps the closest to a purely cyclical indicator.'' (Romer \& Romer, p. 3092)
-	\item Footnote 17 in \citet{romandrom:17}: ``The impulse response functions in Figure 4 are estimated using the Jordà local projection method. Figure C2 of online Appendix C shows that the results estimated using a conventional vector autoregression are virtually identical.'' --> should we include a comparison with Bloom's VAR?
-	\item \citet[p. 3096]{romandrom:17}: ``To do this, we run the same regression as in equation (1), but with our new measure of financial distress as the dependent variable. Since by construction the response of distress to itself is one at t = 0, we only estimate the regression for horizons 1 to 10. This analysis shows that distress is very serially correlated, particularly at near horizons. This finding suggests that some of the near-term persistence we find in the negative aftermath of financial distress is likely due to persistence in distress itself. It is not necessarily that financial crises have long-lasting effects, but rather that crises themselves tend to last for a while. This possibility [...] is analyzed further in Section III.''
-	\item \citet[p. 3097]{romandrom:17}: ``Given that our new series on financial distress differs in important ways from existing crisis chronologies, it is useful to compare our findings for the average aftermath of financial crises with those estimated using the other series.'' --> We can use this approach similarly by using various uncertainty measures in our regressions as alternative and compare the impulse-response functions.
-	\item \citet[p. 3099]{romandrom:17}, \textit{Dealing with Heteroskedasticity}: ``The first issue is possible differences in the variance of the residuals across countries. Economic activity is typically much more volatile in the less developed countries in our sample (such as Greece and Turkey), and in the smaller countries. It is plausible to think that the variances of the residuals in equation (1) also vary systematically by country. \\
-	--> Taking into account heteroskedasticity in the residuals has a substantial impact on the estimates. Though the time pattern of the decline in GDP is relatively unchanged, the maximum decline is reduced by about one-third.''
-	\item \citet[p. 3010]{romandrom:17}: ``In a related exercise, we also consider alternatives to conventional standard errors. In addition to heteroskedasticity of the residuals, there may also be serial correlation due to the overlapping structure of the residuals. We therefore experiment with both heteroskedasticity-consistent standard errors, and two forms of heteroskedasticity- and serial-correlation-corrected standard errors. Table C1 of online Appendix C shows that the alternative standard errors are typically about 30 to 50 percent larger than conventional standard errors. Thus, using the alternatives reduces the statistical significance of the estimated negative aftermath of a financial crisis substantially. Nonetheless, the estimates for GDP remain statistically significant at standard levels at all horizons.''
-	\item \citet[p. 15]{ramzub:18}: ``The only complication associated with the Jordà method is the serial correlation in the error terms induced by the successive leading of the dependent variable. Thus, we use the Newey-West correction for our standard errors \citep{newest:87}.''
-	\item \citet[p. 16]{ramzub:18}: ``Later, we will be comparing our baseline estimated to those from a threshold VAR." (--> This is something that we can maybe do as well; see a comment added above already!)
-	\item \citet[p. 23]{ramzub:18}, footnote 20: ``We only estimate multipliers out five years because the Jordà method is less reliable at long horizons.''
-	\item When it comes to describing the data sources I should have a look at the way how \citet{ramzub:18} explain each series in the Appendix.
-	\item \citet[p. 17]{ramey:16}: ``If the VAR adequately captures the data generating process, this method is optimal at all horizons. If the VAR is misspecified, however, then the specification errors will be compounded at each horizon. To address this problem, Jordà (2005) introduced a \textit{local projection} method for estimating impulse responses.''
-	\item \citet[p. 18]{ramey:16}: ``The control variables need not include the other $Y's$ as long as $\epsilon_{1t}$ is exogenous to those other $Y$'s. Typically, the control variables include deterministic terms (constant, time trends), lags of the $Y_i$, and lags of other variables that are necessary to "mop up''; \\
-	One estimates a separate regression for each horizon and the control variables do not necessarily need to be the same for each regression. Note that except for horizon $h=0$, the error term $\xi_{t+h}$ will be serially correlated because it will be a moving average of the forecast errors from $t$ to $t+h$. Thus, the standard errors need to incorporate corrections for serial correlation, such as a \citep{newest:87} correction.
-	\item \citet[p. 37]{ramey:16}: The term ``troughs'' is very often used in the context of impulse response functions. Here an example sentence: ``Industrial production begins to fall in the next month and roughs 21 months later.'' Literally translated it means "tief fallen" (auf sein tiefstes Niveau fallen).\\
-	Another interesting expression is used on p. 39: ``[...] until they bottom out during the fourth year after the shock.''
-	\item \citet[p. 45]{ramey:16}: ``Why does the Jordà method give such different estimates from the proxy SVAR?'' --> This is a question that I could actually elaborate on to possibly also compare our results investigating uncertainty using the Jordà method as opposed to the VAR that Bloom uses in his paper.
-	\item In the presentation on the following web-page \url{http://www.datavis.ca/courses/RGraphics/R-Graphics1.pdf} on p. 35 I found an interesting way of plotting regression estimates! (instead of tables with standard errors, we plot the coefficients and confidence bands which let's the viewer immediately understand whether a coefficient is significantly different from zero or not.
+Trying to establish a typology within the introduced terms, \citet{dequech:14}  sets up three dimensions along which he classifies relevant concepts\footnote{Apart from this classification we do not discuss any further interrelationships between the various concepts.}: 
+\begin{enumerate}
+	\item between substantive and procedural uncertainty:\footnote{Proposed by \citet[p. 145]{dosiandegidi:91} whereby substantive uncertainty results from the ``lack of all the information which would be necessary to make decisions with certain outcomes'' and procedural uncertainty from ``limitations on the computational cognitive capabilities of the [respective] agents to pursue unambiguously their objectives, given [...] available information'' in a complex decision problem. }
+	\item between weak and strong uncertainty:\footnote{Whereby under weak uncertainty ``[...] an agent can form [...] a unique, additive and fully reliable probability distribution'' based on relevant and good-quality information and strong uncertainty consequently ``[...] by the absence of such a distribution'' \citep[p. 622/623]{dequech:14}.} \\
+	weak uncertainty is then further subdivided into \textit{Knightian risk} (see \citet{knight:21}; often simply called 'situations of risk' where agents are faced with objective probabilities, either a priori or statistical probabilities (i.e., relative frequencies) and \textit{Savage's uncertainty} (see \citet{savage:54}; who introduced a full theory of 'personal probability' where \textit{personal} belief governs probabilities, based on prior \href{https://archive.org/stream/in.ernet.dli.2015.223806/2015.223806.The-Foundations#page/n289/mode/2up}{groundbreaking work of} \href{http://www.brunodefinetti.it/Link/Subjective%20Expected%20Utility%20-%20Intro.htm}{\citet{ramsey:26}\footnote{Written ``in opposition'' to \citet{keynes:21}.} and \citet{finetti:37}});
+	\item between ambiguity and fundamental uncertainty.\footnote{Which are two types of strong and substantive uncertainty \citep{dequesh:00}.}
+\end{enumerate}
+\vspace{1cm}
+
+
+But what \textit{real} effect, if any, does uncertainty exert on business cycles? \\
+Within the past ten years and triggered by a seminal work by \citet{bloom:09}\footnote{Bloom's contribution triggered a wave of studies that challenged the effects that he had reported in his initial publication in \citet{bloom:09}.}, macroeconomists have intensively started studying this question more intensively than ever before. At a first glance, as summarized by \citet[p. 1177]{juradoetal:15}, partial equilibrium analyses to date suggest that increased levels of uncertainty ``[...] can depress hiring, investment, or consumption if agents are subject to fixed costs or partial irreversibilities (a 'real options' effect), if agents are risk averse (a 'precautionary savings' effect), or if financial constraints tighten in response to higher uncertainty (a 'financial frictions' effect).'' \\
+\\
+While these effects have been identified by and large in the literature, the timing, extent and causality of effects remain hotly debated not least because of various uncertainty measures being used that try to quantify a decisive factor: unobservable, time-varying aggregate economic uncertainty.\\
+\\
+\href{https://site.stanford.edu/2018/session-6}{As aptly formulated by Nicholas Bloom}\footnote{Bloom is part of a larger group of contributors to the most recent macroeconomic literature that has started to systematically disentangle the effects of uncertainty both theoretically and empirically.}, after the Great Recession and the subsequent turmoil in the Eurozone's sovereign debt markets, the most recent major political events\footnote{One could potentially also call them 'shocks'.} of Brexit, Trump's election in the US and a seeming intensification of tensions between forces of the West and East have brought uncertainty into the spotlight again suggesting that alleged 'tail-events' are far from improbable. Against this background, our goal in the following is to address various approaches to measuring uncertainty and empirically analyse the effects, if any, of uncertainty on business cycle fluctuations and whether or not these effects can successfully be isolated and causally justified.
+\\
+\\
+The remainder of this thesis is organized as follows. Section~\ref{MeasuringUncertaintyandaHistoricalView} explores alternative uncertainty measures, their time-series properties as well as some 'stylized facts' on uncertainty, Section~\ref{UncertaintyandBusinessCyclesRelatedLiterature} briefly reviews the related literature triggered by the seminal work of \citet{bloom:09}, Section~\ref{sec:EmpiricalAnalysis} is dedicated to the empirical analysis using data for the US and starting from a replication of the benchmark model of \citet{bloom:09} contrasts the isolated effects based on various uncertainty measures, samples and estimation techniques (VARs and the local projection method following \citealp{jorda:05}), and Section~\ref{Conclusion} summarizes and concludes. \\
+Additional details and results are outsourced to Appendix~\ref{DataAndCode} including information on the data and the entire code and Appendix~\ref{VARAndLocalProjection} including information on the differences between VARs and the local projection method by \citet{jorda:05}.
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{A Closer Look At Uncertainty}
+\label{MeasuringUncertaintyandaHistoricalView}
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item  The IMF Working Paper (Measuring Global and Country-Specific Uncertainty) is a very helpful resource because the introduction to their paper is very insightful with lots of useful information about the current state of research in this respect!
 \end{itemize}
-%\endgroup
+\endgroup
 
 
-
-
-\section{A Historical View on Uncertainty}
-
-
-
-
-\section{Characteristics of Uncertainty Shocks}
-
+As mentioned in the Introduction above, studies that try to explain the impact of uncertainty, if any, on aggregate economic fluctuations\footnote{Note that Section~\ref{UncertaintyandBusinessCyclesRelatedLiterature} will review these studies in more detail.} not only differ with respect to econometric specifications (which we will examine in Section~\ref{sec:EmpiricalAnalysis}) but also to the deployed \textit{uncertainty measure} itself. In fact, there is currently a very active and dedicated branch of the literature that tries to answer that one question: How can we best and most objectively measure uncertainty? And out of the constructed uncertainty measures to date, which one is the preferred one?\\
+\\
+Because the answer to that question is controversial, in what follows below we, first, want to review a selection\footnote{We have decided to restrain ourselves to \textit{four} measures which are among the most commented-on in the literature and which we examine in more detail for the purpose of this thesis.} of uncertainty measures that have been used/suggested in the literature to date including their pros and cons and, second, investigate some of their time series properties to get a feeling of their similarities as well as discrepancies.
 
 \section{Measuring Uncertainty}
-\subsection{Bloom-Shock}
+Various uncertainty measures exist (and not \textit{the one} measure) because the stochastic process which we commonly call 'uncertainty' is unobservable. \citet[p. 1182]{juradoetal:15} emphasize that ``[t]he literature on measuring uncertainty is still in its infancy'' and so far existing research has popularized various proxies or indicators of uncertainty including (with no specific order), among others: 
 \begin{itemize}
-	\item Note to self: \citet{bloom:09} describes the identification of shocks both in the Appendix (section A.1.2, p. 675;) as well as in the main text on p. 630. The explanation in the main text states:\\
-``The main stock-market volatility indicator is constructed to take a value 1 for each of the shocks labelled in the figures above and a 0 otherwise. These shocks were explicitly chosen as those events \textit{when the peak of HP detrended volatility level rose significantly above the mean.} In particular, the threshold was 1.65 standard deviations above the mean, selected as the 5\% one-tailed significance level \textit{treating each month as an independent observation}.''
+	\item the implied or realized volatility of stock market returns, 
+	\item the cross-sectional dispersion of firm profits, stock returns, or productivity,
+	\item the cross-sectional dispersion of subjective (survey-based) forecasts (see e.g., \citet{bachmannetal:13}; \citet{juradoetal:15} also mention analysts' forecasts (as e.g., used by D'Amico and Orphanides)),
+	\item the appearance of certain ``uncertainty-related'' key-words in news publications.
 \end{itemize}
 
-Because stock markets quickly reflect any arrival of new information, the \textit{volatility} thereof can serve as a proxy for uncertainty. \\
-The construction of the 'Bloom-shock' following \citet{bloom:09} is performed in multiple steps\footnote{The complete R-Code replicating all the steps is available in Appendix~\ref{sec:rcode}.} and uses two data-sources: (i) VXO-data from the CBOE for the period where data is available (i.e., 1986 - 2018) and (ii) actual monthly volatilities (for the period pre-1986) calculated as the monthly standard deviation of the daily S\&P500 index (normalized to the same mean and variance as the VXO index for when the two series overlap, i.e., from 1986 - 2003). The result of the manipulations is one continuous volatility measure that \citet{bloom:09} uses as the basis of the shocks that he considers as shown in Figure~\ref{fig:volatility}.
-\begin{figure}[hbt]
+The lack of an objective uncertainty measure hence poses a serious challenge to studies trying to quantify its macroeconomic effects: they have to come up with a reasonable uncertainty measure in the first place. \citet[p. 1178]{juradoetal:15} explain that ``[w]hile most of the [above mentioned] measures have the advantage of being directly observable, their adequacy as proxies for uncertainty depends on how strongly they are correlated with this latent stochastic process [i.e., with unobservable uncertainty]''.\\
+\\ 
+Besides creating their own measure of economic uncertainty, \citet{orlikandveldkamp:14} describe commonly used proxies of uncertainty by means of the following taxonomy and refer to selected works along the way\footnote{Note that we have slightly extended the original taxonomy of \citet{orlikandveldkamp:14} by mixing it with \citet{bontempietal:16}'s taxonomy. Only the measures that link to a dedicated section will examined in more detail below.}:
+\begin{itemize}
+	\item \textbf{Forecast Dispersion:} add detailed description!
+	\item \textbf{Mean-Squared Forecast Error:} add detailed description!
+	\item \textbf{Volatility and Confidence Measures}, where we find three alternative approaches:
+		\begin{itemize}
+			\item 'finance-based' - measures, assuming that financial volatility is a suitable indicator for aggregate macroeconomic uncertainty: 
+			\begin{itemize}
+				\item the traditional measure of uncertainty is market volatility index (VIX/VXO); based on the VXO \citet{bloom:09} constructs his shock-measure (henceforth called Bloom-shock; see Section~\ref{sec:bloomshock} below)
+			\end{itemize}
+			\item 'forecast-based' - measures that rely on both an economy's predictability and the measurement of discrepancies between professional forecasts assuming that impeded predictability and a large dispersion between forecasts points at a more uncertain economy:
+			\begin{itemize}
+				\item measures of business or consumer confidence based on survey data (add Michigan Survey as well as a reference to the paper of \citet{bachmannetal:13} that use survey data [which unfortunately is not available!]; see Section~\ref{sec:michigansurvey} below)
+				\item \citet{juradoetal:15} construct a (as \citet{orlikandveldkamp:14} call it) 'state-of-the-art' macro uncertainty index (henceforth called JLN-index; see Section~\ref{sec:macrouncertainty})
+			\end{itemize}
+			\item 'news-based' - approaches that measure the degree of uncertainty by extracting the frequency with which specific words appear in newspaper articles, assuming that journalists are able to assess emerging uncertainty \footnote{Note that this approach is similar to the narrative analysis used by \citet{romerandromer:04}, \citet{romandrom:17} or \citet{ramey:09}.}: 
+			\begin{itemize}
+				\item \citet{alexopoulosandcohen:09} construct a news-based index derived from the number of New York Times' articles on uncertainty and economic activity,
+				\item \citet{bakeretal:15} construct an index of economic policy uncertainty (EPU) for a number of countries (including the United States) by searching for uncertainty-related keywords within a pool of widely read country-specific newspapers (henceforth called BBD-index; see Section~\ref{sec:epuindex}),\\
+			in a similar vein, \citet{moore:17} constructs an index of economic uncertainty for Australia,
+				\item inspired by classical 'news-based' - approaches, \citet{bontempietal:16} and \citet{castelnuovoandtran:17} construct 'Google Trends Uncertainty' indices (they call their index GT- and GTU-index, respectively) based on freely accessible, real time Google Trends data (henceforth called BGS-index and CT-index, respectively; see Section~\ref{sec:googletrends}); thereby the focus is shifted from journalists drawing the public's attention to specific topics to the public's individual Internet searches
+			\end{itemize}
+		\end{itemize}
+\end{itemize} 
+
+We will discuss a few of these measures in turn.
+
+
+\subsection{Bloom-shock: \citet{bloom:09}}
+\label{sec:bloomshock}
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item  \citet{bloom:09} describes the identification of shocks both in the Appendix (section A.1.2, p. 675;) as well as in the main text on p. 630. The explanation in the main text states:\\
+``The main stock-market volatility indicator is constructed to take a value 1 for each of the shocks labelled in the figures above and a 0 otherwise. These shocks were explicitly chosen as those events \textit{when the peak of HP detrended volatility level rose significantly above the mean.} In particular, the threshold was 1.65 standard deviations above the mean, selected as the 5\% one-tailed significance level \textit{treating each month as an independent observation}.''
+	\item I definitely have to take into account what Hans said: the construction of the Bloom-shock explicitly tries to argue that the shocks are exogenous by construction - here I should 
+\end{itemize}
+\endgroup
+
+
+The construction of the 'Bloom-shock' as outlined in \citet{bloom:09} is performed in multiple steps and uses two data-sources\footnote{Note that in the original contribution of \citet{bloom:09} the data logically only ranges until 2009 while we now have almost 10 more years of VXO data at our disposal.}: (i) VXO-data from the Chicago Board Options Exchange (CBOE) for the period where data is available (i.e., 1986 - 2018)\footnote{The VXO - index (for details see the the homepage of the CBOE) reflects the market's expected implied volatility based on S\&P100 options 30 days to expiration and hence captures expected volatility of equity prices. Note that the VIX introduced as of 2003 instead is based on prices of S\&P500 options.} and (ii) actual monthly volatilities (for the period pre-1986) calculated as the monthly standard deviation of the daily S\&P500 index (normalized to the same mean and variance as the VXO index for when the two series overlap, i.e., from 1986 - 2003)\footnote{The R-Code replicating all the steps for the construction of the Bloom-shock is available in Appendix~\ref{sec:rcode}.}. The result is one continuous volatility measure as shown in Figure~\ref{fig:volatility}.
+\begin{figure}[!ht]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
@@ -324,43 +437,43 @@ The construction of the 'Bloom-shock' following \citet{bloom:09} is performed in
    \label{fig:volatility}
 \end{figure}
 
-The derivation of the 'Bloom-shocks' (i.e., an indicator variable that takes a value of 1 for an event labelled as a 'shock') then is done as follows:
+The derivation of the 'Bloom-shocks' (i.e., an indicator variable that takes a value of 1 for an event labelled as a 'shock') then works as follows:
 \begin{enumerate}[i]
-	\item detrend the volatility-measure from above (\citet{bloom:09} uses a HP-filter with $\lambda = 129,600$); see also Figure~\ref{fig:volatility_trend} below which shows the calculated \textit{trend}-series in red. 
-	\item according to \citet{bloom:09}, the actual shocks are then chosen as those events with stock-market volatility more than 1.65 standard deviations above the HP-detrended mean (selected as the 5\% one-tailed significance level) of the stock-market volatility series; thereby each month is being treated as an independent observation (see Figure~\ref{fig:volatility_cycle_shocks}; dates where the dashed line crosses the volatility-series are considered shocks)
+	\item detrend the volatility-measure from above (\citet{bloom:09} uses a HP-filter with $\lambda = 129,600$); 
+	\item according to \citet{bloom:09}, the actual shocks are then chosen as those events with stock-market volatility more than 1.65 standard deviations above the HP-detrended mean (selected as the 5\% one-tailed significance level) of the stock-market volatility series; thereby each month is being treated as an independent observation
 \end{enumerate}
 
-Ultimately, this results in identified 'shocks' as shown in Figure~\ref{fig:volatility_cycle_shocks2} which is a replication of Figure~\ref{fig:volatility_trend} but with the episodes added that correspond to the 'Bloom-shock' being equal to $1$. Correspondingly, Table~\ref{tab:bloom_shocks} spells out the exact dates.
-\begin{figure}[hbt]
+Ultimately, this results in identified 'shocks' as shown in Figure~\ref{fig:volatility_cycle_shocks2} where the shaded areas correspond to the 'Bloom-shock' being equal to $1$ (i.e., where the dashed horizontal line representing 1.65 standard deviations above the HP filtered mean crosses the detrended series). Accordingy, Table~\ref{tab:bloom_shocks} spells out the exact dates of the identified shocks including when the 'Bloom-shock' started (first column), when it ended (second column), the amount of consecutive months within a dedicated shock-period (third column), the date with the maximum volatility within the dedicated shock-period (fourth column) and the corresponding maximum volatility in the last column.
+%\begin{figure}[hbt]
+%   \centering
+%   \setlength\fboxsep{0pt}
+%   \setlength\fboxrule{0pt}
+%   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_trend.pdf}}
+%      \caption[Monthly U.S. stock market volatility and HP-filtered trend.]{Monthly U.S. stock market volatility and HP-filtered trend.
+%      \textit{Note:} HP-filtered trend was calculated using a smoothing parameter $\lambda = 129,6000$.}   \label{fig:volatility_trend}
+%\end{figure}
+
+
+%\begin{figure}[h]
+%   \centering
+%   \setlength\fboxsep{0pt}
+%   \setlength\fboxrule{0pt}
+%   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_cycle_shocks.pdf}}
+%      \caption[Monthly U.S. stock market volatility and HP-filtered trend.]{Monthly U.S. stock market volatility and HP-filtered trend.
+%      \textit{Note:} HP-filtered trend was calculated using a smoothing parameter $\lambda = 129,6000$.}   \label{fig:volatility_cycle_shocks}
+%\end{figure}
+
+\begin{figure}[h]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_trend.pdf}}
-      \caption[Monthly U.S. stock market volatility and HP-filtered trend.]{Monthly U.S. stock market volatility and HP-filtered trend.
-      \textit{Note:} HP-filtered trend was calculated using a smoothing parameter $\lambda = 129,6000$.}   \label{fig:volatility_trend}
-\end{figure}
-
-
-\begin{figure}[hbt]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_cycle_shocks.pdf}}
-      \caption[Monthly U.S. stock market volatility and HP-filtered trend.]{Monthly U.S. stock market volatility and HP-filtered trend.
-      \textit{Note:} HP-filtered trend was calculated using a smoothing parameter $\lambda = 129,6000$.}   \label{fig:volatility_cycle_shocks}
-\end{figure}
-
-\begin{figure}[hbt]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm 1cm, width=0.95\textwidth]{volatility_cycle_shocks2.pdf}}
+   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_cycle_shocks2.pdf}}
       \caption[Monthly U.S. stock market volatility including Bloom-shocks (shaded areas).]{Monthly U.S. stock market volatility including Bloom-shocks (shaded areas).}   \label{fig:volatility_cycle_shocks2}
 \end{figure}
 
 \begin{table}[h] 
 \begin{center}
-\caption{Replication of shocks using Bloom's methodology.}
+\caption{Replication of shocks following \citet{bloom:09}.}
 \scalebox{1}{
     \begin{tabular}{cccccc}
     \hline
@@ -393,17 +506,224 @@ Ultimately, this results in identified 'shocks' as shown in Figure~\ref{fig:vola
 \end{table}
 
 
+\subsection{Survey-Based Index: Michigan Survey}
+\label{sec:michigansurvey}
+\citet{orlikandveldkamp:14} go on and write: ``Another commonly cited measure of uncertainty is business or consumer confidence. The confidence survey asks respondents whether their outlook on future business or employment conditions is 'positive', negative or neutral.' These questions are about the direction of future changes and not about any variance or uncertainty. They may be correlated with uncertainty because uncertainty is counter-cyclical.\\
+\\
+Basu und Bundick (2017) und Ledu and Lui (2016) verwenden als Unsicherheitsmaße einmal nur den VIX und einmal die ratio aus dem Michigan Survey (das ganze ist einfach direkt von der homepage herunterladbar)\\
+\\
+Here I should also refer to \citet{bachmannetal:13}.
+\\
+We should make use of the uncertainty measure used in \citet{bachmannetal:13} and also create a similar plot compared to their Figure 22. Although the data for the IFO index is only available as of 1980, we could still make use of this and, e.g., compare the volatility indicator that \citet{bloom:09} uses with the uncertainty indicator used by \citet{bachmannetal:13}. Interestingly, \citet{bachmannetal:13} even write in their footnote 16: ``We follow here Bloom's (209) timing convention for stock market volatility.''\\
+\\
+another approach is mentioned in \citet{bachmannetal:13} where they write on p. 27: `We also run an analogous SVAR with the 30 year corporate bond spread as the uncertainty measure. It is clear that negative long-run innovations have significant impact on uncertainty.''
 
 
-\subsection{Alternative Uncertainty-Measures}
+
+\subsection{Economic Policy Uncertainty Index: \citet{bakeretal:15}}
+\label{sec:epuindex}
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
 \begin{itemize}
-	\item I could potentially at some point refer to economic sentiment indicators like \url{https://www.oenb.at/en/Statistics/Standardized-Tables/\\
-	Economic-and-Industry-Indicators/Economic-Indicators/Economic-Sentiment-Indicator-for-the-Euro-Area.html} or \url{https://data.europa.eu/euodp/data/dataset/c04BuUz6WXIQGJkHPwLug}.
+	\item  BBD-index following \citet{bakeretal:15}\\
+The IMF Working Paper (Measuring Global and Country-Specific Uncertainty) is a very helpful resource because: (1) They compare various uncertainty measures and also give a hint of from where to retrieve news-based uncertainty-measures!
 \end{itemize}
+\endgroup
+
+
+\begin{figure}[h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{epu_index_plot.pdf}}
+      \caption[EPU Index for the United States.]{EPU Index for the United States.
+      \textit{Note:} Index reflects scaled monthly counts of articles containing 'uncertain' or 'uncertainty', 'economic' or 'economy, and one or more policy relevant terms: 'regulation', 'federal reserve', 'deficit', 'congress', 'legislation', or 'white house'. The series is normalized to mean 100 from 1985-2009 and based on queries run on 2 February, 2015 for the USA Today, Miami Herald, Chicago Tribune, Washington Post, LA Times, Boston Glove, SF Chronicle, Dallas Morning News, NW Times, and the Wall Street Journal.\\
+      Original Figure Iå in \citet{bakeretal:15} spans until 2015. We have taken all available values until April 2018, inclusive.}   \label{fig:epuindex}
+\end{figure}
+
+
+
+\subsection{Google Trends-based Index: \citet{bontempietal:16} and \citet{castelnuovoandtran:17}}
+\label{sec:googletrends}
+\href{https://medium.com/google-news-lab/what-is-google-trends-data-and-what-does-it-mean-b48f07342ee8}{Google Trends is a freely available Google service derived from Google search data. As such it is a powerful tool when it comes to the exploration of global reactions to major events based on what people search for world-wide.}\footnote{For more information see \url{https://support.google.com/trends/?hl=en\#topic=6248052}.} The data that Google makes available thereby can be filtered in two ways: (i) \textbf{real time}, which is a random sample of searches from the last seven days and (ii) \textbf{non-real time} which is a random sample of the full Google dataset which can go back anywhere from 2004 to ca. 36 hours ago.\footnote{The algorithm reverts to sampling because otherwise the query to trillions of Google searches could not be executed within a reasonable amount of time.} 
+\\
+\\
+The feature that actually makes Google Trends useful is that it is normalized, meaning that when looking at the search interest for a specific topic over time, the presented data points show \textit{the proportion of all searches on all topics on Google at that particular time and location}. Only this makes the search interest for a particular topic across time (and potentially additionally across locations) comparable in the first place. The reported numbers are indexed to 100 (with 100 standing for the maximum search interest for a particular time and location selected). \\
+\\
+\citet[p. 3]{bontempietal:16} summarize the rationale to use Internet searches, stating that ``[h]igher levels of uncertainty are likely to result in a greater appetite for knowledge, and consequently in a more intense use of tools capable of gathering further information.'' Hence, the linkage between uncertainty about the outcome of a specific political or economic event and the potential resulting intensity of Internet searches which is assumed to mirror individuals' perceived uncertainty is exploited. \\
+\\
+\citet{castelnuovoandtran:17} construct Google Trends-based uncertainty indices (henceforth called GTU indices) for the United States and Australia.\footnote{In the following we will only consider the case of the US and therefore also continue to speak of only one GTU \textit{index}.} Their index is based on frequently mentioned keywords appearing in reference economic documents like the Federal Reserve's Beige Book\footnote{The Beige Book gathers anecdotal information on current economic conditions based on interview with, among others, key business contacts, economists and market experts. See \url{https://www.federalreserve.gov/monetarypolicy/beige-book-default.htm} for more information.} (for the United States) in connection to the word \textit{uncertainty}. The authors report to have subjectively selected relevant search-terms from various editions of the Beige Book resulting in 79 keywords for the U.S. (the complete list is available in the appendix of \citealp{castelnuovoandtran:17}). \\
+\\
+The aggregation based on the 79 identified keywords is then performed as follows (see \citet{castelnuovoandtran:17}): \\
+As already indicated above, Google Trends data reports the frequency of a particular search term relative to the total search volume $S_{i, j, m, c}$ by dividing each raw data point $R_{i, j, m, c}$ (the frequency of a word $i$ in a group of searched words $j$ in period $m$ in location $c$) by the total searches $T$ in the same period/location so that $S_{i, j, m, c} = \frac{R_{i, j, m, c}}{T_{m, c}}$. 
+
+
+\begin{figure}[h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{gtu_index_plot.pdf}}
+      \caption[Google Trends Uncertainty (GTU) index.]{Google Trends Uncertainty (GTU) index.
+      \textit{Note:} Sample: 2004M1-2016M12. Index constructed by weighting search queries related to a battery of country-specific keywords as explained above and normalized to have mean = 100 and standard deviation = 30.}   \label{fig:gtuindex}
+\end{figure}
+
+
+
+
+
+\subsection{Macro Uncertainty Index: \citet{juradoetal:15}}
+\label{sec:macrouncertainty}
+The most sophisticated approach! (should probably be moved to the last subsection!)\\
+\citet{orlikandveldkamp:14} write: The macro volatility measure (they also call it stochastic volatility measure) according to \citet{juradoetal:15} ``uses a rich set of time series, computes conditional volatility of the unforecastable component of the future value of each of these series, and then aggregates these individual conditional volatilities into a macro uncertainty index.''\\
+\\
+\citet[p. 3]{bontempietal:16} write: ``The three previous approaches al have their pros and cons. On the one hand, the pre-selection of directly obesrvable specific events is easy to perceive but somewhat arbitrary. On the other hand, the methodological approaches that extract uncertainty estimates from latent processes are statistically and economically sound but are also very complex black boxes not strictly related to observable indicators of uncertainty.''
+\\
+\\
+Further, \citet{juradoetal:15} (pp. 1179) write: ``First, we distinguish between uncertainty in a series and its conditional volatility. The proper measurement of uncertainty requires removing the forecastable component before computing conditional volatility. [...] Thus, uncertainty in a series is not the same as the conditional volatility of the raw series where, for example, a constant mean is removed: it is important to remove the entire forecastable component. While this point may seem fairly straightforward, it is worth noting that almost all measures of stock market volatility (realized or implied) or cross-sectional dispersion currently used in the literature do not take this into account.''\\
+\\
+The IMF Working Paper (Measuring Global and Country-Specific Uncertainty) is a very helpful resource because: (4) They also succinctly describe the uncertainty-measure developed by Jurado et al (which is very complicated!)
+
+\begin{figure}[!ht]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{macroUncertainty_index_plot.pdf}}
+      \caption[Aggregate Uncertainty: $h = 1, 3, 12$.]{Aggregate Uncertainty: $h = 1, 3, 12$.
+      \textit{Note:} Horizontal lines indicate 1.65 standard deviations above the mean of each series. Data are monthly and span the period 1960:7-2017:12.\\
+      Original Figure 1 in \citet{juradoetal:15} spans until 2011. We have taken all available values until December 2017, inclusive.}   \label{fig:macroUncertainty_index}
+\end{figure}
+
+
+\subsection{Additional Parts for Later Usage}
+\citet{orlikandveldkamp:14} discuss data used to proxy for uncertainty in Section 5 and offer a useful taxonomy which we could make use of as well! They write: ``Our model generates a measure of economic uncertainty. In this section, we describe the commonly used proxies of uncertainty, analyze their theoretical relationship with conditional variance and then compare their statical properties to those of our measure. \citet{orlikandveldkamp:14} mention the following uncertainty measures:\\
+\\
+\\
+\\
+\\
+Another interesting sentence that is written in \citet{bachmannetal:13}, p. 10: ``Measuring the subjective uncertainty of decision makers is inherently difficult. Ideally, one would like to elicit a subjective probability distribution over future events from the managers, as has been done in Guiso and Parigi (1999) for Italian firms. with this probability distribution it is straightforward to compute a measure of subjective uncertainty for firms' decision makers. However, to the best of our knowledge such probability distributions are not available repeatedly and over long time horizons. Therefore, reserachers have to rely on proxies.'' \\
+\\
+\\
+\\
+Note to self: 
+\begin{itemize}
+	\item I could potentially at some point refer to economic sentiment indicators like \url{https://www.oenb.at/en/Statistics/Standardized-Tables/
+	Economic-and-Industry-Indicators/Economic-Indicators/Economic-Sentiment-Indicator-for-the-Euro-Area.html} or \url{https://data.europa.eu/euodp/data/dataset/c04BuUz6WXIQGJkHPwLug}
+\end{itemize}
+
+\subsection{Pros and Cons of Various Measures}
+\begin{itemize}
+	\item \citet{orlikandveldkamp:14} go on and write: ``Other proxy variables for uncertainty are informative, but have a less clear connection to a conditional variance definition of uncertainty.' (then they go on and write about business or consumer confidence, market volatility index (VIX), etc.)'
+	\item Further, \citet{juradoetal:15} (pp. 1178) argue, that ``unfortunately, the conditions under which common proxies are likely to be tightly linked to the typical theoretical notion of uncertainty may be quite special. For example, stock market volatility can change over time even if there is no change in uncertainty about economic fundamentals, if leverage changes, or if movements in risk aversion or sentiment are important drivers of asset market fluctuations.\\
+Cross-sectional dispersion in individual stock returns can fluctuate without any change in uncertainty if there is heterogeneity in the loadings on common risk factors. similarly, cross-sectional dispersion in firm-level profits, sales, and productivity can fluctuate over the business cycle merely because there is heterogeneity in the cyclicality of firms' business activity.'' 
+	\item \citet[p. 12]{bontempietal:16} write: ``The (i) VIX is used in many empirical studies (most prominently in \citet{bloom:09}). But one caveat that emerges from the use of the VIX to proxy uncertainty concerns its ability to represent macroeconomic uncertainty, since it is based on stock market information alone. According to \citet{bekeartetal:13}, the VIX does not only reflect uncertainty but can be broken down into uncertainty and risk-aversion. Since risk aversion accounts for a sizeable part of the VIX,\footnote{For this reason, the VIX is usually referred to as the ``investor fear gauge'' (see, e.g., \citet{whaley:00}).}, even more caution should be taken when considering it as a proxy of macro-economic uncertainty. 
+	\item \citet[p. 13]{bontempietal:16} write: ``Although independent of any single observable economic indicator or event, the macroeconomic uncertainty measure following \citet{juradoetal:15} is a computationally intensive black box that is not directly linked to the uncertainty perceived by the general public.  
+\end{itemize}
+
+\section{Comparison of Selected Measures}
+Figures \ref{fig:comparison_plot} (on different scales) and \ref{fig:comparison_plot_combined} (normalized to the same scale) show all uncertainty measures we have considered so far including NBER recessions. A first preliminary visual inspection shows that similar to \citet{bachmannetal:13}'s assessment in their own comparison, almost all recession periods correspond to high uncertainty across all measures. Apart from this commonality, the VXO and EPI show much noisier fluctuations than e.g., the macro uncertainty index. And while the VXO and EPU show a similar trajectory prior to the crisis, the EPU shows more variation including several spikes after the year 2010 (comparable to the GTU over that period) outside recessions. At a first glance, this might suggest that the EPU indeed reacts much stronger to the political turmoil in the past decade than financial markets themselves. The macro uncertainty overall stands out with an overall smoother trajectory with spikes that correspond to recessions. The VXO on the other hand also shows spikes outside of recession periods that correspond to events exclusively related to stock-markets (e.g., Black Monday in October 1987). Interestingly, the EPI shows the largest spike surrounding the years 2001-2001 (the dot-com bubble). \\
+\\
+And while there is an overall comovement between the series, the identified episodes of substantial variation in the processes' dynamics suggest that ``[t]hese are clearly not measures of the same stochastic process [...]'' \citep[p. ]{orlikandveldkamp:14}.
+
+\begin{figure}[!ht]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -1.5cm 0.8cm -1cm, width=0.95\textwidth]{comparison_plot.pdf}}
+      \caption[Comparison of uncertainty measures (facetted).]{Comparison of uncertainty measures (facetted).
+      \textit{Note:} Shaded areas denote NBER recessions.\\
+      Note to self: We define high uncertainty events as months when either uncertainty measure was one standard deviation above its time series average. (still have to add these values to the plots!))}   \label{fig:comparison_plot}
+\end{figure}
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item here we should compare the statistical features at both the univariate (persistence, seasonality and variability over time) and multivariate (Granger causality and contemporaneous correlation) levels!! (compare to \citet{bontempietal:16})!!!! i.e., add time-series analysis of the uncertainty-measures! (like the one performed in Bontempi et al, 2015) to this section!
+	\item Similar to \citet{juradoetal:15} I should add a table with summary statistics of the various volatility series (including their half-life, etc.)
+	\item The following sentence is taken from \citet{bloom:09} where Bloom explains the rationale for taking the stock-market volatility: Here I should mention what is written in Bloom (2009): 'The evidence presented in Table I shows that a number of cross-sectional measures of uncertainty are highly correlated with time series stock-market volatility. Stock-market volatility has also been previously used as a proxy for uncertainty at the firm level (e.g., Leahy and Whited (1996) and Bloom, Bond, and Van REenen (2007)).'
+
+\end{itemize}
+\endgroup
+
+
+
+
+\begin{landscape}
+\begin{figure}[!ht]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -0.8cm 0.8cm 0.2cm, width=1.5\textwidth]{comparison_plot_combined.pdf}}
+      \caption[Comparison of uncertainty measures (combined).]{Comparison of uncertainty measures (facetted).
+      \textit{Note:} Shaded areas denote NBER recessions.}   \label{fig:comparison_plot_combined}
+\end{figure}
+\end{landscape}
+
+\section{Some Stylized Facts}
+Here I should replicate some of the stylized facts that Bloom has mentioned in his 2012 paper as well as in the corresponding Power-Point-Presentation!\\
+\\
+I have to read the review article from Nicholas Bloom where he starts the abstract with: ``This review article tries to answer four questions: (i) what are the stylized facts about uncertainty over time; (ii) why does uncertainty vary; (iii) do fluctuations in uncertainty matter; and (iv) did higher uncertainty worsen the Great Recession?
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Related Literature}
+\label{UncertaintyandBusinessCyclesRelatedLiterature}
+The literature that investigates the linkages of uncertainty on various macroeconomic aggregates (and beyond) is extensive including both empirical and theoretical work. An often-cited theoretical study which is seen as a pioneering work in the field of uncertainty-studies is \citet{bernanke:83} who investigates optimal investment decisions under uncertainty in an oil cartel and finds that high uncertainty causes firms to postpone investments and hiring in an environment where investment projects cannot easily be undone and employment policies cause changes to the labor force (either hires or fires) to be costly. Subsequent selected works include, for example, \citet{rameyandramey:95}, \citet{aghionetal:05}, \citet{mills:00} and \citet{imbs:07} on the relationship of volatility and growth, \citet{leahyandwhited:96} and \citet{bloometal:07} on the effect of uncertainty on investment, \citet{barlevy:04} and \citet{gilchristandwilliams:05} on the effects of uncertainty on business cycles, etc.\footnote{Note that the list of studies is not supposed to be exhaustive.} \\
+\\
+The growing body literature that has recently started to systematically study economic uncertainty in an attempt to understand its origins and the \textit{potential} causal effects of time-varying economic uncertainty on macroeconomic fluctuations (business cycles) largely has one thing in common: in a VAR context, uncertainty shocks seem to have a negative effect on output (or proxies thereof such as industrial production or employment). But as summarized by \citet[p. 23]{bontempietal:16}, ``[...] this key finding is only robust in regard to theuncertainty impact in the short run, whereas in the long run different works have pointed to somewhat heterogeneous output responses.'' \\
+\\
+The study whose results serve as a benchmark for our own analysis by replicating parts of it in Section~\ref{sec:EmpiricalAnalysis} below is \citet{bloom:09} who proposed uncertainty shocks as a 'new' driver of business cycles and triggered much of the literature in subsequent years. \citet{bloom:09} himself links his work with earlier publications of \citet{bernanke:83} and \citet{hassler:96} and conducts a comprehensive analysis of the impact of uncertainty shocks on business cycle fluctuations by (1) building a model with a time-varying second moment from which he then simulates a macro uncertainty shock and (2) compares the results to the impulse response functions of vector autoregression (VAR) estimations on actual data. While the bulk of his work concentrates on the former, interestingly it is the latter (the empirical analysis using VARs) that has triggered much of the controversy in the literature. In particular, using 17 identified exogenous shocks, \citet{bloom:09} estimates VARs showing that volatility shocks generate a short-run drop in industrial production of 1\% which last for about 6 months and subsequently creates a longer-run overshoot. These results are robust to the effect of an uncertainty shock on employment and a range of alternative approaches (including variable ordering, variable inclusion, shock definitions, shock timing, and detrending).\\
+\\
+Contrary to Bloom's findings, \citet{juradoetal:15} and \citet{bachmannetal:13} using forecast-based measures find a rather different response-pattern: their VARs show a sharp reduction in output at impact whose effect last for a couple of years after the shock (no overshooting effects as in \citet{bloom:09}).\\
+\\
+While \citet{bloom:09} sees a confirmation for the 'wait-and-see approach' (Maybe I should add here a sentence starting with 'Central to Bloom's argumentation is the 'wait-and-see approach' and then explain the intuition behind it as outlined in \citet{bachmannetal:13}) according to his results, whereas \citet{bachmannetal:13}, using survey data get contrary predictions: 
+\\
+citet{bachmannetal:13} write on p. 28: ``This is at least suggestive evidence that uncertainty is a concomitant factor of bad economic times rather than a causal factor for them.''
+
+Here I then should summarize the papers that refer to Bloom's paper and everything related to papers that study the effect of uncertainty on business cycles.
+Here I should mention that uncertainty is an ubiqitous concern of policymakers (and quote a few examples that also Bloom refers to both in Bloom (2009) and his presentation slides that are based on Bloom (2012)).\\
+\\
+Auch, wenn wir dann die Literatur zusammenfassen: alles richtig einbetten in meine Auseinandersetzung. Nicht einfach nur beschreiben, was in den Papern drinnensteht, sondern wie das related zu dem was ich bringe. Jeder Absatz der drinnensteht, muss einen Grund haben, warum er drinnensteht im Hinblick auf die Fragestellung usw. 
+
+Also: wohldefinierte Fragestellung, überschaubare Methode, Resultate. Das sollten die Kernkompetenzen sein (dass alles sauber beschrieben ist und zugänglich abgebildet ist, dass man weiß woher die Daten kommen und alles replizierbar ist).
+\\
+\\
+\citet{juradoetal:15} write on p. 1182: ``Bloom's VAR estimates suggest that uncertainty has an impact on output and employment in the six months after an innovation in these measures, with a rise in volatility at first depressing real activity and then increasing it, leading to an over-shoot of its long-run level, consistent with the predictions of models with uncertainty as a driving force of macroeconomic fluctuations. Bloom et al. (2012) also documented a relation between real activity and uncertainty as proxied by dispersion in firm-level earnings, industry-level earnings, total factor productivity, and the predictions of forecasters. A recurring feature of these studies is that the uncertainty proxies are strongly countercyclical.''
+\\
+\\
+\citet{orlikandveldkamp:14} write
+
+As formulated by \citet[p. 24]{bontempietal:16}, the results found in the literature to date raise the following questions:
+\begin{enumerate}
+	\item are uncertainty shocks temporary or permanent?
+	\item is the degree of persistence of identified negative uncertainty effects related to the econometric specification and/or the particular uncertainty measure used?
+	\item does the time span over which a model is estimated play any role?
+\end{enumerate}
+
+We want to discuss these questions in our penultimate Section~\ref{sec:EmpiricalAnalysis} below.
+
+\chapter{Empirical Analysis}
+\label{sec:EmpiricalAnalysis}
+In line with the mainstream perspective and for the purpose of this work, we will elaborate below whether or not we can reasonably argue that the measures of uncertainty that we look at can indeed be regarded as exogenous sources of shocks within our empirical model. \\
+\\
+Here in the introduction to the Empirical Analysis I should outline the intuition behind the benchmark-model that we are analyzing (\citet{bloom:09}) which \citet{bachmannetal:13} describe very well in their introduction to Section 2: ``Time-varying uncertainty at the firm level may have economic consequences when there is a degree of irreversibility to firm actions. For a concrete example, suppose that a firm faces fixed costs to adjusting the size of its labor force and/or physical capital stock. Suppose further that there is a mean-preserving spread on the distribution of future demand for the firm's product. With fixed adjustments costs, higher uncertainty over future demand makes new hiring and investment less attractive. The reason for this is intuitive - if a large fixed cost must be paid do adjust the firm'S labor or capital, then there is reason to minimize the number of times this cost must be paid. If the future is very uncertain (in the sense that demand could be either very high or very low relative to the present), then it makes sense to wait until the uncertainty is resolved to undertake new hiring and investment.'' --> ``An increase in uncertainty thus makes inaction relatively more attractive.'' 
+
 
 
 %\newpage
-\chapter{Methodology}
+\section{Replication of Bloom VARs}
+A good sentence: 'The effect on impact, in contrast, is small.' 
+Ein Satz aus Bachmann, den ich für meine eigene Arbeit verwenden sollte: "The next sectino discusses the wait-and-see mechanism and delivers a benchmark against which we compare our empirical results." (p. 4) --> Then I can replicate the results from Bloom and then show the results that local projections would produce.\\
+\\
+Note to self: \citet{bachmannetal:13} write on p. 5: ``In this section we give a brief overview of the ``wait-and-see'' mechanism that might give rise to uncertainty-driven fluctuations. In addition to providing a benchmark against which we can compare our empirical results, this exercise will also serve to motivate the use of high-frequency, sectoral data in examining the impact of uncertainty on economic activity.''\\
+Another sentence that \citet{bachmannetal:13} use on p. 6: ``Figure 2 provides an example of an impulse response of output to an increase in uncertainty, replicated from the model in \citet{bloom:09}.
+
+\section{Alternative Estimations: Local Projections (Jordà)}
 In his original estimations, \citet{bloom:09} estimates a range of VARs including the variables log(S\&P 500 stock market index), a stock-market volatility indicator (the 'Bloom-shocks' we have constructed above!), the Federal Funds Rate, log(average hourly earnings), log(consumer price index), hours, log(employment), and log(industrial production). Thereby all variables are HP detrended in the baseline estimations.\\
 Instead, we use the \citet{jorda:05} local projection method to estimate impulse responses which estimates regressions of the dependent variables at horizon $t+h$ on the shock in period $t$ and uses the coefficient on the shock as the impulse response estimate.
 \\
@@ -417,13 +737,16 @@ z_{t+h} = \alpha_h + \theta_h shock_t + control variables + \epsilon_{t+h}
 In the above specification, $z_{t+h}$ is the variable of interest (in our case we look at industrial production and employment in manufacturing), the control variables include the log of the S\&P500 stock market index, the Federal Funds Rate and three lags of the dependent variable $z$ itself and the shock refers to the 'Bloom-shock' which we have constructed above.\footnote{All variables are HP-detrended.} For the series of regressions we look five years ahead, i.e., estimate 61 regressions using monthly data (starting to count at $h=0$). The coefficient $\theta_h$ gives the response of the dependent variable $z$ at time $t+h$ to the shock at time $t$. And because the $\epsilon_{t+h}$ will be autocorrelated, the standard errors must be HAC, i.e. \textit{hereoskedasticity and autocorrelation consistent}.\\
 The data-sources are described in Appendix~\ref{sec:data}
 
-
-\chapter{Results}
 Figures \ref{fig:irf1} and \ref{fig:irf2} plot the preliminary responses of industrial production and employment (in manufacturing) to a shock at time $t$. \\
 \\
 Note to self:
 \begin{itemize}
-	\item as compared to \citet{bloom:09}, we already see a different pattern (BUT: we have not yet fully 'translated' the model or replicated the data-generating process that \citet{bloom:09} assumes (see next point below)
+	\item as compared to \citet{bloom:09}, we already see a different pattern (BUT: we have not yet fully 'translated' the model or replicated the data-generating process that \citet{bloom:09} assumes (see next point below).\\
+	In particular, as formulated by \citet{bachmannetal:13}, 'we find that innovations to business uncertainty are associated with small and slowly-building reductions in economic activity'. 
+	\item guter Satz aus \citet{bachmannetal:13}, p. 15: ``Figure 3 provides corroborating evidence with a different measure of sectoral economic activity.'' 
+	\item \citet{bachmannetal:13}, p. 17: ``Wait-and-see theories of the transmission from uncertainty shocks to business cycles emphasize hiring and firing frictions. If the 'wait-and-see' - channel were important, we would observe a large reduction in employment followed by a quick recovery in response to an uncertainty shock, similarly to the output response in Figure 2 in Section 2 (the Bloom-figure).''
+	\item weitere guter Satz aus \citet{bachmannetal:13}, p. 17: ``However, the response of manufacturing employment is rather consistent with our other results: it moves little on impact, followed by a period of sustained reductions, with no obvious tendency for reversion, even at very long horizons.'' \\
+	Note to self: contrary to their finding, we DO FIND A TENDENCY FOR REVERSION AT THE LONG HORIZON!
 	\item bezüglich das DGP: wie sollte unsere Spezifikation aussehen um möglichst nahe an den von Bloom unterstellten DGP ranzukommen? Mit anderen Worten: Wie 'übersetzt' man einen VAR in local projections?
 \end{itemize}
 
@@ -448,9 +771,35 @@ Note to self:
    \label{fig:irf2}
 \end{figure}
 
+Some notes to myself when reading through some of the articles:
+\begin{itemize}  
+	\item ``Real GDP has the virtue of being the broadest indicator of real economic activity. Its downside is that it is difficult to measure [...]. For this reason, we also consider two other indicators: industrial production and the unemployment rate. Industrial production has the benefit of being relatively straightforward to measure; unemployment has the benefit of being perhaps the closest to a purely cyclical indicator.'' (Romer \& Romer, p. 3092)
+	\item Footnote 17 in \citet{romandrom:17}: ``The impulse response functions in Figure 4 are estimated using the Jordà local projection method. Figure C2 of online Appendix C shows that the results estimated using a conventional vector autoregression are virtually identical.'' --> should we include a comparison with Bloom's VAR?
+	\item \citet[p. 3096]{romandrom:17}: ``To do this, we run the same regression as in equation (1), but with our new measure of financial distress as the dependent variable. Since by construction the response of distress to itself is one at t = 0, we only estimate the regression for horizons 1 to 10. This analysis shows that distress is very serially correlated, particularly at near horizons. This finding suggests that some of the near-term persistence we find in the negative aftermath of financial distress is likely due to persistence in distress itself. It is not necessarily that financial crises have long-lasting effects, but rather that crises themselves tend to last for a while. This possibility [...] is analyzed further in Section III.''
+	\item \citet[p. 3097]{romandrom:17}: ``Given that our new series on financial distress differs in important ways from existing crisis chronologies, it is useful to compare our findings for the average aftermath of financial crises with those estimated using the other series.'' --> We can use this approach similarly by using various uncertainty measures in our regressions as alternative and compare the impulse-response functions.
+	\item \citet[p. 3099]{romandrom:17}, \textit{Dealing with Heteroskedasticity}: ``The first issue is possible differences in the variance of the residuals across countries. Economic activity is typically much more volatile in the less developed countries in our sample (such as Greece and Turkey), and in the smaller countries. It is plausible to think that the variances of the residuals in equation (1) also vary systematically by country. \\
+	--> Taking into account heteroskedasticity in the residuals has a substantial impact on the estimates. Though the time pattern of the decline in GDP is relatively unchanged, the maximum decline is reduced by about one-third.''
+	\item \citet[p. 3010]{romandrom:17}: ``In a related exercise, we also consider alternatives to conventional standard errors. In addition to heteroskedasticity of the residuals, there may also be serial correlation due to the overlapping structure of the residuals. We therefore experiment with both heteroskedasticity-consistent standard errors, and two forms of heteroskedasticity- and serial-correlation-corrected standard errors. Table C1 of online Appendix C shows that the alternative standard errors are typically about 30 to 50 percent larger than conventional standard errors. Thus, using the alternatives reduces the statistical significance of the estimated negative aftermath of a financial crisis substantially. Nonetheless, the estimates for GDP remain statistically significant at standard levels at all horizons.''
+	\item \citet[p. 15]{ramzub:18}: ``The only complication associated with the Jordà method is the serial correlation in the error terms induced by the successive leading of the dependent variable. Thus, we use the Newey-West correction for our standard errors \citep{newest:87}.''
+	\item \citet[p. 16]{ramzub:18}: ``Later, we will be comparing our baseline estimated to those from a threshold VAR." (--> This is something that we can maybe do as well; see a comment added above already!)
+	\item \citet[p. 23]{ramzub:18}, footnote 20: ``We only estimate multipliers out five years because the Jordà method is less reliable at long horizons.''
+	\item When it comes to describing the data sources I should have a look at the way how \citet{ramzub:18} explain each series in the Appendix.
+	\item \citet[p. 17]{ramey:16}: ``If the VAR adequately captures the data generating process, this method is optimal at all horizons. If the VAR is misspecified, however, then the specification errors will be compounded at each horizon. To address this problem, Jordà (2005) introduced a \textit{local projection} method for estimating impulse responses.''
+	\item \citet[p. 18]{ramey:16}: ``The control variables need not include the other $Y's$ as long as $\epsilon_{1t}$ is exogenous to those other $Y$'s. Typically, the control variables include deterministic terms (constant, time trends), lags of the $Y_i$, and lags of other variables that are necessary to "mop up''; \\
+	One estimates a separate regression for each horizon and the control variables do not necessarily need to be the same for each regression. Note that except for horizon $h=0$, the error term $\xi_{t+h}$ will be serially correlated because it will be a moving average of the forecast errors from $t$ to $t+h$. Thus, the standard errors need to incorporate corrections for serial correlation, such as a \citep{newest:87} correction.
+	\item \citet[p. 37]{ramey:16}: The term ``troughs'' is very often used in the context of impulse response functions. Here an example sentence: ``Industrial production begins to fall in the next month and roughs 21 months later.'' Literally translated it means "tief fallen" (auf sein tiefstes Niveau fallen).\\
+	Another interesting expression is used on p. 39: ``[...] until they bottom out during the fourth year after the shock.''
+	\item \citet[p. 45]{ramey:16}: ``Why does the Jordà method give such different estimates from the proxy SVAR?'' --> This is a question that I could actually elaborate on to possibly also compare our results investigating uncertainty using the Jordà method as opposed to the VAR that Bloom uses in his paper.
+	\item In the presentation on the following web-page \url{http://www.datavis.ca/courses/RGraphics/R-Graphics1.pdf} on p. 35 I found an interesting way of plotting regression estimates! (instead of tables with standard errors, we plot the coefficients and confidence bands which let's the viewer immediately understand whether a coefficient is significantly different from zero or not.
+\end{itemize}
+
+
+\subsection{Robustness Checks: Alternative Uncertainty Measures}
+This part provides results from a large number of robustness exercises designed to check the sensitivity of our results to various assumptions. (this sentence is formulated like this by \citet{juradoetal:15}).
 
 %\newpage
 \chapter{Conclusion}
+\label{Conclusion}
 
 
 
@@ -462,8 +811,11 @@ Note to self:
 \appendix
 
 \chapter{Appendix}
-\section{Data}
+\label{DataAndCode}
+\section{Data: Sources and Description}
 \label{sec:data}
+
+\newgeometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
 \section{Code}
 \label{sec:rcode}
 %\begin{Verbatim}[fontsize=\small]
@@ -479,12 +831,325 @@ Note to self:
 \begin{verbatim}  
 ##The Code will go here.
 
+########################################################################
+### Marcel Kropp, 15.04.2018
+### This script is separated into 2 big parts:
+### PART 1: deals with the construction of the 'Bloom-shock', following 
+###        Bloom (2009) thereby making use of 
+###         (*) VXO-data from CBOE for the period where data is available 
+###             (i.e., 1986 - 2018)
+###             and 
+###         (*) actual monthly volatilites (for the period pre-1986) 
+###             calculated as the monthly standard 
+###             deviation of the daily S&P500 index (normalized to the same 
+###             mean and variance as the VXO index for when the two
+###             series overlap, i.e., from 1986 - 2003).
+###         Overall, the combined volatility measure will span from
+###         June/1962 until 03/2018.
+###         While the ultimate goal is the construction of the 'Bloom-shocks',
+###         the script in PART 1 also generates various plots and tables
+###         along the way.
+###         The respective steps are outlined in detail below.
+### PART 2: deals with the estimation of impulse-response-functions
+###         following Jordá (2005);
+###         Thereby the constructed dataset containing, among others,
+###         the 'Bloom-shocks' is extended with additional 
+###         regressors and (a) dependent variable(s) representing output
+###         (most likely we will refer to industrial production for this!).
+###         Following Bloom's (2009) VAR-estimations and the length
+###         of our uncertainty-measure (i.e., the volatility series as well
+###         as the derived 'Bloom-shocks'), the estimations use data
+###         ranging from June/1962 - March/2018.
+########################################################################
 
+########################################################################
+### PART 1: construction of 'Bloom-shock' following Bloom (2009)
+########################################################################
+
+# Note to self: a very nice article to read is:
+# https://rpubs.com/bradleyboehmke/data_wrangling
+
+## PART 1 is separated into six parts:
+## (1.1)  1.1 handles the sp500 historical data (for which 
+##        Bloom (2009) has not exactly declared the source from which 
+##        he got the data from).
+##        Note that for the longer historical sp500 data, Bloom (2009) 
+##        has mentioned Bill Schwert (1989) as source). 
+##        We have not changed the data in any respect but would need to 
+##        clarify its source because a web-search did not reveal where 
+##        the data originally comes from.
+##        The data in sp500.csv ranges from 196201 to 200312.
+## (1.2)  1.2 handles the raw volatility figures downloaded directly from
+##        the homepage of the CBOE (for the purpose of our replication 
+##        below, we have downloaded the entire data available from the 
+##        homepage of the CBOE).
+##        The .csv-file called 'vxo_new.csv' that we read in below, is 
+##        constructed out of two files which are available at 
+##        http://www.cboe.com/products/vix-index-volatility/vix-options-and
+##        -futures/vix-index/vix-historical-data
+##        Because Bloom (2009) uses VXO-data (and not the newer VIX), we have 
+##        accordingly downloaded the 
+##        following two files:
+##                * 'Old methodology: VXO data for 1986 - 2003' 
+##                  (downloaded as 'vxoarchive.xls')
+##                * 'Old methodology: VXO data for 2004 to present 
+##                  (Updated Daily) 
+##                  ('downloaded as 'vxocurrent.csv')
+##      Both above files come along with the variables 'Date', 'Close', 
+##      'Open', 'High' and 'Low'.
+##      A comparison with the VXO data that Bloom used himself 
+##      (file vxo.csv) reveals, that Bloom (2009) used the Close-Price of 
+##      the series. 
+##      We therefore also only keep the columns 'Date' and 'Close' and 
+##      stack the data of the two files from above together to get
+##      one VXO volatility series ranging from 1986 - 2018, stored in a 
+##      file called 'vxo_new.csv'.
+##              Note: we had to apply the following corrections to 
+##              'vxo_new.csv':
+##                              * clean data for 10/18/2000 (two numbers 
+##                                in cell for Close)
+##                              * remove empty row between 12/31/1999 
+##                                and 01/03/2000
+##                              * remove empty row between 6/5/2006 
+##                                and 6/6/2006
+##              These corrections were, for now, done manually;
+##              For a later version of the script it would be great 
+##              to have these checks and corrections run 
+##              automatically!
+## (1.3)  1.3 performs the merge (join) of the two datasets
+##        and all related manipulations with the goal to normalize the 
+##        returns for the sp500 series for the period where the two series
+##        (sp500 volatility and VOX) overlap.
+##        At the end of this stage, the dataframe that ultimately contains
+##        the monthly volatility figure from 1962 - 2018 is generated.
+## (1.4)  1.4 deals with a first visual representation of the volatility 
+##        time-series.
+##        (Note that we not yet include the actual historical events into
+##        our figure [this wil be left to our figure below after we have
+##        identified the Bloom-shocks!])
+## (1.5)  1.5 finally creates the actual 'Bloom-shocks' (i.e., an indicator
+##        variable 0/1). According to Bloom (2009), shocks are selected as
+##        those volatilities that are 1.65 SDs above the
+##        HP-filtered trend. Accordingly, we will construct the HP-filtered
+##        trend classify shocks according to the above stated criterion.
+##        In his original paper, Bloom (2009) has identified 17 shocks with
+##        this technique; we should expect to detect additional shocks for
+##        the post-2009 period until today which we would
+##        then include in our analysis!
+## (1.6)  In 1.6 we repeat the plot from (1.4) and add vertical bars
+##        for the identified 'Bloom-shocks' as well as try to identify 
+##        the corresponding political/economic event.
+
+###############################
+## loading libraries
+###############################
+options(stringsAsFactors = F)
+# When loading the packages note that according to
+# http://stat545.com/block013_plyr-ddply.html
+# we should always load 'plyr' before 'dplyr' when loading/using both.
+library(plyr)
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(lubridate)
+library(ggplot2)
+theme_set(theme_bw())
+library(mFilter)
+library(zoo)
+library(miscFuncs)
+library(dynlm)
+library(sandwich)
+library(lmtest)
+library(xlsx)
+
+# clear workspace
+rm(list = ls())
+
+###############################
+## (1.1) s&p500 historical data
+###############################
+## Generate baseline stock volatility data (to merge with
+## VXO data)
+## based on sp500.csv (data ranges from 1962 - 2003, daily
+## data!)
+
+# first we read in the historical sp500 data (for which Bloom
+# does not exactly declare where he's
+# got it from)
+sp500 <- read.csv(file="sp500.csv", header=TRUE, sep=",")
+# this file contains the following variables:
+#           * caldt.............the calendar date in the format
+#                               YYYYMMDD
+#           * year..............YYYY
+#           * month.............M
+#           * day...............D
+#           * ym................in the 'readme.txt' - file of 
+#                               Bloom (2009) this variable
+#                               is declared as 'ym=year+(month-1)/12;
+#                               my impression is that it is rather 
+#                               'ym=year+month/12.
+#           * date..............seems to be linked to 'caldt' in that
+#                               is is a
+#                               sequency of integers starting at 913
+#                               and going up
+#                               in steps according to 'caldt'
+#           * index............the value of the index (S&P 500)
+#           * ri...............the daily return of the index in %
+
+# after reading in, our dataset is stored in a data.frame; this can
+# be seen when calling the 'class()' - function
+class(sp500)
+
+# str(sp500) reveals that the variables have been assigned either 
+# the type 'int' or 'num' (i.e., the date-variable 'caldt' has not 
+# been transformed to a date)
+
+# we convert the data frame to a tibble
+sp500 <- as_data_frame(sp500)
+
+# next, we calculate the standard deviation for all 'ri' (daily returns of the index in %)
+# for each year-month (i.e., BY the variable 'ym'!);
+# the most convenient function to do this is the 'ddply' function (see the reference
+# here: https://www.rdocumentation.org/packages/plyr/versions/1.8.4/topics/ddply);
+# I found this solution suggested here: 
+# https://stackoverflow.com/questions/15467219/calculate-group-characteristics-without-ddply-and-merge#comment21890299_15467219
+# For a detailed treatment of the 'plyr' - package, see Hadley's article: 
+# file:///Users/marcelkropp/Downloads/v40i01.pdf.
+# Also, the following blog-post gives an overview: http://stat545.com/block013_plyr-ddply.html.
+# In essence: 'ddply()' accepts a data.frame, splits it into pieces based on one or more
+# factors, computes on the pieces, then returns the results as a data.frame.
+# (the base R functions most relevant to 'ddply()' are 'tapply()', etc.)
+
+sp500 <- ddply(sp500, ~ym, mutate, sdri = sd(ri, na.rm=T))
+# Note that we have added 'na.rm=T' to the 'sd()' - function to make sure that
+# also for 196207 the standard deviation is calculated which has an NA for the
+# the very first value (otherwise all entries for the month 07 would end up
+# being NA).
+
+# finally, we order the data frame (actually: tibble) by the variable 'date' 
+# (which in our case is a peculiar variable but which fulfills the same purpose
+# like the actual 'date' - variable 'caldt')
+
+sp500 <- as_data_frame(sp500[with(sp500, order(date)), ])
+
+###############################
+## (1.2) VXO - data from CBOE
+###############################
+## Here we process the raw volatility figures which we have downloaded directly
+## from the CBOE's homepage and which we have stored in 'vxo_new.csv'
+## (data ranges from 1986 to 2018, daily data!)
+
+# first we read in the VOX-data
+vxo_new <- read.csv(file="vxo_new.csv", header=TRUE, sep=",")
+# vxo_new <- read.csv(file="vxo.csv", header=TRUE, sep=",")
+
+# we check out the structure of 'vxo_new'
+str(vxo_new)
+# as we can see, the variable 'vol' has already been read-in as 'numeric',
+# so everything is okay
+
+# next, we want to split the variable 'date' into three variables 'month',
+# 'day' and 'year';
+# for this, we first need to convert the 'date' - variable (which is currently 
+# declared as a factor) into a DATE datatype:
+vxo_new$date <- as.Date(vxo_new$date, format = "%m/%d/%Y")
+# we change the format of the date variable
+vxo_new$date <- format(vxo_new$date, "%m/%d/%Y")
+# note that the above command converts the date-type to a character again
+# (we will deal with this later!)
+
+# next, we create the three variable 'month', 'year' and 'day' using
+# the 'separate()' - function from the 'tidyr' - package
+vxo_new <- separate(vxo_new, "date", c("month", "day", "year"), sep = "/", 
+                    remove=FALSE, convert=TRUE)
+# as we can see, with the option 'convert=TRUE', the values are automatically
+# transformed into integers!
+
+# having sliced our date variable into month, day and year,
+# we can drop the original variable 'date' (actually, we could
+# have dropped 'date' automatically by keeping 'remove=TRUE', but
+# we preferred it this way to double-check the output!)
+
+# we convert our date-variable back to a date datatype
+vxo_new$date <- as.Date(vxo_new$date, format = "%m/%d/%Y")
+
+# next, we want to apply a consistency check to make sure that there are no trading days
+# on Sat or Sun in our data!
+# for this, we create two helper variables: 'm2' = 'month' and 'd2'='day', date2=date
+vxo_new <- mutate(vxo_new, m2 = month, d2=day, date2=date)
+# and then extract the day of the week using the 'wday' component of a 
+# 'POSIXlt' - object (because it is numeric, starting on Sunday)
+# as opposed to the normal 'weekdays' - function
+vxo_new$dow <- as.POSIXlt(vxo_new$date)$wday
+# Note: also lubridate sohuld have a 'wday' componsent (check out later!)
+
+# next, Bloom (2009) performs two very strange commands that actually
+# do not make much sense (have to ask Martin about this!)
+
+# Above, we have created the variable 'date2' as a copy of 'date';
+# In Bloom's stata-code, the created variable 'date' (which was made up of
+# month, day and year) is a date in elapsed date format.
+vxo_new$date2 <- as.numeric(vxo_new$date2)
+# Note: for what follows next, we cannot use the elapsed time values
+# that Bloom uses, because 
+
+# we drop the 'day' - variable (which we had actually generated above;
+# but because we use a different strategy for the generation of dates
+# than Bloom, we could have also easily just skipped it!);
+# edit: we decided to keep the 'day' - variable to have a better insight
+# into whther or not our 'merge' of the two datasets below worked or not!
+# vxo_new <- vxo_new %>% select(-day)
+
+# next, we fill in 9/11 figures using European exchange extrapolation
+# the following filter-statement shows us where we would need to input
+# the data:
+vxo_new %>% filter(date2>11574 & date2 < 11590)
+
+# it is exactly between 2001-09-10 where for six days until 2001-09-17
+# there is no data available;
+# our goal is to add additional rows to our data-frame, remove weekends
+# and then overwrite the vol-value with the value from the European
+# exchange!
+
+# first we generate an additional variable that gives us the numbers of the
+# row that we are currently in in our data frame:
+vxo_new$row <- seq.int(nrow(vxo_new))
+
+# running our above filter-statement again, we know in which rows we want to 
+# replicate:
+vxo_new %>% filter(date2>11574 & date2 < 11590)
+
+# we replicate row number 3958 that holds the data for 2001-09-10
+vxo_new <- rbind(vxo_new, vxo_new[rep(3958, 6), ])
+# so in our case, this command creates 9 additional duplicates of 2001-09-10
+
+# we order by date
+vxo_new <- vxo_new[with(vxo_new, order(date)), ]
+
+# filtering with the below command would show us that everything
+# worked as expected
+vxo_new %>% filter(date2>11574 & date2 < 11590)
+
+# we need to replace the dates between 2001-09-10 and 2001-09-17
+# with their actual values!
+vxo_new$date[vxo_new$row==3958] <- seq(as.Date("2001-09-10"), as.Date("2001-09-16"), by="days")
+
+# we do the same with the the date2-column
+vxo_new$date2[vxo_new$row==3958] <- seq(11575, 11581, 1)
+# and then re-create the row-column
+vxo_new$row <- seq.int(nrow(vxo_new))
+
+# then we replace the value for vol from 2001-09-11 until 2001-09-16 (inclusive)
+# with the value from the European exchange
+vxo_new$vol[vxo_new$date2>11575 & vxo_new$date2<11582] <
 
 \end{verbatim}  
 \endgroup
 
+
+\restoregeometry
 \chapter{Appendix}
+\label{VARAndLocalProjection}
 \section{IRFs in a VAR-Setting}
 \section{IRFs and Local Projections}
 
@@ -513,7 +1178,7 @@ Note to self:
 Ich erkläre hiermit an Eides Statt, dass ich die vorliegende Masterarbeit selbständig angefertigt habe. Die aus fremden Quellen direkt oder indirekt übernommenen Gedanken sind als solche kenntlich gemacht.\\
 \\
 Die Arbeit wurde bisher weder in gleicher noch in ähnliche Form einer anderen Prüfungsbehörde vorgelegt und auch noch nicht veröffentlicht.\\[10mm]
-Innsbruck, July 2018
+Innsbruck, Juli 2018
 \begin{flushright}[htb]
      \includegraphics[trim=4cm 24.5cm 6cm 3cm, width=0.5\textwidth]{Signature.pdf}
 \end{flushright}
