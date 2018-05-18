@@ -25,7 +25,15 @@
 ###         See the home-page at http://www.policyuncertainty.com/us_monthly.html
 ###         Because we deal with the US only, we have correspondingly only
 ###         downloaded data for the US!
-### Part 3: deals with the GT (Bontempi et al, 2015) and GTU-index
+### Part 3: deals with the index as constructed by Leduc and Liu (2016)
+###         based on the Michigan Survey.
+###         The data off of which Leduc and Lui construct their index
+###         is available at https://data.sca.isr.umich.edu/tables.php;
+###         In particular, the data derived from the questions 
+###         'Buying Conditions for Vehicles' and the follow-up
+###         questions 'Reasons for Opinions for Buying Conditions for Vehicles'
+###         are used.
+### Part 4: deals with the GT (Bontempi et al, 2015) and GTU-index
 ###         (Castelnuovo and Tran, 2017);
 ###         Both contributions use Google-Trends data to contruct
 ###         an uncertainty index (with subtle differences in the words
@@ -37,7 +45,7 @@
 ###         the uncertainty index from Castelnuovo and Tran (2017)
 ###         is available on Efrem Castelnuovo's homepage at
 ###         https://sites.google.com/site/efremcastelnuovo/home/publications;
-### PART 4: deals with the Macro Uncertainty Index constructed
+### PART 5: deals with the Macro Uncertainty Index constructed
 ###         by Jurado et al. (2015)
 ###         The scripts accompanying their paper is available on their
 ###         paper's dedicated web presence of the American Economic Review
@@ -48,7 +56,7 @@
 ###         There both the original data used for the paper with the data
 ###         ranging from 1960 until 2015 as well as updated versions
 ###         ranging from 1960 until 2017.
-### PART 5: deals with the plotting of all our analyzed time-series into
+### PART 6: deals with the plotting of all our analyzed time-series into
 ###         one plot (to make them comparable!)
 ###         the series which we want to plot together at once are
 ###           *) VIX (used by Bloom)
@@ -56,16 +64,14 @@
 ###           *) EPU (Baker et al, 2016)
 ###           *) GT and GTU (Bontempi et al. 2015/Castelnuovo and Tran, 2017)
 ###           *) Macro Uncertainty Index (Jurado et al, 2015)
-### PART 6: deals with the estimation of impulse-response-functions
-###         following Jordá (2005);
-###         Thereby the constructed dataset containing, among others,
-###         the 'Bloom-shocks' is extended with additional 
-###         regressors and (a) dependent variable(s) representing output
-###         (most likely we will refer to industrial production for this!).
-###         Following Bloom's (2009) VAR-estimations and the length
-###         of our uncertainty-measure (i.e., the volatility series as well
-###         as the derived 'Bloom-shocks'), the estimations use data
-###         ranging from June/1962 - March/2018.
+### Part 7: deals with further statistical analyses of the
+###         various uncertainty measures we have mentioned so far
+### PART 8: Empirical Analysis
+###         starting from Bloom's VARs as the benchmark-case, we
+###         estimate various VARs (with different sets of variables)
+###         an compare the resulting impulse-response-functions to 
+###         impulse-response stemming from estimations using 
+###         the local projection method of Jordá (2005)
 ########################################################################
 
 ########################################################################
@@ -169,6 +175,7 @@ library(lmtest)
 library(xlsx)
 library(readxl)
 library(forecast)
+library(stargazer)
 
 # clear workspace
 rm(list = ls())
@@ -756,6 +763,126 @@ volatility_cycle
 ggsave("volatility_cycle.pdf")
 
 
+## note that we also want to add in the NBER recession dates
+## retrieved from https://fred.stlouisfed.org/series/USREC?utm
+## _source=series_page&utm_medium=related_content&utm_term=other_
+## formats&utm_campaign=other_format;
+## therefore we read in the data:
+nber_recessions <- read.csv(file="NBER_Recessions_USA.csv", header=TRUE, sep=",")
+## next, we split the variable 'DATE' into 'year', 'month' and 'day'
+## using
+## the 'separate()' - function from the 'tidyr' - package
+nber_recessions <- separate(nber_recessions, "DATE", 
+                            c("year", "month", "day"), sep = "-", 
+                            remove=FALSE, convert=TRUE)
+## we drop the 'day' - variable
+nber_recessions <- nber_recessions %>%
+  select(-day)
+
+## and create the variable 'my'
+nber_recessions <- as.data.frame(nber_recessions %>%
+                                   mutate(my = year + month/12))
+
+
+## the procedure that follows is identical to the procedure
+## that we used to extract the exact start- and end-dates of
+## the bloom-shocks:
+
+# let us first filter for all rows where the recession indicator = 1 
+# to get an overview:
+as.data.frame(nber_recessions %>% filter(USREC == 1))
+
+
+# then we loop through all rows, and first check if the USREC equals 1
+# or not:
+
+# we initialize the grouping variable x as follows:
+x <- 2
+
+# we add an empty column to our data frame nber_recessions:
+nber_recessions["recession_ID"] <- NA
+
+# then we start the loop:
+for (i in 1:nrow(nber_recessions)) {
+  if(nber_recessions$USREC[i] == 1) {
+    # if we detect a shock (i.e., 'USREC' == 1), then we have 
+    # to proceed as follows:
+    # we store the 'my' variable in the column 'start' and 'end'
+    nber_recessions[i, ncol(nber_recessions)] <- x
+    
+  }else{
+    # no shock
+    x <- x + 1
+  }
+}
+
+
+
+nber_recessions %>%
+  filter(!is.na(recession_ID))  %>%
+  group_by(recession_ID) %>%
+  summarise(Count = n())
+
+# next we group_by recession_ID and extract the respective start-dates and
+# store the retrieved data to a new data-frame
+recessions_start <- as.data.frame(nber_recessions %>%
+                                    filter(!is.na(recession_ID))  %>%
+                                    group_by(recession_ID) %>%
+                                    filter(row_number()==1) %>%
+                                    mutate(year_start=year, month_start=month, my_start = my) %>%
+                                    dplyr::select(recession_ID, year_start, month_start, my_start))
+
+
+
+# next, we replicate the above query for the end-dates
+# (note that in some scenarios start- and end-dates might be identical!)
+recessions_end <- as.data.frame(nber_recessions %>%
+                                  filter(!is.na(recession_ID))  %>%
+                                  group_by(recession_ID) %>%
+                                  filter(row_number()==n()) %>%
+                                  mutate(year_end=year, month_end=month, my_end = my) %>%
+                                  dplyr::select(recession_ID, year_end, month_end, my_end))
+
+# next, we can merge the two data-frames from above:
+recessions_start_end <- merge(x = recessions_start, y = recessions_end, by = "recession_ID", all = TRUE, na.rm=T)
+# and inspect the resulting data-frame:
+recessions_start_end
+
+
+# we re-arrange the sequence of columns
+recessions_start_end <- recessions_start_end %>%
+  dplyr::select(recession_ID, year_start, month_start, year_end, month_end, my_start, my_end)
+
+
+# next, we construct a year-month-variable both out of
+# the pair 'year_start' & 'month_start' and 'year_end' & 'month_end'
+recessions_start_end$yearmon_start <- as.yearmon(recessions_start_end$my_start, "%Y-%B")
+recessions_start_end$yearmon_end <- as.yearmon(recessions_start_end$my_end, "%Y-%B")
+# next, we add a helper-column that we need in the next stage as well:
+recessions_start_end$helper_date <- format(recessions_start_end$yearmon_start, "%b")
+
+
+
+# this means that we can now drop the 'year' and 'month' variables
+recessions_start_end <- recessions_start_end %>%
+  dplyr::select(-c(year_start, year_end, month_start, month_end))
+
+
+# next we add a column that gives us the duration of the shock:
+recessions_start_end <- recessions_start_end %>%
+  mutate(duration = (recessions_start_end$yearmon_end - 
+                       recessions_start_end$yearmon_start) * 12 + 1) %>%
+  dplyr::select(-helper_date)
+
+
+# actually, there is a slight problem, which we fix by adding
+# one month's numeric value to my_end:
+recessions_start_end$my_end <- recessions_start_end$my_end + (1/12)
+# this makes sure that if we refer to an end-month that
+# we assume that we are talking about the last day of that
+# respective month!
+
+
 # According to Bloom (2009): The shocks are chosen as those events with stock-market
 # volatility more than 1.65 standard deviations above the HP-detrended mean of the
 # mean of the stock-market volatility series.
@@ -983,7 +1110,14 @@ volatility_cycle_shocks2 <- ggplot(sp500_merge_vxo,
   # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!
   geom_rect(data=shocks_start_end, inherit.aes = FALSE,
             aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=+Inf), 
-            fill='red', alpha=0.5)
+            fill='red', alpha=0.5) + 
+  # we also want to add in indications of NBER recessions
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=30, ymax=+Inf), 
+            fill='#606060', alpha=0.5) +   
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=-10), 
+            fill='#606060', alpha=0.5)
 
 volatility_cycle_shocks2
 
@@ -999,8 +1133,14 @@ percent <- function(x, digits = 2, format = "f", ...) {
 }
 
 shocks_table <- shocks_start_end %>%
-              mutate(max_vol = percent(max_vol), duration = paste(as.character(floor(duration)), "months", sep=" ")) %>%
-              dplyr::select(yearmon_start, yearmon_end, duration, yearmon_max, max_vol)
+              mutate(max_vol = percent(max_vol), 
+                     duration = paste(as.character(floor(duration)), 
+                                      "months", sep=" ")) %>%
+              dplyr::select(yearmon_start, 
+                            yearmon_end, 
+                            duration, 
+                            yearmon_max, 
+                            max_vol)
                 
 # adapt the below command to supply a vector of column-headers!
 latextable(shocks_table, dp=3)
@@ -1077,7 +1217,90 @@ ggsave("epu_index_plot.pdf")
 
 
 ########################################################################
-### PART 3: loading and plotting of GTU and GT-index
+### PART 3: loading and construction of Consumer Uncertainty based off
+###         of data from the Michigan Survey following Leduc and Liu (2016).
+###         The data off of which Leduc and Lui construct their index
+###         is available at https://data.sca.isr.umich.edu/subset/subset.php;
+###         In particular, the data derived from the questions 
+###         'Buying Conditions for Vehicles' (VEH) and the follow-up
+###         questions 'Reasons for Opinions for Buying Conditions for Vehicles'
+###         (VEHRN) are used.
+########################################################################
+
+## PART 3 is separated into ....... parts:
+## (3.1)  3.1 handles ........
+## (3.2)  3.2 handles the .......
+
+
+###############################
+## (3.1) loading of downloaded data;
+##       the michigan_survey.csv-files were directly downloaded from
+##       https://data.sca.isr.umich.edu/subset/subset.php
+##       by ticking 'VEH', 'VEHRN', 'Produce all response
+##       codes, including index scores', 'Monthly', 
+##       'Starting year = 1978', 'Ending year = 2018',
+##       'All Households (aggregate; same as our tables & charts)'
+###############################
+
+michigan_survey <- read.csv(file="michigan_survey.csv", header=TRUE, sep=";",
+                            stringsAsFactors = FALSE)
+
+# corresponding to our selection of data we want to download on the
+# website https://data.sca.isr.umich.edu/subset/subset.php, the time-series
+# starts in January 1978 (note that we actually have to start in February
+# 1978 because the follow-up question has no data in January 1978).
+
+# To know what the variables stand for, see the Codebook at
+# https://data.sca.isr.umich.edu/fetchdoc.php?docid=45121.
+
+## make 'yyyymm' - variable a 'Date' - type 
+## (instead of int)
+michigan_survey$yyyymm <- as.Date(paste0(as.character(michigan_survey$yyyymm), '01'), format='%Y%m%d')
+## and rename the variable
+michigan_survey <- michigan_survey %>%
+                rename(Date = yyyymm)
+
+# next, we create the three variable 'month', 'year' and 'day' using
+# the 'separate()' - function from the 'tidyr' - package
+michigan_survey <- separate(michigan_survey, "Date", 
+                      c("year", "month", "day"), sep = "-", 
+                      remove=FALSE, convert=TRUE)
+
+# next we create the variable 'my' which is a numerical representation
+# of yearmon:
+michigan_survey <- as.data.frame(michigan_survey %>%
+                             mutate(my = year + month/12))
+# and the variable veh_share_unc which will is calculated
+# as vehrn_fb_all/100
+michigan_survey <- michigan_survey %>%
+                mutate(veh_share_unc = vehrn_fb_all)
+
+
+## and finally plot the series
+michigan_plot <- ggplot() +
+  geom_line(data = michigan_survey, 
+            aes(x = my, 
+                y = veh_share_unc), 
+            color="black", 
+            size=1,linetype = 1) +
+  scale_x_continuous(name = "Year", limits = c(1978, 2019), 
+                     breaks = seq(1980, 2020, by = 5),
+                     minor_breaks = NULL) + 
+  scale_y_continuous(name = "Consumer Uncertainty", 
+                     limits = c(0, 15), 
+                     breaks = seq(0, 15, by = 5), 
+                     minor_breaks = NULL) +
+  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+        axis.title=element_text(size=15,face="bold"),
+        legend.text=element_text(size=14))
+
+michigan_plot
+
+# and we save the plot to be used in our latex-document
+ggsave("michigan_plot.pdf")
+
+########################################################################
+### PART 4: loading and plotting of GTU and GT-index
 ### from Bontempi et al. (2015) and
 ### Castelnuovo and Tran (2017); 
 ### See also Efrem Castelnuovo's homepage
@@ -1117,7 +1340,7 @@ GTU_index_plot <- ggplot() +
             color="black", 
             size=1,linetype = 1) +
   scale_x_continuous(name = "Year", limits = c(2004, 2016), 
-                     breaks = seq(2004, 2020, by = 1),
+                     breaks = seq(2004, 2016, by = 1),
                      minor_breaks = NULL) + 
   scale_y_continuous(name = "GTU index, US", 
                      limits = c(0, 250), 
@@ -1134,19 +1357,19 @@ ggsave("GTU_index_plot.pdf")
 
 
 ########################################################################
-### PART 4: loading and plotting of macro uncertainty index
+### PART 5: loading and plotting of macro uncertainty index
 ### from Jurado et al. (2015); See also Sydney Ludvigson's homepage
 ### for latest updates to the data at
 ### https://www.sydneyludvigson.com/data-and-appendixes/
 ########################################################################
 
-## PART 4 is separated into ....... parts:
-## (4.1)  2.1 handles ........
-## (4.2)  2.2 handles the .......
+## PART 5 is separated into ....... parts:
+## (5.1)  5.1 handles ........
+## (5.2)  5.2 handles the .......
 
 
 ###############################
-## (4.1) loading MacroUncertaintyToCirculate.xlsx;
+## (5.1) loading MacroUncertaintyToCirculate.xlsx;
 ##       the .xlsx-file was directly downloaded from
 ##       https://www.sydneyludvigson.com/data-and-appendixes/
 ##       and comes along together with another data-source
@@ -1180,23 +1403,215 @@ macroUncertainty_index <- separate(macroUncertainty_index, "Date",
 macroUncertainty_index <- as.data.frame(macroUncertainty_index %>%
                                    mutate(my = year + month/12))
 
+# for all three respective series (h=1, h=3 and h=12), we calculate
+# the mean and standard deviation to be able to add horizontal
+# lines marking 1.65 standard deviations above the mean to the plot
+sd_h1 <- sd(macroUncertainty_index$h1)
+sd_h3 <- sd(macroUncertainty_index$h3)
+sd_h12 <- sd(macroUncertainty_index$h12)
+mean_h1 <- mean(macroUncertainty_index$h1)
+mean_h3 <- mean(macroUncertainty_index$h3)
+mean_h12 <- mean(macroUncertainty_index$h12)
+
+# we also want to add shaded areas to our plot (similar to the Bloom-
+# shocks we have added above), that denote episodes where the macro
+# uncertainty series exeeds 1.65 standard deviations above its mean
+# (we will see that we have far fewer uncertainty episodes than other
+# popular proxies for uncertainty) including NBER
+# recession dates:
+
+# for this, we store the threshold value into our dataset to 
+# create an indicator variable that allows us to extract
+# the 'shocks' according to the macro uncertainty series
+# (note that we perform this only for the h=1 series!!)
+macroUncertainty_index$thresh <- mean_h1+sd_h1*1.65
+
+# the above variable now allows us to create an indicator of whether
+# or not a certain point is above the threshold value
+macroUncertainty_index <- macroUncertainty_index %>%
+            mutate(macro_shock = case_when(h1 > thresh ~ 1,
+                                 h1 <= thresh ~ 0))
+
+# having the variable macro_shock in our dataset now allows us to 
+# add episodes into the graph that correspond to the
+# macro-shock being 1;
+
+# but before we can do that, we need to create 'start' and 'end' - dates for
+# the respective periods (which we will then ultimately use for plotting
+# the episodes with shaded regions!)
+
+# to retrieve the respective 'start'- and 'end' - dates for the shock-periods,
+# we apply a procedure to the dataset 'macroUncertainty_index' that results in a 
+# separate dedicated data-frame with the following variables:
+# 'start', 'end', 'max_volatility', 'first_volatility';
+# once we have the above four variables, we can easily calculate 'duration_months'
+# by subtracting 'start' from 'end'.
+
+# the construction of such a table will allow us
+# (1) to automatically generate the respective data even if something in our
+#     dataset changes at some point (i.e., it is not hard-coded)
+# (2) we can automatically export the information to a latex-table
+# to be included in our text by means of e.g., the R-package
+# 'miscFuncs' that is capable of exporting matrix-like data
+# to latex-tables!
+
+# let us first filter for all rows where the bloom_shock = 1 to get an overview:
+as.data.frame(macroUncertainty_index %>% filter(macro_shock == 1))
+
+
+# initially, we had thought of creating a separate data-frame
+# and store the loop's data into it;
+# but then we decided for a different approach:
+# we want to give each episode of a shock a unique ID so that
+# we then can easily calculate the max volatility and first
+# volatility by grouping by ID (within the full macroUncertainty_index!)
+
+# we decided for the following procedure:
+# we loop through all rows, and first check if the macro_shock equals 1
+# or not:
+
+# we initialize the grouping variable x as follows:
+x <- 2
+
+# we add an empty column to our data frame sp500_merge_vxo:
+macroUncertainty_index["shock_ID"] <- NA
+
+# then we start the loop:
+for (i in 1:nrow(macroUncertainty_index)) {
+  if(macroUncertainty_index$macro_shock[i] == 1) {
+    # if we detect a shock (i.e., 'bloom_shock' == 1), then we have 
+    # to proceed as follows:
+    # we store the 'my' variable in the column 'start' and 'end'
+    macroUncertainty_index[i, ncol(macroUncertainty_index)] <- x
+    
+  }else{
+    # no shock
+    x <- x + 1
+  }
+}
+
+
+# the above method is maybe not yet the most elegant/efficient solution
+# but it suffices for now (we can fine-tune it at a later stage!)
+# we can now have a look at the newly created variable
+# (note that we have suppressed 'NA's for the creation of the table!):
+
+macroUncertainty_index %>%
+  filter(!is.na(shock_ID))  %>%
+  group_by(shock_ID) %>%
+  summarise(Count = n())
+
+# next we group_by shock_ID and extract the respective start-dates and
+# store the retrieved data to a new data-frame
+macro_shocks_start <- as.data.frame(macroUncertainty_index %>%
+                    filter(!is.na(shock_ID))  %>%
+                    group_by(shock_ID) %>%
+                    filter(row_number()==1) %>%
+                    mutate(year_start=year, month_start=month, my_start = my) %>%
+                    dplyr::select(shock_ID, year_start, month_start, my_start))
+
+
+# next, we replicate the above query for the end-dates
+# (note that in some scenarios start- and end-dates are identical!)
+macro_shocks_end <- as.data.frame(macroUncertainty_index %>%
+                    filter(!is.na(shock_ID))  %>%
+                    group_by(shock_ID) %>%
+                    filter(row_number()==n()) %>%
+                    mutate(year_end=year, month_end=month, my_end = my) %>%
+                    dplyr::select(shock_ID, year_end, month_end, my_end))
+
+# next, we can merge the two data-frames from above:
+macro_shocks_start_end <- merge(x = macro_shocks_start, 
+                                y = macro_shocks_end, 
+                                by = "shock_ID", all = TRUE, na.rm=T)
+# and inspect the resulting data-frame:
+macro_shocks_start_end
+
+# we re-arrange the sequence of columns
+macro_shocks_start_end <- macro_shocks_start_end %>%
+                  dplyr::select(shock_ID, 
+                                year_start, 
+                                month_start, 
+                                year_end, 
+                                month_end, 
+                                my_start, 
+                                my_end)
+
+
+# next, we construct a year-month-variable both out of
+# the pair 'year_start' & 'month_start' and 'year_end' & 'month_end'
+macro_shocks_start_end$yearmon_start <- as.yearmon(
+                      macro_shocks_start_end$my_start, "%Y-%B")
+macro_shocks_start_end$yearmon_end <- as.yearmon(
+                      macro_shocks_start_end$my_end, "%Y-%B")
+# next, we add a helper-column that we need in the next stage as well:
+macro_shocks_start_end$helper_date <- format(macro_shocks_start_end$yearmon_start, "%b")
+
+
+# this means that we can now drop the 'year' and 'month' variables
+macro_shocks_start_end <- macro_shocks_start_end %>%
+  dplyr::select(-c(year_start, year_end, month_start, month_end))
+
+# next we add a column that gives us the duration of the shock:
+macro_shocks_start_end <- macro_shocks_start_end %>%
+  mutate(duration = (macro_shocks_start_end$yearmon_end - 
+                       macro_shocks_start_end$yearmon_start) * 12 + 1) %>%
+  dplyr::select(-helper_date)
+
+# next we group_by shock_ID and extract the respective MAXIMUM
+# VOLATILITY
+# (note that the produced data-frame only has one row per shock_ID)
+macro_shocks_max_vol <- as.data.frame(macroUncertainty_index %>%
+                    filter(!is.na(shock_ID))  %>%
+                    group_by(shock_ID) %>%
+                    filter(h1 == max(h1)) %>%
+                    mutate(max_h1 = h1) %>%
+                    dplyr::select(shock_ID, max_h1, my))
+
+# we apply the same date-transformation as above:
+macro_shocks_max_vol$yearmon_max <- as.yearmon(macro_shocks_max_vol$my, "%Y-%B")
+# and we drop 'my':
+macro_shocks_max_vol <- macro_shocks_max_vol %>%
+                    dplyr::select(-my)
+
+# in a last stage, we merge macro_shocks_max_vol with 
+# macro_shocks_start_end:
+macro_shocks_start_end <- merge(x = macro_shocks_start_end, 
+                                y = macro_shocks_max_vol, 
+                          by = "shock_ID", all = TRUE, na.rm=T)
+
+
+# actually, there is a slight problem, which we fix by adding
+# one month's numeric value to my_end:
+macro_shocks_start_end$my_end <- macro_shocks_start_end$my_end + (1/12)
+# this makes sure that if we refer to an end-month that
+# we assume that we are talking about the last day of that
+# respective month!
+
+
+# the above data-frame now allows us to plot the episodes of 
+# high volatility into our previous plots (by adding a shaded
+# rectangle!)
+# as well as the NBER recession dates
 
 ## and finally plot the series
 macroUncertainty_index_plot <- ggplot() +
   geom_line(data = macroUncertainty_index, 
                     aes(x = my, 
-                        y = h1), 
-            color="brown", 
+                        y = h1,
+                        color="red"), 
             size=1,linetype = 1) +
   geom_line(data = macroUncertainty_index, 
                     aes(x = my, 
-                        y = h3), 
-            color="blue", size=1, 
+                        y = h3,
+                        color="green"), 
+            size=1, 
             linetype = 1) +
   geom_line(data = macroUncertainty_index, 
             aes(x = my, 
-                y = h12), 
-            color="red", size=1, 
+                y = h12,
+                color="blue"), 
+            size=1, 
             linetype = 1) +
   scale_x_continuous(name = "Year", limits = c(1960, 2020), 
                      breaks = seq(1960, 2020, by = 5),
@@ -1205,9 +1620,27 @@ macroUncertainty_index_plot <- ggplot() +
                      limits = c(0.5, 1.5), 
                      breaks = seq(0.5, 1.5, by = 0.5), 
                      minor_breaks = NULL) +
-  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+  scale_color_discrete(name = NULL, labels = c("h=1", "h=3", "h=12")) +
+  geom_hline(yintercept=mean_h1+sd_h1*1.65, linetype="dashed", 
+             color = "blue", size=0.4) +
+  geom_hline(yintercept=mean_h3+sd_h3*1.65, linetype="dashed", 
+             color = "green", size=0.4) +
+  geom_hline(yintercept=mean_h12+sd_h12*1.65, linetype="dashed", 
+             color = "red", size=0.4) +
+  theme(legend.position = "bottom", axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
-        legend.text=element_text(size=14))
+        legend.text=element_text(size=14)) + 
+  # add in macro - shocks (similar to Bloom's approach)
+  geom_rect(data=macro_shocks_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=+Inf), 
+            fill='red', alpha=0.5) + 
+  # we also want to add in indications of NBER recessions
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=1.2, ymax=+Inf), 
+            fill='#606060', alpha=0.5) +   
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=0.6), 
+            fill='#606060', alpha=0.5)
 
 macroUncertainty_index_plot
 
@@ -1215,8 +1648,29 @@ macroUncertainty_index_plot
 ggsave("macroUncertainty_index_plot.pdf")
 
 
+# having created the data-frame macro_shocks_start_end, we can now also
+# export a latex-table with the exact data of the macro-shock!
+# first, we slightly adapt the shocks - data frame:
+# first, we add '%' to 'max_vol' in our data-frame:
+percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(x, format = format, digits = digits, ...), "%")
+}
+
+macro_shocks_table <- macro_shocks_start_end %>%
+  mutate(max_h1 = percent(max_h1), 
+         duration = paste(as.character(floor(duration)), 
+                          "months", sep=" ")) %>%
+  dplyr::select(yearmon_start, 
+                yearmon_end, 
+                duration, 
+                yearmon_max, 
+                max_h1)
+
+# adapt the below command to supply a vector of column-headers!
+latextable(macro_shocks_table, colnames = c("Start", "End", "Duration", "Maximum Year/Month", "Maximum Value"), dp=3)
+
 ########################################################################
-### PART 5: construction of one time-series plot comparing
+### PART 6: construction of one time-series plot comparing
 ### all discussed uncertainty-measures
 ########################################################################
 
@@ -1229,7 +1683,8 @@ ggsave("macroUncertainty_index_plot.pdf")
 ##      * 'epu_index' for the EPU-index following Baker et al. (2016)
 ##      * 'sp500_merge_vxo' for the VXO (the cycle-part after detrending
 ##          following Bloom (2009))
-##      * Michigan-Survey will follow!
+##      * 'michigan_survey' for the consumer uncertainty series
+##          following Leduc and Liu (2016)
 
 ## We combine the relevant variables from the above data-frames into 
 ## a new data-frame (note that we only take h=1 from the 
@@ -1258,144 +1713,29 @@ comparison_measures <- right_join(x = sp500_merge_vxo[,
                                   y = comparison_measures,
                                   by = "my")
 
+## then we join in the constructed series from the Michigan Survey
+comparison_measures <- right_join(x = michigan_survey[, 
+                                                      c("veh_share_unc","my")],
+                                  y = comparison_measures,
+                                  by = "my")
+
 ## Rename all the variables:
 comparison_measures <- comparison_measures %>%
                       rename(VXO = mvol_cycle,
                              EPU = News_Based_Policy_Uncert_Index,
                              GTU = GTU_US,
-                             Macro = macroUncert)
+                             Macro = macroUncert,
+                             Michigan = veh_share_unc)
 
-## finally, we will also join the data with data from the Michigan
-## Survey (once we have it in our data-frame)
 
 ## we reorder the varaibles
-comparison_measures <- comparison_measures[c(2, 1, 3, 4, 5)]
+comparison_measures <- comparison_measures[c(2, 1, 3, 4, 5, 6)]
 
 ## we make a time-series object out of our data-frame
-comparison_measures_ts <- ts(comparison_measures[c(2, 3, 4, 5)],
+comparison_measures_ts <- ts(comparison_measures[c(2, 3, 4, 5, 6)],
                              start = c(1960, 7), frequency = 12)
 
-## note that we also want to add in the NBER recession dates
-## retrieved from https://fred.stlouisfed.org/series/USREC?utm
-## _source=series_page&utm_medium=related_content&utm_term=other_
-## formats&utm_campaign=other_format;
-## therefore we read in the data:
-nber_recessions <- read.csv(file="NBER_Recessions_USA.csv", header=TRUE, sep=",")
-## next, we split the variable 'DATE' into 'year', 'month' and 'day'
-## using
-## the 'separate()' - function from the 'tidyr' - package
-nber_recessions <- separate(nber_recessions, "DATE", 
-                                   c("year", "month", "day"), sep = "-", 
-                                   remove=FALSE, convert=TRUE)
-## we drop the 'day' - variable
-nber_recessions <- nber_recessions %>%
-        select(-day)
 
-## and create the variable 'my'
-nber_recessions <- as.data.frame(nber_recessions %>%
-                                   mutate(my = year + month/12))
-
-
-## the procedure that follows is identical to the procedure
-## that we used to extract the exact start- and end-dates of
-## the bloom-shocks:
-
-# let us first filter for all rows where the recession indicator = 1 
-# to get an overview:
-as.data.frame(nber_recessions %>% filter(USREC == 1))
-
-
-# then we loop through all rows, and first check if the USREC equals 1
-# or not:
-
-# we initialize the grouping variable x as follows:
-x <- 2
-
-# we add an empty column to our data frame nber_recessions:
-nber_recessions["recession_ID"] <- NA
-
-# then we start the loop:
-for (i in 1:nrow(nber_recessions)) {
-  if(nber_recessions$USREC[i] == 1) {
-    # if we detect a shock (i.e., 'USREC' == 1), then we have 
-    # to proceed as follows:
-    # we store the 'my' variable in the column 'start' and 'end'
-    nber_recessions[i, ncol(nber_recessions)] <- x
-    
-  }else{
-    # no shock
-    x <- x + 1
-  }
-}
-
-
-
-nber_recessions %>%
-      filter(!is.na(recession_ID))  %>%
-      group_by(recession_ID) %>%
-      summarise(Count = n())
-
-# next we group_by recession_ID and extract the respective start-dates and
-# store the retrieved data to a new data-frame
-recessions_start <- as.data.frame(nber_recessions %>%
-                filter(!is.na(recession_ID))  %>%
-                group_by(recession_ID) %>%
-                filter(row_number()==1) %>%
-                mutate(year_start=year, month_start=month, my_start = my) %>%
-                dplyr::select(recession_ID, year_start, month_start, my_start))
-
-
-
-# next, we replicate the above query for the end-dates
-# (note that in some scenarios start- and end-dates might be identical!)
-recessions_end <- as.data.frame(nber_recessions %>%
-                filter(!is.na(recession_ID))  %>%
-                group_by(recession_ID) %>%
-                filter(row_number()==n()) %>%
-                mutate(year_end=year, month_end=month, my_end = my) %>%
-                dplyr::select(recession_ID, year_end, month_end, my_end))
-
-# next, we can merge the two data-frames from above:
-recessions_start_end <- merge(x = recessions_start, y = recessions_end, by = "recession_ID", all = TRUE, na.rm=T)
-# and inspect the resulting data-frame:
-recessions_start_end
-
-
-# we re-arrange the sequence of columns
-recessions_start_end <- recessions_start_end %>%
-  dplyr::select(recession_ID, year_start, month_start, year_end, month_end, my_start, my_end)
-
-
-# next, we construct a year-month-variable both out of
-# the pair 'year_start' & 'month_start' and 'year_end' & 'month_end'
-recessions_start_end$yearmon_start <- as.yearmon(recessions_start_end$my_start, "%Y-%B")
-recessions_start_end$yearmon_end <- as.yearmon(recessions_start_end$my_end, "%Y-%B")
-# next, we add a helper-column that we need in the next stage as well:
-recessions_start_end$helper_date <- format(recessions_start_end$yearmon_start, "%b")
-
-
-
-# this means that we can now drop the 'year' and 'month' variables
-recessions_start_end <- recessions_start_end %>%
-  dplyr::select(-c(year_start, year_end, month_start, month_end))
-
-
-# next we add a column that gives us the duration of the shock:
-recessions_start_end <- recessions_start_end %>%
-  mutate(duration = (recessions_start_end$yearmon_end - 
-                       recessions_start_end$yearmon_start) * 12 + 1) %>%
-  dplyr::select(-helper_date)
-
-
-# actually, there is a slight problem, which we fix by adding
-# one month's numeric value to my_end:
-recessions_start_end$my_end <- recessions_start_end$my_end + (1/12)
-# this makes sure that if we refer to an end-month that
-# we assume that we are talking about the last day of that
-# respective month!
-
-
-## after the construction of the NBER recessions from above,
 ## we plot all the time-series by making use of
 ## of the forecast-package (that reverts back to ggplot2)
 ## and add in the NBER-dates;
@@ -1408,9 +1748,11 @@ comparison_plot <- autoplot(comparison_measures_ts, facets = TRUE) +
   labs(color=NULL) +
   theme(axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
-        legend.text=element_text(size=14), panel.grid.major.x = element_blank()) + 
+        legend.text=element_text(size=14), panel.grid.major.x = element_blank()) +
   # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!
-
+  geom_rect(data=recessions_start_end, inherit.aes = FALSE,
+            aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=+Inf), 
+            fill='#606060', alpha=0.5)
 
 comparison_plot
   
@@ -1424,10 +1766,10 @@ scaled_comparison_measures_ts <- scale(comparison_measures_ts)
 
 
 autoplot(scaled_comparison_measures_ts) + 
-  geom_line(size=1) + 
+  geom_line(size=0.8) + 
   scale_color_manual(values=c("#CC0000",
                               "#009900",
-                              "#202020", "#00FFFF")) + 
+                              "#202020", "#00FFFF", "#FF69B4")) + 
   scale_y_continuous(name = "Uncertainty Measures") +
   scale_x_continuous(name = "Year", limits = c(1960, 2018), 
                      breaks = seq(1960, 2018, by = 5),
@@ -1445,17 +1787,33 @@ autoplot(scaled_comparison_measures_ts) +
 ggsave("comparison_plot_combined.pdf")
 
 
+
 ########################################################################
-### PART 6: construction of impulse-responses following Jordá (2005)
+### PART 7: a closer look at the statistical properties of the
+###         various uncertainty measures
 ########################################################################
 
-## PART 6 is separated into ....... parts:
-## (6.1)  6.1 handles ........
-## (6.2)  6.2 handles the .......
+
+## correlation matrix between the time-series
+corr <- cor(comparison_measures_ts, use = "complete.obs")
+corr <- round(corr, 2)
+
+########################################################################
+### PART 8: Empirical Analysis
+###         starting from Bloom'S VARs as the benchmark-case, we
+###         estimate various VARs (with different sets of variables)
+###         an compare the resulting impulse-response-functions to 
+###         impulse-response stemming from estimations using 
+###         the local projection method of Jordá (2005)
+########################################################################
+
+## PART 8 is separated into ....... parts:
+## (8.1)  8.1 handles ........
+## (8.2)  8.2 handles the .......
 
 
 ###############################
-## (6.1) loading additional_vars.csv;
+## (8.1) loading additional_vars.csv;
 ##       merge with variables from sp500_merge_vxo
 ##       (most of the data comes from FRED 
 ##       [https://fred.stlouisfed.org/series/])
