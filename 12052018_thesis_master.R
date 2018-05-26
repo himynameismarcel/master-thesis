@@ -1,4 +1,4 @@
-########################################################################
+#########################################################################################
 ### Marcel Kropp, 15.04.2018
 ### This script is separated into several big parts:
 ### PART 1: deals with the construction of the 'Bloom-shock', following 
@@ -159,6 +159,25 @@ options(stringsAsFactors = F)
 # When loading the packages note that according to
 # http://stat545.com/block013_plyr-ddply.html
 # we should always load 'plyr' before 'dplyr' when loading/using both.
+# install.packages("plyr")
+# install.packages("dplyr")
+# install.packages("tibble")
+# install.packages("tidyr")
+# install.packages("lubridate")
+# install.packages("ggplot2")
+# install.packages("mFilter")
+# install.packages("zoo")
+# install.packages("miscFuncs")
+# install.packages("dynlm")
+# install.packages("sandwich")
+# install.packages("lmtest")
+# install.packages("xlsx")
+# install.packages("readxl")
+# install.packages("forecast")
+# install.packages("stargazer")
+# install.packages("vars")
+# install.packages("gridExtra")
+
 library(plyr)
 library(dplyr)
 library(tibble)
@@ -176,6 +195,10 @@ library(xlsx)
 library(readxl)
 library(forecast)
 library(stargazer)
+library(vars)
+library(grid)
+library(gridExtra)
+library(ggpubr)
 
 # clear workspace
 rm(list = ls())
@@ -683,7 +706,7 @@ volatility <- ggplot(sp500_merge_vxo,
              color = "black", size=0.4) + 
   # theme_minimal() + 
   labs(col=NULL) + 
-  theme(legend.position = c(0.935, 0.93), axis.text=element_text(size=14),
+  theme(legend.position = "bottom", axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
         legend.text=element_text(size=14))
   
@@ -1171,8 +1194,13 @@ epu_index <- read_excel("EPU_USA_Bakeretal2016.xlsx", sheet = "Main Index")
 ## and generate the variable 'my'
 ## (note that we first have to convert 'Year' to numeric)
 epu_index$Year <- as.numeric(epu_index$Year)
+## we rename Year and Month to year and month
+epu_index <- epu_index %>%
+                    dplyr::rename(year = Year,
+                                 month = Month)
+
 epu_index <- as.data.frame(epu_index %>%
-                      mutate(my = Year + Month/12))
+                      mutate(my = year + month/12))
 
 ## we remove the last row that only consists of NAs
 epu_index <- as.data.frame(epu_index[complete.cases(epu_index), ])
@@ -1473,7 +1501,7 @@ as.data.frame(macroUncertainty_index %>% filter(macro_shock == 1))
 # we initialize the grouping variable x as follows:
 x <- 2
 
-# we add an empty column to our data frame sp500_merge_vxo:
+# we add an empty column to our data frame macroUncertainty_index:
 macroUncertainty_index["shock_ID"] <- NA
 
 # then we start the loop:
@@ -1802,18 +1830,265 @@ corr <- round(corr, 2)
 ### PART 8: Empirical Analysis
 ###         starting from Bloom'S VARs as the benchmark-case, we
 ###         estimate various VARs (with different sets of variables)
-###         an compare the resulting impulse-response-functions to 
+###         and compare the resulting impulse-response-functions to 
 ###         impulse-response stemming from estimations using 
 ###         the local projection method of Jordá (2005)
 ########################################################################
 
 ## PART 8 is separated into ....... parts:
-## (8.1)  8.1 handles ........
-## (8.2)  8.2 handles the .......
+## (8.1)  8.1 handles the original Bloom (2009) estimations
+## (8.2)  8.2 handles the estimations following CEE (2005)
+## (8.3)  8.3 handles the Jordà (2005) local projections
 
 
 ###############################
-## (8.1) loading additional_vars.csv;
+## (8.1) loading ................;
+##       
+###############################
+
+## VAR by Bloom (2009) implemented in R
+## including detrending
+
+# Read xls data
+VAR8_data <- read_excel("VARDATA_UPDATED.xlsx")
+# Drop last observations in 2013
+VAR8_data <- VAR8_data[1:606,]
+
+# Reorder variables for the VAR (as in Bloom (2009))
+VAR8_data <- VAR8_data[c(1, 2, 9, 10, 8, 7, 6, 5, 4, 3)]
+
+# Stock index (in logs and detrended)
+VAR8_data[,3] <- log(VAR8_data[,3])
+var_aux <- hpfilter(VAR8_data[,3],freq=129600)
+VAR8_data[,3] <- var_aux$cycle
+
+# transformations to all variables (apart from uncertainty-series)
+# following (Bloom, 2009)
+# FFR (detrended)
+var_aux <- hpfilter(VAR8_data[,5],freq=129600)
+VAR8_data[,5] <- var_aux$cycle
+
+# Wage (in logs and detrended)
+VAR8_data[,6] <- log(VAR8_data[,6])
+var_aux <- hpfilter(VAR8_data[,6],freq=129600)
+VAR8_data[,6] <- var_aux$cycle
+
+# CPI (in logs and detrended)
+VAR8_data[,7] <- log(VAR8_data[,7])
+var_aux <- hpfilter(VAR8_data[,7],freq=129600)
+VAR8_data[,7] <- var_aux$cycle
+
+# Hours (detrended)
+var_aux <- hpfilter(VAR8_data[,8],freq=129600)
+VAR8_data[,8] <- var_aux$cycle
+
+# Employment (in logs and detrended)
+VAR8_data[,9] <- log(VAR8_data[,9])
+var_aux <- hpfilter(VAR8_data[,9],freq=129600)
+VAR8_data[,9] <- var_aux$cycle
+
+# Industrial Production (in logs and detrended)
+VAR8_data[,10] <- log(VAR8_data[,10])
+var_aux <- hpfilter(VAR8_data[,10],freq=129600)
+VAR8_data[,10] <- var_aux$cycle
+
+## the data currently ranges from 07/1962 to 12/2012 and thereby covers
+## a slightly longer period than used by Bloom (2009) and Jurado et al. (2015);
+
+## we can now merge VAR8_data with all the uncertainty-measures
+## we have constructed so far;
+## note that in the case of Bloom we have both the Bloom-shock AND
+## the volatility series itself;
+
+## therefore, for the Bloom-shock (the indicator-variable), we create
+## a dedicated series with 0/1s replicating the Bloom-shocks in 
+## Bloom's original series and NOT how we calculatd the shocks
+## using data ranging until 2018!
+
+## VAR8_data gets assigned to VAR8_BloomShock to indicate,
+## that the set of variables in this data.frame will be used
+## for VARs using the BloomShock as an uncertainty measure
+VAR8_BloomShock <- VAR8_data
+
+# we overwrite the entire data series for VOLATBL with 0s;
+# note that column '2' is the column that contains the volatility-data
+# in our new reordered data-frame:
+VAR8_BloomShock[,4] <- 0
+
+# and then set the indicator variable to 1 for months were the
+# volatility had reached its peak (according to Table A.1, Bloom, 2009)
+VAR8_BloomShock[4,4]   <- 1 # 1962:10 (1 event)        Cuban missile crisis
+VAR8_BloomShock[17,4]  <- 1 # 1963:11 (2 event)        Assassination of JFK
+VAR8_BloomShock[50,4]  <- 1 # 1966:8 (3 event)         Vietnam buildup
+VAR8_BloomShock[95,4]  <- 1 # 1970:5 (4 event)         Cambodia and Kent State
+VAR8_BloomShock[138,4] <- 1 # 1973:12 (5 event)        OPEC I, Arab-Israeli War
+VAR8_BloomShock[148,4] <- 1 # 1974:10 (6 event)        Franklin National Financial Crisis
+VAR8_BloomShock[197,4] <- 1 # 1978:11 (7 event) ???    OPEC II
+VAR8_BloomShock[213,4] <- 1 # 1980:3 (8 event)         Afghanistan, Iran hostages
+VAR8_BloomShock[244,4] <- 1 # 1982:10 (9 event)        Monetary cycle turning point
+VAR8_BloomShock[305,4] <- 1 # 1987:11 (10 event) ???   Black Monday
+VAR8_BloomShock[340,4] <- 1 # 1990:10 (11 event)       Gulf War I
+VAR8_BloomShock[425,4] <- 1 # 1997:11 (12 event)       Asian Crisis
+VAR8_BloomShock[435,4] <- 1 # 1998:9 (13 event)        Russian, LTCM default
+VAR8_BloomShock[471,4] <- 1 # 2001:9 (14 event)        9/11 terrorist attack
+VAR8_BloomShock[483,4] <- 1 # 2002:9 (15 event)        Worldcom and Enron
+VAR8_BloomShock[488,4] <- 1 # 2003:2 (16 event)        Gulf War II
+VAR8_BloomShock[556,4] <- 1 # 2008:10 (17 event)       Credit crunch
+VAR8_BloomShock[591,4] <- 1 # 2011:09 (18 event)
+
+## in a last step, we remove the variables YEAR and MONTH
+VAR8_BloomShock <- VAR8_BloomShock %>%
+                      select(-c(YEAR, MONTH))
+
+## the next data-frame only includes the VXO/volatility series only
+VAR8_VXO <- VAR8_data
+## and we remove the variables YEAR and MONTH
+VAR8_VXO <- VAR8_VXO %>%
+                      select(-c(YEAR, MONTH))
+
+
+## next, we merge VAR8_data with the data from the Michigan Survey:
+## before we do that, we create the variable 'my' to be able to 
+## easily merge in the other uncertainty measures:
+VAR8_data <- as.data.frame(VAR8_data %>%
+                                mutate(my = YEAR + MONTH/12))
+# we drop YEAR and MONTH and VOLATBL because we will merge
+# in other uncertainty measures below!
+VAR8_data <- VAR8_data %>%
+          select(-c(YEAR, MONTH, VOLATBL))
+
+
+# and create the various VAR data-frames including the various
+# uncertainty-measures:
+# MSoC
+VAR8_MSoC <- right_join(x = comparison_measures[, c("Michigan", "my")], 
+                                  y = VAR8_data, 
+                                  by = "my")
+# reorder to prepare for the VAR and remove columns 2 with 'my':
+VAR8_MSoC <- VAR8_MSoC[c(3, 1, 4, 5, 6, 7, 8, 9)]
+# and remove all rows where Michigan = NA
+VAR8_MSoC <- VAR8_MSoC[complete.cases(VAR8_MSoC), ]
+
+# EPU
+VAR8_EPU <- right_join(x = comparison_measures[, c("EPU", "my")], 
+                        y = VAR8_data, 
+                        by = "my")
+# reorder to prepare for the VAR and remove columns 2 with 'my':
+VAR8_EPU <- VAR8_EPU[c(3, 1, 4, 5, 6, 7, 8, 9)]
+# and remove all rows where Michigan = NA
+VAR8_EPU <- VAR8_EPU[complete.cases(VAR8_EPU), ]
+
+
+# GTU
+VAR8_GTU <- right_join(x = comparison_measures[, c("GTU", "my")], 
+                       y = VAR8_data, 
+                       by = "my")
+# reorder to prepare for the VAR and remove columns 2 with 'my':
+VAR8_GTU <- VAR8_GTU[c(3, 1, 4, 5, 6, 7, 8, 9)]
+# and remove all rows where Michigan = NA
+VAR8_GTU <- VAR8_GTU[complete.cases(VAR8_GTU), ]
+
+
+
+# Macro Uncertainty Index
+VAR8_Macro <- right_join(x = comparison_measures[, c("Macro", "my")], 
+                       y = VAR8_data, 
+                       by = "my")
+# reorder to prepare for the VAR and remove columns 2 with 'my':
+VAR8_Macro <- VAR8_Macro[c(3, 1, 4, 5, 6, 7, 8, 9)]
+# and remove all rows where Michigan = NA
+VAR8_Macro <- VAR8_Macro[complete.cases(VAR8_Macro), ]
+
+# VAR Estimations for VAR 8 (following Bloom, 2009)
+var_results_BloomShock <- VAR(VAR8_BloomShock, p=12, type="both")
+var_results_VXO <- VAR(VAR8_VXO, p=12, type="both")
+var_results_MSoC <- VAR(VAR8_MSoC, p=12, type="both")
+var_results_EPU <- VAR(VAR8_EPU, p=12, type="both")
+var_results_GTU <- VAR(VAR8_GTU, p=12, type="both")
+var_results_Macro <- VAR(VAR8_Macro, p=12, type="both")
+
+# the below generates the impulse response functinos for
+# IPM (first set) and employment (second set)
+# IPM
+var_results_BloomShock.irf_ipm <- irf(var_results_BloomShock, 
+                                      response = "IPM", 
+                                      impulse = "VOLATBL", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_VXO.irf_ipm <- irf(var_results_VXO, 
+                                      response = "IPM", 
+                                      impulse = "VOLATBL", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_MSoC.irf_ipm <- irf(var_results_MSoC, 
+                                      response = "IPM", 
+                                      impulse = "Michigan", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_EPU.irf_ipm <- irf(var_results_EPU, 
+                                      response = "IPM", 
+                                      impulse = "EPU", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_Macro.irf_ipm <- irf(var_results_Macro, 
+                                      response = "IPM", 
+                                      impulse = "Macro", 
+                                      n.ahead = 60, boot = TRUE)
+
+# employment
+var_results_BloomShock.irf_emp <- irf(var_results_BloomShock, 
+                                      response = "EMPM", 
+                                      impulse = "VOLATBL", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_VXO.irf_emp <- irf(var_results_VXO, 
+                                      response = "EMPM", 
+                                      impulse = "VOLATBL", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_MSoC.irf_emp <- irf(var_results_MSoC, 
+                                      response = "EMPM", 
+                                      impulse = "Michigan", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_EPU.irf_emp <- irf(var_results_EPU, 
+                                      response = "EMPM", 
+                                      impulse = "EPU", 
+                                      n.ahead = 60, boot = TRUE)
+var_results_Macro.irf_emp <- irf(var_results_Macro, 
+                                      response = "EMPM", 
+                                      impulse = "Macro", 
+                                      n.ahead = 60, boot = TRUE)
+
+# and finally a plot
+# 10 figures arranged in 5 rows and 2 columns
+pdf(file = "test.pdf")
+## set up the new plotting device (pdf)
+par(mfrow = c(4,2))
+## draw the plot
+plot(var_results_BloomShock.irf_ipm, main="Production", 
+                                    ylab="Bloom-Shock", xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_BloomShock.irf_emp, main="Employment", 
+                                    ylab="", xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_VXO.irf_ipm, main="", ylab="VXO/volatility", 
+                                    xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_VXO.irf_emp, main="", ylab="", xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_EPU.irf_ipm, main="", ylab="EPU", 
+                                      xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_EPU.irf_emp, main="", ylab="", xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_Macro.irf_ipm, main="", ylab="Macro", xlab="",
+                                    ylim=c(-0.005, 0.004))
+plot(var_results_Macro.irf_emp, main="", ylab="", xlab="",
+                                    ylim=c(-0.005, 0.004))
+dev.off()
+
+
+
+## VAR by Bloom (2009) implemented in R
+## without detrending (following Jurado et al., 2015)
+
+
+###############################
+## (8.3) loading additional_vars.csv;
 ##       merge with variables from sp500_merge_vxo
 ##       (most of the data comes from FRED 
 ##       [https://fred.stlouisfed.org/series/])
@@ -2014,13 +2289,14 @@ irf1 <- ggplot() +
   # geom_point() + 
   geom_line(data = regressions_out, aes(x = h, 
                       y = 100*(exp(up90_b_lip)-1)), 
-                      color="#677066", 
-                      size=0.5,linetype = 4) +
+                      color="#e80628", 
+                      size=0.8,linetype = 3) +
   geom_line(data = regressions_out, aes(x = h, 
                       y = 100*(exp(lo90_b_lip)-1)), 
-                      color="#677066", size=0.5, 
-                        linetype = 4) +
-  geom_ribbon(data = regressions_out, aes(x=h, ymax=100*(exp(up90_b_lip)-1), ymin=100*(exp(lo90_b_lip)-1)), fill="pink", alpha=.3) +
+                      color="#e80628", size=0.8, 
+                        linetype = 3) +
+  geom_ribbon(data = regressions_out, aes(x=h, ymax=100*(exp(up90_b_lip)-1), 
+                                          ymin=100*(exp(lo90_b_lip)-1)), fill="#cecaca", alpha=.3) +
   geom_line(data = regressions_out, aes(x = h, y = 100*(exp(b_lip)-1)), color="black", size=0.8) +
   geom_point(data = regressions_out, aes(x = h, y = 100*(exp(b_lip)-1)), color="black", size=0.8) +
   # annotation_custom("decreasing %<->% increasing") +
@@ -2033,9 +2309,13 @@ irf1 <- ggplot() +
                      minor_breaks = NULL) + 
   # theme_minimal() + 
   labs(color=NULL) +
+  geom_hline(yintercept=0, linetype="dashed", color = "#514e4e", size=1) + 
+  # Change line size
   theme(legend.position = c(0.93, 0.90), axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
-        legend.text=element_text(size=14))
+        legend.text=element_text(size=14),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
 
 irf1
 
@@ -2095,9 +2375,9 @@ regressions_out <- as.data.frame(regressions_out %>%
 # next we can plot everything we had plotted above
 irf2 <- ggplot() +
   # geom_point() + 
-  geom_line(data = regressions_out, aes(x = h, y = 100*(exp(up90_b_lip)-1)), color="#677066", size=0.5,linetype = 4) +
-  geom_line(data = regressions_out, aes(x = h, y = 100*(exp(lo90_b_lip)-1)), color="#677066", size=0.5, linetype = 4) +
-  geom_ribbon(data = regressions_out, aes(x=h, ymax=100*(exp(up90_b_lip)-1), ymin=100*(exp(lo90_b_lip)-1)), fill="pink", alpha=.3) +
+  geom_line(data = regressions_out, aes(x = h, y = 100*(exp(up90_b_lip)-1)), color="#e80628", size=0.8,linetype = 3) +
+  geom_line(data = regressions_out, aes(x = h, y = 100*(exp(lo90_b_lip)-1)), color="#e80628", size=0.8, linetype = 3) +
+  geom_ribbon(data = regressions_out, aes(x=h, ymax=100*(exp(up90_b_lip)-1), ymin=100*(exp(lo90_b_lip)-1)), fill="#cecaca", alpha=.3) +
   geom_line(data = regressions_out, aes(x = h, y = 100*(exp(b_lip)-1)), color="black", size=0.8) +
   geom_point(data = regressions_out, aes(x = h, y = 100*(exp(b_lip)-1)), color="black", size=0.8) +
   # annotation_custom("decreasing %<->% increasing") +
@@ -2108,11 +2388,14 @@ irf2 <- ggplot() +
                      limits = c(-4, 4), 
                      breaks = seq(-4, 4, by=2), 
                      minor_breaks = NULL) + 
-  # theme_minimal() + 
+  #theme_minimal() + 
   labs(color=NULL) +
+  geom_hline(yintercept=0, linetype="dashed", color = "#514e4e", size=1) + 
   theme(legend.position = c(0.93, 0.90), axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
-        legend.text=element_text(size=14))
+        legend.text=element_text(size=14),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
 
 irf2
 
