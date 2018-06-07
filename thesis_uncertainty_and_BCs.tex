@@ -2,7 +2,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%HEADER%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%HEADER%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Note: All the options like chapterprefix, pointednumbers, etc affect the way things are represented in the header of each page
-\documentclass[a4paper,12pt,oneside,pointednumbers,bibtotoc,bigheadings,liststotoc]{scrbook}
+\documentclass[a4paper,12pt,listof=nochaptergap,oneside,pointednumbers,bibtotoc,bigheadings,liststotoc]{scrbook}
+% note that the option 'listof=nochaptergap' disables the chapter separation in listoffigures and listoftables!
 % note that the expression "numbers=noenddot" remoes the dot after the number in figure captions
 % for details see https://tex.stackexchange.com/questions/27250/remove-dot-after-number-in-figure-captions-while-keeping-the-dot-in-chapter-sect
 \usepackage[utf8]{inputenc} %für Umlaute etc.
@@ -23,6 +24,19 @@
 \usepackage[right]{eurosym}
 % the below two lines of code are necessary to make sure that the numbering of figures starts at 1 and then proceeds in steps of 1 instead of floating point numbers etc.
 \usepackage{chngcntr}
+% lscape is to be able to put a table in landscape mode
+\usepackage{lscape}
+% the below is necessary to be able to align a table by decimal points
+\usepackage{dcolumn,booktabs}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\newcommand\mc[1]{\multicolumn{1}{c}{#1}} % handy shortcut macro
+% the footmisc package allows multiple footnotes separated by a comma
+\usepackage[multiple]{footmisc}
+% the below package is necessary to be able to include in-table footnotes and make them
+% show up at the bottom of the page instead of below the table
+\usepackage{tablefootnote}
+% longtable is to be able to break a table across multiple pages
+\usepackage{longtable}
 \counterwithout{figure}{chapter}
 \counterwithout{table}{chapter}
 % the below code allows the adjustment 
@@ -36,6 +50,11 @@
 %all four of the below packages are included for table creation
 \usepackage{booktabs} 
 \usepackage{array}
+% we define new column types that take their width as argument and do
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{lscape}
@@ -51,8 +70,8 @@
 \pagestyle{headings}
 % the below code is necessary to be able to customize the font of the Figure caption for figures
 \usepackage{caption} % see https://www.namsu.de/Extra/pakete/Caption.html for more information!
-\captionsetup[table]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=centering}
-\captionsetup[figure]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=raggedright}%width=\dimexpr\textwidth-2cm\relax}
+\captionsetup[table]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=hang, justification=justified, skip=10pt}
+\captionsetup[figure]{font=scriptsize,labelfont=footnotesize,labelfont=bf, singlelinecheck = false, format=plain, justification=justified}%width=\dimexpr\textwidth-2cm\relax}
 %\setlength{\textwidth}{15cm}
 %\setlength{\textheight}{22.5cm}
 %\setlength{\oddsidemargin}{1cm}
@@ -67,9 +86,9 @@
 \renewcommand{\cfttabaftersnum}{.} %add period after table number in list of tables
 \renewcommand\cftchapfont{\large\bfseries}%changes font and fontsize of chapters in toc
 %\renewcommand\cftsecfont{\normalsize}
-\renewcommand{\cfttoctitlefont}{\huge\bfseries}	%changes font of 'Content' header before toc
-\renewcommand{\cftloftitlefont}{\huge\bfseries} %changes font of 'List of Figures'
-\renewcommand{\cftlottitlefont}{\huge\bfseries} %changes font of 'List of Tables'
+\renewcommand{\cfttoctitlefont}{\LARGE\bfseries}	%changes font of 'Content' header before toc
+\renewcommand{\cftloftitlefont}{\LARGE\bfseries} %changes font of 'List of Figures'
+\renewcommand{\cftlottitlefont}{\LARGE\bfseries} %changes font of 'List of Tables'
 % the below commands move the beginning of toc, list of figures and list of tables further down 
 % the page
 \renewcommand\cftbeforetoctitleskip{2.7cm}
@@ -78,7 +97,7 @@
 %um die Überschriften im Text anzupassen
 \usepackage{titlesec}
 %der folgende Befehl ändert die Schriftart des "chapter"-Befehls
-\titleformat{\chapter}{\large\bfseries\filright}{\Huge\thechapter.}{15pt}{\Huge}
+\titleformat{\chapter}{\large\bfseries\filright}{\LARGE\thechapter.}{15pt}{\LARGE}
 \titleformat*{\section}{\large\bfseries}
 \titleformat*{\subsection}{\normalsize\bfseries}
 \titleformat*{\subsubsection}{\large\bfseries}
@@ -200,6 +219,8 @@
 \renewcommand{\hat}[1]{\oldhat{\boldsymbol{#1}}}
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
@@ -215,8 +236,8 @@
         \HRule \\[-1mm]
         \Huge{\scshape\bfseries Time-Varying Uncertainty and Business Cycles} \\[-5mm]
         \HRule \\[2mm]
-        \large {\scshape An Inquiry into the Measurement of Uncertainty and its\\
-        				Macroeconomic Effects Using the Example of the US} \\[10mm]
+        \large {\scshape An Inquiry into the Theory, Measurement and \\
+        				Macroeconomic Effects of Uncertainty} \\[10mm]
         \large Master's Thesis \\[10mm]
         \large in partial fulfillment of the requirements \\for the degree of Master of Science (M.Sc.)\\
                   in Applied Economics \\[10mm]
@@ -246,13 +267,20 @@
 
 %----------------------------------------------------------- Beginn Widmung Alle ------------------------------------------------------------------------
 \newpage
-\pagestyle{empty} %bewirk, dass die Striche oben wegfallen und, dass die Seitenzahl wegfällt.
-What I have written five years ago still holds more than ever:\\
+\thispagestyle{empty} %bewirk, dass die Striche oben wegfallen und, dass die Seitenzahl wegfällt.
+
+
+%\topskip0pt
+\vspace*{\fill}
+What I've written when handing in the diploma thesis for my first degree still holds more than ever:\\
+\\
 My family has been my strongest support in all my life. I especially want to express my gratitude to my dear uncle Dr. med. Farshid Mavaddat, my cousins Dr. Paik Saber and Neisan Saber and my aunt Mahshid Mavaddat.\\
 Most of all I want to thank my Mum, Dorrie Mavaddat, who has always been there for me and supported and helped my in all my ventures. It is due to her that I stand where I am today.
     \begin{flushright}
          Innsbruck, July 2018\\
     \end{flushright}
+\vspace*{\fill}
+%
 \pagestyle{headings}
 %-------------------------------------------------------------- Ende Widmung Alle ------------------------------------------------------------------------
 
@@ -273,6 +301,10 @@ Most of all I want to thank my Mum, Dorrie Mavaddat, who has always been there f
 \blindtext
 \end{abstract}
 \end{otherlanguage}
+
+
+
+
 
 
 \restoregeometry
@@ -309,8 +341,11 @@ Most of all I want to thank my Mum, Dorrie Mavaddat, who has always been there f
 It can be commonly postulated that being faced with uncertainty is a state inherent to life's existence and in every aspect a natural part of our complex world. \\
 Focussing on \textit{economic} uncertainty, \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.334.4248&rep=rep1&type=pdf}{an investor being concerned about the performance of her assets, an employee being worried about future income streams during retirement or at all still having a job one year from now or a business continuously defending its position on the market are just a few examples} of individuals or a collective being exposed to uncertainty in every-day life. Many of these risks/uncertainties\footnote{Note that we are currently still using these terms interchangeably but will give a brief overview of the discussion and their subtle differences in the literature below.} have given rise to institutions and entire industries as an integral part of today's modern economies: sophisticated financial markets (with their risk-transformation-function being a pivotal element besides the purpose to raise capital) and the finance and insurance industry would not exist (or albeit in a different form) if it was not for the existence of uncertainty. On the academic front, ever more complex models promise remedy to make exposures to uncertainty and foresight calculable and/or manageable.\\
 \\
-But which specific events can cause (economic or political) uncertainty that ultimately feed  into the micro-level giving rise to exemplary scenarios we just discussed?\\
-\href{https://site.stanford.edu/2018/session-6}{On an aggregate level, as aptly formulated by Nicholas Bloom}\footnote{Bloom is part of a larger group of contributors to the most recent macroeconomic literature that has started to systematically disentangle the effects of uncertainty both theoretically and empirically.}, after the Great Recession and the subsequent turmoil in the Eurozone's sovereign debt markets and the Arab Spring being just a few examples, the most recent major political events\footnote{One could potentially also call them 'shocks'.} of Brexit, Trump's election in the US,  and a seeming intensification of tensions between forces of the West and East have brought uncertainty into the spotlight again suggesting that alleged 'tail-events' are far from improbable.\\
+Going beyond these exemplary scenarios where economic agents seem to take into account some sort of probabilistic assessment of the future turn of events, on an aggregate level specific (tail) events can cause (economic or political) uncertainty to ultimately feed into the micro-level (firms and households) in a potentially damaging way, being rather perceived as exogenous shocks (i.e., outside of one's own area of influence) than part of a known probabilistic state space.\\
+\\
+\href{https://site.stanford.edu/2018/session-6}{As aptly formulated by Nicholas Bloom}\footnote{Bloom is part of a larger group of contributors to the most recent macroeconomic literature that has started to systematically disentangle the effects of uncertainty both theoretically and empirically.}, after the Great Recession, the subsequent turmoil in the Eurozone's sovereign debt markets and the Arab Spring being just a few examples, the most recent major political events\footnote{One could potentially also call them 'shocks'.} of Brexit, Trump's election in the US,  and a seeming worsening of the relationship between forces of the West and East have intensified concerns about uncertainty. Assessments from the 
+\citet{FOMC:09}\footnote{``Widespread reports from business contacts noted that uncertainties about health-care, tax, and environmental policies were adding to businesses' reluctance to commit to higher capital spending'' \citep{FOMC:09}.} and the International Monetary Fund \citep{IMF:12, IMF:13}\footnote{``More seems to be at work, however [...] - namely, a general feeling of uncertainty'. Assessing the precise nature and effects of this uncertainty is essential, but [...] not easy. [...] Uncertainty appears more diffus, more Knightian in nature.'' \citep{IMF:12}. In \citet{IMF:13} the authors dedicated a whole section (pp. 70-67) to the study of the effects of uncertainty, stating that ``[a] common view is that high uncertainty in general, and high policy uncertainty more specifically, has held back global investment and output growth in the past two years.'' \citep[p. 70]{IMF:13}.}, for example, suggest how multilayered uncertainty can be by referring to how factors such as ``[...] U.S. and European fiscal, regulatory, and monetary policies [have] contributed to a steep economic decline in 2008-2009 and slow recoveries afterward.'' \citep[p.1594]{bakeretal:15}
+\\
 \\
 On a high level, \citet{dequesh:00} identifies four basic social practices in today's societies that have a stabilizing effect on the coexistence in our (as  he calls it) \textit{economic reality}: (1) legal contracts (that reduce the uncertainty of future values of nominal variables), (2) the 'State' which enforces legal contracts in case one party to a contract would decide to not fulfill its obligations, (3) Market-Makers (a very prominent example being central banks in their roles as lenders of last resort), and lastly, (4) informal institutions including conventions like 'socially shared and/or prescribed standards of thought and behavior'. \\
 Together these features improve subjective and objective uncertainty but can obviously not completely eliminate it. \\
@@ -319,12 +354,12 @@ Although we do not want to roll up the subject from a philosophical (or even rel
 \\
 While a thorough discussion of every aspect of the related concepts is beyond the scope of this work, we still want to give a brief overview of a few insights by referring to a few selecting writings:\\
 \forceindent \citet{dow:16} tries to clarify the difference between the mainstream and Keynesian\footnote{Keynes and Knight are often-times regarded as the two prominent figures that introduced the concept of \textit{fundamental uncertainty} into the economic sciences.} understanding of \textit{uncertainty}\footnote{\citet{dow:16} also makes account to von Mises, Hayek and Shackle who have also dealt with uncertainty in their works but focusses on Keynes's views on fundamental uncertainty arguing for it to be the most developed and philosophically-grounded counterpoint to the mainstream theory.}, its distinction from \textit{risk} and the resulting theoretical implications\footnote{Note that there are also schools that reject the distinction between \textit{uncertainty} and \textit{risk} altogether (e.g., \citealp{savage:54}).}. According to her assessment, in the traditional mainstream analysis within a Bayesian framework most knowledge is viewed as known or known to be stochastic in some form (called \textit{risk}), meaning that the state space is known and numerical probabilities can be assigned. Under this approach, mainstream traditional macroeconomic models give only very limited room, if any, to \textit{uncertainty} as a state of absence of such probabilities in the form of exogenous sources of shocks\footnote{\citet[p. 43]{dequesh:00} refers to some economists partly neglecting fundamental uncertainty following the argument that it might lead to 'theoretical nihilism' (see e.g., \citealp{coddington:82}).}. \\
-Read from this dualistic mainstream perspective, \citet{dow:16} asserts that Keynes's standpoint was also for a long time interpreted in a dualistic way, albeit flipped in the sense that only in special circumstances, knowledge (here referred to as \textit{risk}) could be treated as certain and (fundamental) uncertainty was regarded as the general case (see the introduction in \citealp{keynes:21}). This dualistic interpretation was reinforced by Keynes's reflections on long-term expectations~\citep[p. 214/214]{keynes:37}: 
+Read from this dualistic mainstream perspective, \citet{dow:16} asserts that Keynes's standpoint was also for a long time interpreted in a dualistic way, albeit flipped in the sense that only in special circumstances, knowledge (here referred to as \textit{risk}) could be treated as certain and (fundamental) uncertainty was regarded as the general case (see the introduction in \citealp{keynes:21}). This dualistic interpretation was seemingly reinforced by Keynes's reflections on long-term expectations~\citep[p. 214/214]{keynes:37}: 
 ``About [uncertainty] there is no scientific basis on which to form any calculable probability whatever. We simply do not know.''\\
 \\
 But \citet{dow:16} clarifies that in the meantime it is well-established that Keynes did not give up on scientific knowledge (i.e., did not advocate nihilism) by giving so much weight to uncertainty but that his view on uncertainty is rather multidimensional and consists of various degrees. As an advocate of this view, \citet{dequesh:00} argues that Keynes referred to both ambiguity in his early writings (\citealp{keynes:21})\footnote{According to interpreters, in terms of \citet{keynes:21}, for both ambiguity and fundamental uncertainty there is no basis for the assignment of point, numerical probabilities \citep{dequesh:00}.} and fundamental uncertainty in his later ones (\citealp{keynes:37}) and that simply speaking of Keynesian uncertainty may actually be too vague in most circumstances. \\
 \\
-\citet[p. 330]{camererandweber:92} describe ambiguity as ``uncertainty about probability, created by missing information that is relevant and could be known''. \citet[p. 623]{dequech:14} states that while usually the decision-maker under ambiguity cannot reliably assess the probability of each event, she usually knows all possible events (or it is at least ``predetermined or knowable ex ante``) while the case of fundamental uncertainty ``[...] is characterized by the possibility of creativity and non-predetermined structural change''. So under this concept and ``[w]ithin the bounds imposed by natural laws, the list of possible events is not predetermined or knowable ex ante [...] as \textit{the future is yet to be created}\footnote{Italics added.}'' \citep[p. 623]{dequech:14}. \citet{dequesh:00} sees the work of \citet{shackle:72} as advocating this argument.\\
+\citet[p. 330]{camererandweber:92} describe ambiguity as ``uncertainty about probability, created by missing information that is relevant and could be known''. \citet[p. 623]{dequech:14} states that while usually the decision-maker under ambiguity cannot reliably assess the probability of each event, she usually knows all possible events (or it is at least ``predetermined or knowable ex ante``) while the case of fundamental uncertainty ``[...] is characterized by the possibility of creativity and non-predetermined structural change''. So under this concept and ``[w]ithin the bounds imposed by natural laws, the list of possible events is not predetermined or knowable ex ante [...] as \textit{the future is yet to be created}\footnote{Italics added.}'' \citep[p. 623]{dequech:14}.\footnote{\citet{dequesh:00} sees the work of \citet{shackle:72} as advocating this argument.}\\
 \\
 With regard to fundamental uncertainty, \citet{dequesh:00} mentions technological or managerial innovations as examples of human creativity that can disrupt our realities which is closely connected to the process of creative destruction of \citet{schumpeter:42}. Unpredictable structural changes (e.g. historical changes) to our economic reality on the other hand are more typically political, social or cultural disruptions where institutions and technological change play a key-role. Interestingly, the capitalist system as we know it is regarded as endogenously causing uncertainty due to competing economic actors and decision-makers innovating in search for extra profits (see \citealp{kregel:87})\footnote{Despite of the above remarks, Keynes' notion of uncertainty as described in \citet{keynes:21} and its connection to \citet{keynes:37} has been subject to much controversy due to differing interpretations \citep{dequesh:00}.}.\\
 \\
@@ -341,9 +376,9 @@ Trying to establish a typology within the introduced terms, \citet{dequech:14}  
 \vspace{1cm}
 
 
-Abstracting from the (philosophical) considerations above, is there any consent in the literature about whether uncertainty can be quantified and, if so, how this could be achieved? And once having a meaningful measure of unertainty, what \textit{real} effect, if any, does it exert on business cycles? \\
+Abstracting from the (philosophical) considerations above, the question arises as to whether there is any consent in the literature about whether uncertainty can be quantified and, if so, how this could be achieved? And once having a meaningful measure of unertainty, what \textit{real} effect, if any, does it exert on business cycles? \\
 \\
-Within the past ten years and largely triggered by a seminal work by \citet{bloom:09}\footnote{Bloom's contribution triggered a wave of studies that challenged the effects that he had reported in his initial publication in \citet{bloom:09}.}, macroeconomists have intensively started studying this question more intensively than ever before. At a first glance, as summarized by \citet[p. 1177]{juradoetal:15}, partial equilibrium analyses to date suggest that increased levels of uncertainty ``[...] can depress hiring, investment, or consumption if agents are subject to fixed costs or partial irreversibilities (a 'real options' effect), if agents are risk averse (a 'precautionary savings' effect), or if financial constraints tighten in response to higher uncertainty (a 'financial frictions' effect).'' \\
+Within the past ten years and largely triggered by a seminal work by \citet{bloom:09}\footnote{Bloom's contribution triggered a wave of studies that challenged the effects that he had reported in his initial publication in \citet{bloom:09}. We will come back to this multiple times throughout this text, especially in Section~\ref{EmpiricalAnalysis}.}, macroeconomists have intensively started studying this question more intensively than ever before. At a first glance, as summarized by \citet[p. 1177]{juradoetal:15}, partial equilibrium analyses to date suggest that increased levels of uncertainty ``[...] can depress hiring, investment, or consumption if agents are subject to fixed costs or partial irreversibilities (a 'real options' effect), if agents are risk averse (a 'precautionary savings' effect), or if financial constraints tighten in response to higher uncertainty (a 'financial frictions' effect).'' \\
 \\
 While these effects have been identified by and large in the literature, the timing, extent and causality of effects remain hotly debated not least because of various uncertainty measures being used that try to quantify a decisive factor: unobservable, time-varying aggregate economic uncertainty.
 \\
@@ -373,12 +408,14 @@ Additional details and results are outsourced to Appendix~\ref{DataAndCode} incl
 \endgroup
 
 
-As mentioned in the Introduction above, studies that try to explain the impact of uncertainty, if any, on aggregate economic fluctuations\footnote{Note that Section~\ref{UncertaintyandBusinessCyclesRelatedLiterature} will review these studies in more detail.} not only differ with respect to econometric specifications (which we will examine in Section~\ref{sec:EmpiricalAnalysis}) but also to the deployed \textit{uncertainty measure} itself. In fact, there is currently a very active and dedicated branch of the literature that tries to answer that one question: How can we best and most objectively measure uncertainty? And out of the suggested uncertainty measures to date, which one is the preferred one?\\
+Studies that try to explain the impact of uncertainty, if any, on aggregate economic fluctuations\footnote{Note that Section~\ref{UncertaintyandBusinessCyclesRelatedLiterature} will review these studies in more detail.} not only differ with respect to econometric specifications (which we will examine in Section~\ref{sec:EmpiricalAnalysis}) but also to the deployed \textit{uncertainty measure} itself. In fact, there is currently a very active and dedicated branch of the literature that tries to answer that one question: How can we best and most objectively measure uncertainty? And out of the suggested uncertainty measures to date, which one is the preferred one?\\
 \\
 In what follows below we, first, want to review a selection\footnote{We have decided to restrain ourselves to \textit{four} measures which are among the most commented-on in the literature and which we examine in more detail for the purpose of this thesis.} of uncertainty measures that have been used/suggested in the literature to date including their pros and cons and, second, investigate some of their time series properties to get a feeling of their similarities as well as discrepancies.
 
-\section{Measuring Uncertainty}
+\section{Measuring Macroeconomic Uncertainty}
 \label{sec:MeasuringUncertainty}
+Mention the following: Uncertainty measures are either aggregate proxies or proxies derived from micro-data. Somehow this sentence must be included!
+
 Various uncertainty measures exist (and not \textit{the one} measure) because the stochastic process which we commonly call 'uncertainty' is unobservable. \citet[p. 1182]{juradoetal:15} emphasize that ``[t]he literature on measuring uncertainty is still in its infancy'' and so far existing research has popularized various proxies or indicators of uncertainty.
 
 The lack of an objective uncertainty measure hence poses a serious challenge to studies trying to quantify its macroeconomic effects: they have to come up with a reasonable uncertainty measure in the first place. \citet[p. 1178]{juradoetal:15} explain that ``[w]hile most of the [above mentioned] measures have the advantage of being directly observable, their adequacy as proxies for uncertainty depends on how strongly they are correlated with this latent stochastic process [i.e., with unobservable uncertainty]''.\\
@@ -393,17 +430,17 @@ Besides creating their own measure of economic uncertainty, \citet{orlikandveldk
 			\begin{itemize}
 				\item the traditional measure of uncertainty is the implied (e.g., the market volatility indices VIX/VXO) or realized volatility of stock market returns; based on these measures, \citet{bloom:09} constructs his shock-measure (henceforth called 'Bloom-shock'; see Section~\ref{sec:bloomshock} below)
 			\end{itemize}
-			\item 'forecast-based'\footnote{Note to self: we still have to fit 'the cross-sectional dispersion of firm profits, stock returns, or productivity' somewhere into our taxonomy!} - measures that rely on both an economy's predictability and the measurement of discrepancies between professional forecasts assuming that impeded predictability and a large dispersion between forecasts points at a more uncertain economy:
+			\item 'forecast-based'\footnote{Note to self: we still have to fit 'the cross-sectional dispersion of firm profits, stock returns, or productivity' somewhere into our taxonomy!} - measures that rely either on an economy's predictability or the measurement of discrepancies between professional forecasts assuming that impeded predictability or a large dispersion between forecasts, respectively, points at a more uncertain economy:
 			\begin{itemize}
-				\item cross-sectional dispersion measures of subjective business or consumer confidence (forecasts) based on survey data: e.g., \citet{bachmannetal:13} use survey data in their analysis (note to self: briefly mention their used measures), \citet{juradoetal:15} also mention analysts' forecasts (as e.g., used by D'Amico and Orphanides); \citet{leducandliu:16} instead use a measure constructed using data from the Thomson Reuters/Uniersity of Michigan Surveys of Consumers (henceforth called MSoC-index; see Section~\ref{sec:michigansurvey} below)
-				\item \citet{juradoetal:15} construct a (as \citet{orlikandveldkamp:14} call it) 'state-of-the-art' macro uncertainty index (henceforth called 'macro uncertainty index' see Section~\ref{sec:macrouncertainty})
+				\item cross-sectional dispersion measures of subjective business or consumer confidence (direction or point forecasts) based on survey data assuming that ``[...] this inter-personal dispersion measure is an acceptable proxy for the average dispersion of intra-personal uncertainty'' \citep[p. 4]{IMF:17}: e.g., \citet{bachmannetal:13} use survey data in their analysis (note to self: briefly mention their used measures), \citet{juradoetal:15} also mention analysts' forecasts (as e.g., used by D'Amico and Orphanides); \citet{leducandliu:16} instead use a measure constructed using data from the Thomson Reuters/Uniersity of Michigan Surveys of Consumers (henceforth called MSoC-index; see Section~\ref{sec:michigansurvey} below)
+				\item \citet{juradoetal:15} construct a (as \citet{orlikandveldkamp:14} call it) 'state-of-the-art' macro uncertainty index (henceforth called 'macro uncertainty index' see Section~\ref{sec:macrouncertainty}) that reflects uncertainty around objective statistical forecasts
 			\end{itemize}
 			\item 'news-based' - approaches that measure the degree of uncertainty by extracting the frequency with which specific words appear in newspaper articles, assuming that journalists are able to assess emerging uncertainty \footnote{Note that this approach is similar to the narrative analysis used by \citet{romerandromer:04}, \citet{romandrom:17} or \citet{ramey:09}.}: 
 			\begin{itemize}
 				\item \citet{alexopoulosandcohen:09} construct a news-based index derived from the number of New York Times' articles on uncertainty and economic activity,
 				\item \citet{bakeretal:15} construct an index of economic policy uncertainty (EPU) for a number of countries (including the United States) by searching for uncertainty-related keywords within a pool of widely read country-specific newspapers (henceforth called 'EPU index'; see Section~\ref{sec:epuindex}),\\
 			in a similar vein, \citet{moore:17} constructs an index of economic uncertainty for Australia,
-				\item inspired by classical 'news-based' - approaches, \citet{bontempietal:16} and \citet{castelnuovoandtran:17} construct 'Google Trends Uncertainty' indices (they call their index GT- and GTU-index, respectively) based on freely accessible, real time Google Trends data (henceforth called BGS-index and CT-index, respectively; see Section~\ref{sec:googletrends}); thereby the focus is shifted from journalists drawing the public's attention to specific topics to the public's individual Internet searches
+				\item inspired by classical 'news-based' - approaches, \citet{bontempietal:16} and \citet{castelnuovoandtran:17} construct 'Google Trends Uncertainty' indices (they call their index GT- and GTU-index, respectively) based on freely accessible, real time Google Trends data; thereby the focus is shifted from journalists drawing the public's attention to specific topics to the public's individual Internet searches
 			\end{itemize}
 		\end{itemize}
 \end{itemize} 
@@ -411,45 +448,31 @@ Besides creating their own measure of economic uncertainty, \citet{orlikandveldk
 We will discuss a few of these measures in turn.
 
 
-\subsection{VXO/Bloom-shock: \citet{bloom:09}}
+\subsection{A Finance-Based Measure: VXO/Stock-Market Volatility}
 \label{sec:bloomshock}
-\begingroup
-    \fontsize{8pt}{12pt}\selectfont
-    Note to self:
-\begin{itemize}
-	\item  \citet{bloom:09} describes the identification of shocks both in the Appendix (section A.1.2, p. 675;) as well as in the main text on p. 630. The explanation in the main text states:\\
-``The main stock-market volatility indicator is constructed to take a value 1 for each of the shocks labelled in the figures above and a 0 otherwise. These shocks were explicitly chosen as those events \textit{when the peak of HP detrended volatility level rose significantly above the mean.} In particular, the threshold was 1.65 standard deviations above the mean, selected as the 5\% one-tailed significance level \textit{treating each month as an independent observation}.''
-	\item I definitely have to take into account what Hans said: the construction of the Bloom-shock explicitly tries to argue that the shocks are exogenous by construction - here I should 
-\end{itemize}
-\endgroup
 
 
-The construction of the 'Bloom-shock' as outlined in \citet{bloom:09} is performed in multiple steps and uses two data-sources\footnote{Note that in the original contribution of \citet{bloom:09} the data logically only ranges until 2009 while we now have almost 10 more years of VXO data at our disposal.}: (i) VXO-data from the Chicago Board Options Exchange (CBOE) for the period where data is available (i.e., 1986 - 2018)\footnote{The VXO - index (for details see the the homepage of the CBOE) reflects the market's expected implied volatility based on S\&P100 options 30 days to expiration and hence captures expected volatility of equity prices. Note that the VIX introduced as of 2003 instead is based on prices of S\&P500 options.} and (ii) actual monthly volatilities (for the period pre-1986) calculated as the monthly standard deviation of the daily S\&P500 index (normalized to the same mean and variance as the VXO index for when the two series overlap, i.e., from 1986 - 2003)\footnote{The R-Code replicating all the steps for the construction of the Bloom-shock is available in Appendix~\ref{sec:rcode}.}. The result is one continuous volatility measure as shown in Figure~\ref{fig:volatility}.\footnote{In the following we refer to this spliced version as the VXO index.}
+Within the range of finance-based measures stock market volatility is a widely used proxy for uncertainty.\footnote{In the literature it especially raised to popularity due to \citet{bloom:09}. Details follow in the following chapters.} In particular, it is \textit{forward-looking} measures of stock market returns/volatility that are especially useful which can be constructed from the \textit{implied volatility} of stock options. In the case of the U.S. the VXO\footnote{The VXO-index is calculated and made available by the Chicago Board Options Exchange (CBOE) and covers publicly traded firms only (covering approximately 1/3 of private employment; see \citealp{davisetal:06}) and reflects the market's expected implied volatility based on S\&P100 options over a 30-day look-ahead period. Note that the VIX introduced as of 2003 instead is based on prices of S\&P500 options. For more details see \citet{cboe:09} for a discussion of the VIX including references to the VXO.} is such a measure being available, however, only as of 1986. To cater for this limited time-frame, e.g., \citet{bloom:09} constructs a continuous time-series as shown in Figure~\ref{fig:volatility} starting in July 1962 consisting of two components: (i) VXO-data for the period where data is available (i.e., as of 1986) and (ii) actual realized monthly volatilities for the period pre-1986 calculated as the within-month standard deviation of daily percentage changes of the S\&P500 (normalized to the same mean and variance as the VXO index for when the two series overlap in Bloom's design, i.e., from 1986 - 2003).\footnote{In the following we refer to this spliced version as the VXO index. Further, note that in the original contribution of \citet{bloom:09} the data logically only ranges until 2009 while we now have almost 10 more years of VXO data at our disposal.}\footnote{For the case of Australia, e.g. \citet{moore:17} exploits a slightly modified procedure by using the monthly average of the \textit{absolute value} of daily changes arguing that it has a minimally higher correlation with the Australian counterpart of the U.S.-based VXO (option-implied volatility in the Australian ASX 200 index) and that it mitigates the effect of 'Black Monday' in 1987.}
+
 \begin{figure}[!ht]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility.pdf}}
-      \caption[Monthly U.S. stock market volatility.]{Monthly U.S. stock market volatility.
-      \textit{Note:} From 1986 onwards CBOE VXO index of percentage implied volatility, on a hypothetical at the money S\&P100 option 30 days to expiration. Before 1986 actual monthly returns volatilities are calculated as the monthly standard deviation of the daily S\&P500 index normalized to the same mean and variance as the VXO index when they overlap from 1986 - 2003.}
+   \fbox{\includegraphics[trim=1cm -1cm 0.8cm 0.5cm, width=0.95\textwidth]{volatility.pdf}}
+      \caption[Monthly U.S. stock market volatility including NBER recession dates.]{Monthly U.S. stock market volatility including NBER recession dates (shaded).
+      \textit{Note:} From 1986 onwards the series shows the CBOE VXO index of percentage implied volatility, on a hypothetical at the money S\&P100 option 30 days to expiration. Before 1986 actual monthly return volatilities are calculated as the monthly standard deviation of the daily S\&P500 index normalized to the same mean and variance as the VXO index when they overlap from 1986 - 2003.}
    \label{fig:volatility}
 \end{figure}
 
-The derivation of the 'Bloom-shocks' (i.e., an indicator variable that takes a value of 1 for an event labelled as a 'shock') then works as follows:
-\begin{enumerate}[i]
-	\item detrend the volatility-measure from above (\citet{bloom:09} uses a HP-filter with $\lambda = 129,600$); 
-	\item according to \citet{bloom:09}, the actual shocks are then chosen as those events with stock-market volatility more than 1.65 standard deviations above the HP-detrended mean (selected as the 5\% one-tailed significance level) of the stock-market volatility series; thereby each month is being treated as an independent observation
-\end{enumerate}
+%\begin{figure}[!h]
+%   \centering
+%   \setlength\fboxsep{0pt}
+%   \setlength\fboxrule{0pt}
+%   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_cycle_shocks2.pdf}}
+%      \caption[Monthly U.S. stock market volatility including Bloom-shocks and NBER recession dates.]{Monthly U.S. stock market volatility. Red shaded areas correspond to dates where volatility series exceeds 1.65 standard deviation above the series' mean. Grey shaded areas denote NBER recession dates in the US.}   \label{fig:volatility_cycle_shocks2}
+%\end{figure}
 
-\begin{figure}[!h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{volatility_cycle_shocks2.pdf}}
-      \caption[Monthly U.S. stock market volatility including Bloom-shocks and NBER recession dates.]{Monthly U.S. stock market volatility. Red shaded areas correspond to dates where volatility series exceeds 1.65 standard deviation above the series' mean. Grey shaded areas denote NBER recession dates in the US.}   \label{fig:volatility_cycle_shocks2}
-\end{figure}
 
-Ultimately, this results in identified 'shocks' as shown in Figure~\ref{fig:volatility_cycle_shocks2} where the shaded areas correspond to the 'Bloom-shock' being equal to $1$ (i.e., where the dashed horizontal line representing 1.65 standard deviations above the HP filtered mean crosses the detrended series). Accordingy, Table~\ref{tab:bloom_shocks} spells out the exact dates of the identified shocks including when the 'Bloom-shock' started (first column), when it ended (second column), the amount of consecutive months within a dedicated shock-period (third column), the date with the maximum volatility within the dedicated shock-period (fourth column) and the corresponding maximum volatility in the last column.
 %\begin{figure}[hbt]
 %   \centering
 %   \setlength\fboxsep{0pt}
@@ -469,45 +492,44 @@ Ultimately, this results in identified 'shocks' as shown in Figure~\ref{fig:vola
 %      \textit{Note:} HP-filtered trend was calculated using a smoothing parameter $\lambda = 129,6000$.}   \label{fig:volatility_cycle_shocks}
 %\end{figure}
 
+%
+%
+%\begin{table}[htp] 
+%\centering
+%\caption{Replication of shocks following \citet{bloom:09}.}
+%\scalebox{0.8}{
+%    \begin{tabular}{cccccc}
+%    \hline
+%         yearmon_start & yearmon_end & duration & yearmon_max & max_vol \\ \hline
+%        Nov 1962 & Nov 1962 & 1 months & Nov 1962 & 26.58\% \\
+%        Dec 1963 & Dec 1963 & 1 months & Dec 1963 & 29.28\% \\
+%        Sep 1966 & Sep 1966 & 1 months & Sep 1966 & 24.99\%\\
+%        Jun 1970 & Jun 1970 & 1 months & Jun 1970 & 38.27\% \\
+%        Jan 1974 & Jan 1974 & 1 months & Jan 1974 & 33.44\% \\
+%        Oct 1974 & Nov 1974 & 1 months & Nov 1974 & 38.98\% \\
+%        Apr 1980 & Apr 1980 & 1 months & Apr 1980 & 29.86\% \\
+%        Sep 1982 & Sep 1982 & 1 months & Sep 1982 & 33.05\% \\
+%        Nov 1982 & Dec 1982 & 2 months & Nov 1982 & 33.43\% \\
+%        Nov 1987 & Mar 1988 & 5 months & Nov 1987 & 58.22\% \\
+%        Nov 1990 & Nov 1990 & 1 months & Nov 1990 & 30.13\% \\
+%        Oct 1998 & Nov 1998 & 1 months & Oct 1998 & 39.25\% \\
+%        Oct 2001 & Oct 2001 & 1 months & Oct 2001 & 42.69\% \\
+%        Aug 2002 & Nov 2002 & 4 months & Oct 2002 & 41.66\% \\
+%        Mar 2003 & Apr 2003 & 1 months & Mar 2003 & 36.54\% \\
+%        Nov 2008 & May 2009 & 7 months & Nov 2008 & 65.45\% \\
+%        Sep 2011 & Dec 2011 & 4 months & Oct 2011 & 36.64\% \\
+%        Oct 2015 & Oct 2015 & 1 months & Oct 2015 & 24.60\% \\
+%        Feb 2016 & Mar 2016 & 2 months & Feb 2016 & 24.33\% \\
+%        \hline
+%        \hline
+%    \end{tabular}
+%}
+%\label{tab:bloom_shocks}
+%\end{table}
 
 
-\begin{table}[htp] 
-\begin{center}
-\caption{Replication of shocks following \citet{bloom:09}.}
-\scalebox{0.8}{
-    \begin{tabular}{cccccc}
-    \hline
-         yearmon_start & yearmon_end & duration & yearmon_max & max_vol \\ \hline
-        Nov 1962 & Nov 1962 & 1 months & Nov 1962 & 26.58\% \\
-        Dec 1963 & Dec 1963 & 1 months & Dec 1963 & 29.28\% \\
-        Sep 1966 & Sep 1966 & 1 months & Sep 1966 & 24.99\%\\
-        Jun 1970 & Jun 1970 & 1 months & Jun 1970 & 38.27\% \\
-        Jan 1974 & Jan 1974 & 1 months & Jan 1974 & 33.44\% \\
-        Oct 1974 & Nov 1974 & 1 months & Nov 1974 & 38.98\% \\
-        Apr 1980 & Apr 1980 & 1 months & Apr 1980 & 29.86\% \\
-        Sep 1982 & Sep 1982 & 1 months & Sep 1982 & 33.05\% \\
-        Nov 1982 & Dec 1982 & 2 months & Nov 1982 & 33.43\% \\
-        Nov 1987 & Mar 1988 & 5 months & Nov 1987 & 58.22\% \\
-        Nov 1990 & Nov 1990 & 1 months & Nov 1990 & 30.13\% \\
-        Oct 1998 & Nov 1998 & 1 months & Oct 1998 & 39.25\% \\
-        Oct 2001 & Oct 2001 & 1 months & Oct 2001 & 42.69\% \\
-        Aug 2002 & Nov 2002 & 4 months & Oct 2002 & 41.66\% \\
-        Mar 2003 & Apr 2003 & 1 months & Mar 2003 & 36.54\% \\
-        Nov 2008 & May 2009 & 7 months & Nov 2008 & 65.45\% \\
-        Sep 2011 & Dec 2011 & 4 months & Oct 2011 & 36.64\% \\
-        Oct 2015 & Oct 2015 & 1 months & Oct 2015 & 24.60\% \\
-        Feb 2016 & Mar 2016 & 2 months & Feb 2016 & 24.33\% \\
-        \hline
-        \hline
-    \end{tabular}
-}
-\label{tab:bloom_shocks}
-\end{center}
-\end{table}
 
-
-
-\subsection{Michigan Survey: \citet{leducandliu:16}}
+\subsection{A Survey-Based Measure: Michigan Survey of Consumers}
 \label{sec:michigansurvey}
 
 The Michigan Survey was founded in 1946 and then conducted quarterly by means of interviews of minimum 500 households throughout the US from 1952 - 1977. Beginning with January 1978 the survey switched to a monthly frequency which is the year that \citet{leducandliu:16} start looking at the survey's data off of which they construct their uncertainty measure. Overall, the survey contains approximately 50 core questions that target various aspects of consumer sentiment and expectations which cover the three broad areas of personal finance, business conditions and buying conditions. Because of its forward-looking nature, the Michigan Survey is regarded as a helpful indicator of the future business cycle.\footnote{For a more detailed survey description see \url{https://data.sca.isr.umich.edu/fetchdoc.php?docid=24774}.}\\
@@ -520,8 +542,8 @@ For their uncertainty measure, \citet{leducandliu:16} look at the answers to the
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{michigan_plot.pdf}}
-      \caption[Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty.]{Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty.}   \label{fig:michigan_plot}
+   \fbox{\includegraphics[trim=0.5cm -1.5cm 0.8cm -0.5cm, width=0.95\textwidth]{michigan_plot.pdf}}
+      \caption[Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty.]{Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty. Shaded areas denote NBER recession dates in the U.S. Three-month moving averages are plotted}   \label{fig:michigan_plot}
 \end{figure}
 
 \begingroup
@@ -539,8 +561,86 @@ For their uncertainty measure, \citet{leducandliu:16} look at the answers to the
 
 
 
-\subsection{Economic Policy Uncertainty Index: \citet{bakeretal:15}}
+\subsection{A News-Based Measure: \citet{bakeretal:15}}
 \label{sec:epuindex}
+While string searching (and hence also matching) algorithms have been around since the early days of computer science, the methods rose in sophistication in the past decades accompanying ever larger amounts of text. Increased computing power in combination with more efficient algorithms nowadays allows the processing of masses of text within a reasonable amount of time. In combination with dedicated digital archives of various sorts, a rapidly growing body of literature within economics has turned to text search methods, primarily using digital newspaper archives, to answer a variety of research questions.\footnote{Examples of such approaches include, among others, \citet{alexopoulosandcohen:09}, \citet{genthkowandshapiro:10}, \citet{hobergandphillips:10}, \citet{boudoukhetal:13}, and \citet{alexopoulosandcohen:15}.}
+
+Making use of this newspaper-based technique and with a focus on \textit{policy-related} economic uncertainty, \citet{bakeretal:15} build uncertainty indices trying to capture both the public's near-term and longer-term concerns as reflected in the newspaper coverage of certain key-terms\footnote{In earlier drafts of their contribution, index components included the present value of future scheduled tax code expirations and disagreement among professional forecasters over future government purchases and consumer prices. To be able to extend their EPU measures over time and across countries, \citet{bakeretal:15} decided to focus on the newspaper approach but continue to report the other components on their dedicated website at \url{http://www.policyuncertainty.com}.}. The cornerstone of their work is the construction of a monthly and daily Economic Policy Uncertainty (EPU) Index for the U.S. and its evolution since 1985. This index reflects the frequency with which a specifically designed trio of terms is found in digital archives containing articles of ten leading U.S. newspapers:\footnote{The newspapers filtered by the search-algorithm are \textit{USA Today}, \textit{Miami Herald}, \textit{Chicago Tribune}, \textit{Washington Post}, \textit{Los Angeles Times}, \textit{Boston Globe}, \textit{San Francisco Chronicle}, \textit{Dallas Morning News}, \textit{New York Times} and \textit{Wal Street Journal}.} ``economic'' or ``economy'' (E-terms set); ``uncertain'' or ``uncertainty'' (U-terms set); and one or more of the terms ``Congress'', ``deficit'', ``Federal Reserve'', ``legislation'', ``regulation'' or ``White House'' (P-terms set). This means that to be of relevance, an article must contain terms in all of the three categories.
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.5cm -1.5cm 0.8cm 0cm, width=0.95\textwidth]{epu_index_plot.pdf}}
+      \caption[EPU Index for the U.S., 01/1985 - 04/2018.]{EPU Index for the U.S., 01/1985 - 04/2018.
+      \textit{Note:} Index reflects scaled monthly counts of articles containing 'uncertain' or 'uncertainty', 'economic' or 'economy, and one or more policy relevant terms: 'regulation', 'federal reserve', 'deficit', 'congress', 'legislation', or 'white house'. The series is normalized to mean 100 from 1985-2009 and based on queries run for the USA Today, Miami Herald, Chicago Tribune, Washington Post, LA Times, Boston Glove, SF Chronicle, Dallas Morning News, NW Times, and the Wall Street Journal. Shaded areas denote NBER recession dates in the U.S.\\
+      Original Figure in \citet{bakeretal:15} ranges until 2015. We have taken all available values until April 2018, inclusive.}   \label{fig:epuindex}
+\end{figure}
+
+To cater for the discrepancy of the overall volume of articles across newspapers and time yielded by the raw counts, \citet{bakeretal:15} implement the following steps to arrive at a reasonable index: (i) scaling of the raw counts by the total number of articles in the same newspaper and month, (ii) standardization of each monthly newspaper-level series to unit standard deviation from 1985 to 2009, (iii) averaging across the 10 papers by month, (iv) normalization of the 10-paper series to a mean of 100 from 1985 to 2009.
+
+As shown in Figure~\ref{fig:epuindex}, this results in a time series that, among others, spikes near tight presidential elections, Gulf Wars I and II, the 9/11 attacks, the failure of Lehman Brothers, the 2011 debt ceiling dispute, and other major battles over fiscal policy \citep{bakeretal:15}. As an example of a period where the EPU index does not show any outlier, \citet{bakeretal:15} refer to the partial federal government shutdowns from November 1995 to January 1996.\footnote{Although these shutdowns did receive a considerable amount of press coverage, the share of articles mentioning the established trio of terms is extremely low.} 
+
+
+
+Besides this index, \citet{bakeretal:15} extend their approach back in time, across countries (by constructing indices for 11 other countries including all G10 economies), and to specific (policy) categories.
+ 
+ \begin{figure}[h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.5cm -1.5cm 0.8cm 0cm, width=0.95\textwidth]{epu_index_historical_plot.pdf}}
+      \caption[Historical EPU Index for the U.S., 01/1900 - 10/2014.]{EPU Index for the U.S. , 01/1900 - 10/2014.
+      \textit{Note:} Index reflects scaled monthly counts of articles containing 'uncertain' or 'uncertainty', 'economic' or 'economy, and one or more policy relevant terms: 'regulation', 'federal reserve', 'deficit', 'congress', 'legislation', or 'white house'. The series is normalized to mean 100 from 1985-2009 and based on queries run for the USA Today, Miami Herald, Chicago Tribune, Washington Post, LA Times, Boston Glove, SF Chronicle, Dallas Morning News, NY Times, and the Wall Street Journal. Shaded areas denote NBER recession dates in the U.S.}   \label{fig:epuindex_historical}
+\end{figure}
+ 
+For their historical EPU Index dating back to 1900, \citet{bakeretal:15} rely on the archives of six major U.S. newspapers\footnote{They are \textit{Wall Street Journal}, \textit{New York Times}, \textit{Los Angeles Times}, \textit{Boston Globe}, \textit{Chicago Tribune} and \textit{Washington Post}.} that have been published throughout the 20th century with slight modifications: to account for word usage patterns in newspapers, the E term set is expanded to include ``business'', ``industry'', ``commerce'' and ``commercial'' while the P term set is expanded by the words ``tariff'' and ``war''.\footnote{\citet{bakeretal:15} report that for the overlapping period as of 1985 both the original term sets and the expanded ones show similar results while the expanded term set performs better for the first decades of the 20th century.} As shown in Figure~\ref{fig:epuindex_historical}, looking at the index from 1900 onwards, for \citet[p. 1594]{bakeretal:15} the series ``[...] highlights pre-World WAR II political developments and shocks like the Gold Standard Act of 1900, the outbreak of World War I, the Versailles conference in 1919, and a sustained surge in policy uncertainty from late 1931 when President Herbert Hoover, and then President Franklin Roosevelt, introduced a rash of major new policies. [...]'' Interestingly, the index also shows a slight upward drift since the 1960s which \citet{bakeretal:14} attribute either to the growth in government spending, taxes, and regulation or increased political polarization and its implications for the policy-making process. Corresponding to Figure~\ref{fig:epuindex_historical}, Table~\ref{tab:largest_epu} showing the dates marked with red dots reveals that in the past two decades five times uncertainty rose to levels comparable to the Great Depression of the 1930s.
+
+
+
+
+\begin{table}[!h]
+\centering
+\caption{7 Largest Spikes of U.S. EPU Historical}
+\scalebox{1}{ 
+    \begin{tabular}{cccc}
+        \hline
+         ID & Year & Month & EPU Historical Index \\ \hline
+        1 & 1935 & 3 & 317 \\
+        2 & 1935 & 5 & 285 \\
+        3 & 2001 & 9 & 313 \\
+        4 & 2001 & 10 & 288 \\
+        5 & 2008 & 10 & 297 \\
+        6 & 2011 & 8 & 351 \\
+        7 & 2013 & 10 & 287 \\
+            \hline
+                \hline
+    \end{tabular}
+}
+\label{tab:largest_epu}
+\centering
+\end{table}
+
+The category-specific policy uncertainty indices are developed for the U.S. only by specifying more restrictive criteria for those articles that contain certain search terms.\footnote{E.g., the construction of a health care policy- or national security policy uncertainty index is based on the presence of additional terms like ``health care'', ``hospital'' or``health insurance'' and ``war'', ``terrorism'' or ``department of defense'', respectively.}\footnote{Together, the collection of all indices is available at \url{http://www.policyuncertainty.com}, a dedicated homepage by the authors to make regular updates to their indices available.}
+
+Table~\ref{fig:epuindex_categories} reports all category-specific EPU indices together with an overall economic uncertainty (EU) index (dropping the third of the trio of necessary terms in the index constructions) and the EPU. --> Refer to \citet[p. 1602]{bakeretal:15} to add some details about the peculiarities of the categorical breakdown of EPU!
+
+
+ \begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.5cm -1.5cm 0.8cm 0cm, height=5cm, width=12cm]{example-image-b}}
+      \caption[Placeholder for 'Economic Policy Uncertainty by Policy Category and Time Period, 1985 - 2014.]{Placeholder for 'Economic Policy Uncertainty by Policy Category and Time Period, 1985 - 2014.
+      \textit{Note:} The second row reports average values of the Newsbank Index of Economic Policy Uncertainty in each indicated period (scaling by the total number of articles in a period), expressed as a percentage of the average index value for the entire sample period from 1985:1 to 2014:12. For example, the value of 109 for Economic Policy Uncertainty from 1985:1 to 1990:6 says that the value of the index in that period is 109\% of its average value over the full sample period. The top row reports the value of the Newsbank Index of Overall Economic Uncertainty, also expressed as a percentage of the average value of the news-based policy uncertainty index. Entries in Rows 1 to 12 index report analogous values for narrower policy categories based on news article references to specific policy-related terms. For example, the value of 26.8 for “Monetary Policy” from 2010:1 to 2013:10 says that the number of scaled references to monetary policy uncertainty in this period is 26.8 percent of the
+average number of scaled references to ALL forms of policy-related uncertainty during the 1985:1 to 2012:10 sample period. The categories in Rows 1 through 12 are not mutually exclusive in two respects. First, a given news article may discuss multiple distinct sources of uncertainty such as monetary policy and entitlement reforms. Second, some of the category boundaries overlap. For example, Medicaid is an entitlement program and a major part of the U.S. health care system. \textit{Source: http://www.policyuncertainty.com}}   \label{fig:epuindex_categories}
+\end{figure}
+
+
+
+To alleviate any potential concerns about the reliability, accuracy or consistency of their newspaper-based approach, \citet[p. 1595]{bakeretal:15} counter with five observations that, in their view, reinforces their indices' ultimate purpose to proxy for movements in policy-related economic uncertainty: (1) there is a strong positive relationship between their EPU measure and implied stock market volatility (as another commonly used uncertainty-proxy)\footnote{We report our correlation-measures in Table~\ref{tab:correlations}.}, (2) they report a strong positive relationship between the newspaper-based EPU index and e.g., indices based on the frequency with which the Federal Reserve System's Beige Books mention policy uncertainty, (3) there seems to be no political slant since EPU indices based on right- or left-wing newspapers show not serious distortions, (4) an extensive audit study that included the manual reading of 12,000 randomly selected articles drawn from major U.S. newspapers which revealed a high correlation between this human- and the classical computer-generated index confirming the chosen set of terms used for the automated text search and lastly, (5) the market adoption of their indices by commercial data providers including Bloomberg, FRED, Haver, and Reuters to alleviate the demands from industry leads \citet{bakeretal:15} to conclude that the indices contain useful information for decision makers.
+
+
 
 \begingroup
     \fontsize{8pt}{12pt}\selectfont
@@ -548,53 +648,17 @@ For their uncertainty measure, \citet{leducandliu:16} look at the answers to the
 \begin{itemize}
 	\item  BBD-index following \citet{bakeretal:15}\\
 The IMF Working Paper (Measuring Global and Country-Specific Uncertainty) is a very helpful resource because: (1) They compare various uncertainty measures and also give a hint of from where to retrieve news-based uncertainty-measures!
-	\item \citet[p. 1593]{bakeretal:16} write: ``We develop a new index of economic policy uncertainty (EPU) based on newspaper coverage frequency. Several types of evidence - including human readings of 12,000 newspaper articles - indicate that our index proxies for movements in policy-related economic uncertainty. Our U.S. index spikes near tight presidential elections, Gulf Wars I and II, the 9/11 attacks, the failure of Lehman Brothers, the 2011 debt ceiling dispute, and other major battles over fiscal policy.''
-	\item \citet[p. 1593]{bakeretal:16} write: ``At the macro level, innovations in policy uncertainty foreshadow declines in investment, output, and employment in the United States and, in a panel vector autoregressive setting, for 12 major economies.''
-	\item \citet[p. 1593]{bakeretal:16} write: ``Extending our U.S. index back to 1900, EPU rose dramatically in the 1930s (from late 1931) and has drifted upward since the 1960s.'' --> This is a sentence that we should include in our description of the time-series itself!
+	\item \citet[p. 1593]{bakeretal:15} write: ``At the macro level, innovations in policy uncertainty foreshadow declines in investment, output, and employment in the United States and, in a panel vector autoregressive setting, for 12 major economies.''
+	\item \citet[p. 1596]{bakeretal:15} write: ``Our second approach fits vector autoregressive (VAR) models to U.S. data [...]. The U.S. VAR results indicate that a policy uncertainty innovation equivalent to the actual EPU increase from 2005-2006 to 2001-2012 foreshadows declines of about 6\% in gross investment, 1.1\% in industrial production, and 0.35\% in employment.
 \end{itemize}
 \endgroup
 
 
-\begin{figure}[h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{epu_index_plot.pdf}}
-      \caption[EPU Index for the United States.]{EPU Index for the United States.
-      \textit{Note:} Index reflects scaled monthly counts of articles containing 'uncertain' or 'uncertainty', 'economic' or 'economy, and one or more policy relevant terms: 'regulation', 'federal reserve', 'deficit', 'congress', 'legislation', or 'white house'. The series is normalized to mean 100 from 1985-2009 and based on queries run on 2 February, 2015 for the USA Today, Miami Herald, Chicago Tribune, Washington Post, LA Times, Boston Glove, SF Chronicle, Dallas Morning News, NW Times, and the Wall Street Journal.\\
-      Original Figure Iå in \citet{bakeretal:15} spans until 2015. We have taken all available values until April 2018, inclusive.}   \label{fig:epuindex}
-\end{figure}
-
-
-
-\subsection{[Google Trends-based Index: \citet{bontempietal:16} and \citet{castelnuovoandtran:17}]}
-\label{sec:googletrends}
-\href{https://medium.com/google-news-lab/what-is-google-trends-data-and-what-does-it-mean-b48f07342ee8}{Google Trends is a freely available Google service derived from Google search data. As such it is a powerful tool when it comes to the exploration of global reactions to major events based on what people search for world-wide.}\footnote{For more information see \url{https://support.google.com/trends/?hl=en\#topic=6248052}.} The data that Google makes available thereby can be filtered in two ways: (i) \textbf{real time}, which is a random sample of searches from the last seven days and (ii) \textbf{non-real time} which is a random sample of the full Google dataset which can go back anywhere from 2004 to ca. 36 hours ago.\footnote{The algorithm reverts to sampling because otherwise the query to trillions of Google searches could not be executed within a reasonable amount of time.} 
-\\
-\\
-The feature that actually makes Google Trends useful is that it is normalized, meaning that when looking at the search interest for a specific topic over time, the presented data points show \textit{the proportion of all searches on all topics on Google at that particular time and location}. Only this makes the search interest for a particular topic across time (and potentially additionally across locations) comparable in the first place. The reported numbers are indexed to 100 (with 100 standing for the maximum search interest for a particular time and location selected).
-
-\begin{figure}[h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -2.5cm 0.8cm -1cm, width=0.95\textwidth]{gtu_index_plot.pdf}}
-      \caption[Google Trends Uncertainty (GTU) index.]{Google Trends Uncertainty (GTU) index.
-      \textit{Note:} Sample: 2004M1-2016M12. Index constructed by weighting search queries related to a battery of country-specific keywords as explained above and normalized to have mean = 100 and standard deviation = 30.}   \label{fig:gtuindex}
-\end{figure}
-
-\citet[p. 3]{bontempietal:16} summarize the rationale to use Internet searches, stating that ``[h]igher levels of uncertainty are likely to result in a greater appetite for knowledge, and consequently in a more intense use of tools capable of gathering further information.'' Hence, the linkage between uncertainty about the outcome of a specific political or economic event and the potential resulting intensity of Internet searches which is assumed to mirror individuals' perceived uncertainty is exploited. \\
-\\
-\citet{castelnuovoandtran:17} construct Google Trends-based uncertainty indices (henceforth called GTU indices) for the United States and Australia.\footnote{In the following we will only consider the case of the US and therefore also continue to speak of only one GTU \textit{index}.} Their index is based on frequently mentioned keywords appearing in reference economic documents like the Federal Reserve's Beige Book\footnote{The Beige Book gathers anecdotal information on current economic conditions based on interview with, among others, key business contacts, economists and market experts. See \url{https://www.federalreserve.gov/monetarypolicy/beige-book-default.htm} for more information.} (for the United States) in connection to the word \textit{uncertainty}. The authors report to have subjectively selected relevant search-terms from various editions of the Beige Book resulting in 79 keywords for the U.S. (the complete list is available in the appendix of \citealp{castelnuovoandtran:17}). \\
-\\
-The aggregation based on the 79 identified keywords is then performed as follows (see \citet{castelnuovoandtran:17}): \\
-As already indicated above, Google Trends data reports the frequency of a particular search term relative to the total search volume $S_{i, j, m, c}$ by dividing each raw data point $R_{i, j, m, c}$ (the frequency of a word $i$ in a group of searched words $j$ in period $m$ in location $c$) by the total searches $T$ in the same period/location so that $S_{i, j, m, c} = \frac{R_{i, j, m, c}}{T_{m, c}}$. 
 
 
 
 
-
-\subsection{Macro Uncertainty Index: \citet{juradoetal:15}}
+\subsection{A Forecast-Based Measure: \citet{juradoetal:15}}
 \label{sec:macrouncertainty}
 Especially in contrast to stock market volatility and/or cross-sectional dispersion measures frequently deployed in uncertainty studies, \citet{juradoetal:15} have designed a computationally and data-intensive approach by making use of a rich set of time series, computing the conditional volatility of the unforecastable component of the future value of each of these series and finally aggregating these conditional volatilities into one composite index.\footnote{Note that, apart from practical issues, \citet[p. 1191]{juradoetal:15} themselves explain the reliance on (most likely revised) ``historical'' data (instead of ``real time'' data) with their goal of forming the ``[...] most historically accurate estimates of uncertainty at any given point in time in [their] sample''.}\\
 \\
@@ -625,20 +689,20 @@ Based on the above definitions, \citet{juradoetal:15} emphasize two features tha
 
 While \citet{juradoetal:15} apply their approach to two large dataset with economic time-series (one monthly dataset containing hundreds of macroeconomic and financial indicators and one quarterly dataset containing 155 firm-level observations on profit growth normalized by sales), here we only confine ourselves to the former, i.e., their \textit{common macro uncertainty} index.
 
-Their resulting estimated measure of time-varying uncertainty is plotted in Figure~\ref{fig:macroUncertainty_index} and reveals 'only' three big episodes of uncertainty: the months during the recessions from 1973-1974 and 1981-1982 and the months during the Great Recession of 2007-2009 (being the most striking episode of heightened uncertainty, followed by the 1981-1982 recession as a close second).\footnote{See Table~\ref{tab:macro_shocks} below for the exact dates including the maximum value for the index for each identified episode of high uncertainty.}\footnote{\citet{juradoetal:15} report that a closer look at the estimates reveals that the three series with the highest uncertainty are a producer price index for intermediate materials, a commodity spot price index, and employment in mining between 1973:11 and 1975:3, the Fed funds rate, employment in mining, and the three months commercial paper rate for the 1980:1 and 1982:11 episode and the monetary base, non-borrowed reserves and total reserves between 2007:12 and 2009:6. \citet{juradoetal:15} conclude these results to be consistent with the historical account.}
+Their resulting estimated measures of time-varying uncertainty are plotted in Figure~\ref{fig:macroUncertainty_index} and reveals 'only' three big episodes of uncertainty: the months during the recessions from 1973-1974 and 1981-1982 and the months during the Great Recession of 2007-2009 (being the most striking episode of heightened uncertainty, followed by the 1981-1982 recession as a close second).\footnote{See Table~\ref{tab:macro_shocks} below for the exact dates including the maximum value for the index for each identified episode of high uncertainty.}\footnote{\citet{juradoetal:15} report that a closer look at the estimates reveals that the three series with the highest uncertainty are a producer price index for intermediate materials, a commodity spot price index, and employment in mining between 1973:11 and 1975:3, the Fed funds rate, employment in mining, and the three months commercial paper rate for the 1980:1 and 1982:11 episode and the monetary base, non-borrowed reserves and total reserves between 2007:12 and 2009:6. \citet{juradoetal:15} conclude these results to be consistent with the historical account.}
 
 \begin{figure}[!ht]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -1.5cm 0.8cm -1cm, width=0.95\textwidth]{macroUncertainty_index_plot.pdf}}
+   \fbox{\includegraphics[trim=1cm 6.5cm 1cm 8cm, width=0.90\textwidth]{macroUncertainty_index_plot.pdf}}
       \caption[Aggregate Uncertainty: $h = 1, 3, 12$.]{Aggregate Uncertainty: $h = 1, 3, 12$.
       \textit{Note:} Horizontal lines indicate 1.65 standard deviations above the mean of each series. Data are monthly and span the period 1960:7-2017:12. Red shaded areas correspond to dates where volatility series exceeds 1.65 standard deviation above the mean of the h1-series. Grey shaded areas denote NBER recession dates in the US.\\
       Original Figure 1 in \citet{juradoetal:15} spans until 2011. We have taken all available values until December 2017, inclusive.}   \label{fig:macroUncertainty_index}
 \end{figure}
 
 \begin{table}[t]
-\begin{center}
+\centering
 \caption{Periods of high uncertainty according to macro uncertainty index h=1.}
 \scalebox{0.8}{
     \begin{tabular}{ccccc}
@@ -652,7 +716,7 @@ Their resulting estimated measure of time-varying uncertainty is plotted in Figu
     \end{tabular}
 }
 \label{tab:macro_shocks}
-\end{center}
+\centering
 \end{table}
 
 
@@ -677,12 +741,17 @@ Note to self:
 	Economic-and-Industry-Indicators/Economic-Indicators/Economic-Sentiment-Indicator-for-the-Euro-Area.html} or \url{https://data.europa.eu/euodp/data/dataset/c04BuUz6WXIQGJkHPwLug}
 \end{itemize}
 
-\subsection{A Critique of the Various Measures}
+\subsection{Critique of the Various Measures}
 \begin{itemize}
 	\item Comparing the VXO to their own macro uncertainty index, \citet[p. 1201]{juradoetal:15} write that ``[...] it is difficult to imagine that the level of macro uncertainty in the economy in October 1987 (not even a recession year) was on par with the recent financial crisis.''
 	\item \citet{orlikandveldkamp:14} go on and write: ``Other proxy variables for uncertainty are informative, but have a less clear connection to a conditional variance definition of uncertainty.' (then they go on and write about business or consumer confidence, market volatility index (VIX), etc.)'
 	\item mentioned in \citet[p. 1182]{juradoetal:15}: ``[...] we emphasize here that the measures of dispersion and stock market volatility studied may or may not be tightly linked to true economic uncertainty. Indeed, one of the most popular proxies for uncertainty is closely related to financial market volatility as measured by the VIX, which has a large component that appears driven by factors associated with time-varying risk-aversion rather than economic uncertainty (see \citet{bekaertetal:13}) 
-	\item similarly, \citet[p. 12]{bontempietal:16} write: ``The (i) VIX is used in many empirical studies (most prominently in \citet{bloom:09}). But one caveat that emerges from the use of the VIX to proxy uncertainty concerns its ability to represent macroeconomic uncertainty, since it is based on stock market information alone. According to \citet{bekaertetal:13}, the VIX does not only reflect uncertainty but can be broken down into uncertainty and risk-aversion. Since risk aversion accounts for a sizeable part of the VIX,\footnote{For this reason, the VIX is usually referred to as the ``fear index'' (see, e.g., \citet{whaley:00}).}, even more caution should be taken when considering it as a proxy of macro-economic uncertainty.
+	\item \citet[p. 4]{moore:17} writes: ``The drawback of these stock volatility measures is that they are only indirectly connected to economic activity. Although company earnings are connected to economic activity, much of the short-run variation in stock prices is driven by other factors (Shiller 1981; Cochran e2011). Although these factors may related to economic uncertainty, the connection to economic activity is not clear. These measures are also asymmetric - increases in the measures accompany large falls in stock prices; large gains in stock prices are less common.
+	\item IMF Working Paper, Measuring Global and Country-Specific Uncertainty, p.1: ``A ubiquitous proxy is the implied or relaized volatility in stock markets, such as VIX, e.g. Bloom (2009). However, the volatility in Wall Street might not reflect uncertainty in Main Street. For instance, changes in the VIX might be due to leverage or financiel stress, despite low levels of economic uncertainty; For instance, changes in the VIX might be due to leverage or financial stress, despite low levels of economic uncertainty; see Bekaert et al. (2013).
+	\item IMF Working Paper, Measuring Global and Country-Specific Uncertainty, p.1: ``\citet{juradoetal:15} develop an alternative measure of economic uncertainty: the common variation in uncertainty across hundreds of economic series. Their measure reflects uncertainty around objective statistical forecasts, rather than perceived uncertainty by market participants. Moreover, as they focus on common, not idiosyncratic, unceratinty, there is no role for private information and heterogeneous agent models.
+	\item IMF Working Paper, Measuring Global and Country-Specific Uncertainty, p.1: ``But, like all measurements of this type, this news-based uncertainty measure puts a high bar for the attentiveness of reporters and editors, who might miss uncertainty events if they neglect to write a story on the subject.'' 
+	\item IMF Working Paper, Measuring Global and Country-Specific Uncertainty, p.4: Regarding cross-sectional dispersion measures: When disagreement is taken to indicate uncertainty, the underlying assumption is that this inter-personal dispersion measure is an acceptable proxy for the average dispersion of intra-personal uncertainty. As shown by Lahiri and Sheng (2010), however, disagreement is only a part of uncertainty and misses an important component: the volatility of aggregate shocks.
+		\item similarly, \citet[p. 12]{bontempietal:16} write: ``The (i) VIX is used in many empirical studies (most prominently in \citet{bloom:09}). But one caveat that emerges from the use of the VIX to proxy uncertainty concerns its ability to represent macroeconomic uncertainty, since it is based on stock market information alone. According to \citet{bekaertetal:13}, the VIX does not only reflect uncertainty but can be broken down into uncertainty and risk-aversion. Since risk aversion accounts for a sizeable part of the VIX,\footnote{For this reason, the VIX is usually referred to as the ``fear index'' (see, e.g., \citet{whaley:00}).}, even more caution should be taken when considering it as a proxy of macro-economic uncertainty.
 	\item in their non-technical summary, \citet{bekaertetal:13} write: ``Second, Bloom (2009) and Bloom, Floetotto and Jaimovich (2009) show that heightened
 “economic uncertainty” decreases employment and output. It is therefore conceivable that the
 monetary authority responds to uncertainty shocks, in order to affect economic outcomes.
@@ -706,60 +775,121 @@ Cross-sectional dispersion in individual stock returns can fluctuate without any
 	\item \citet[p. 13]{bontempietal:16} write: ``Although independent of any single observable economic indicator or event, the macroeconomic uncertainty measure following \citet{juradoetal:15} is a computationally intensive black box that is not directly linked to the uncertainty perceived by the general public.  
 \end{itemize}
 
-\section{Comparison of Selected Measures}
+\section{Properties of Selected Measures and Stylized Facts}
+\label{sec:ComparisonOfMeasures}
 \begin{figure}[!ht]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -1.5cm 0.8cm -1cm, width=0.95\textwidth]{comparison_plot.pdf}}
+   \fbox{\includegraphics[trim=1cm -1.5cm 0.8cm -0cm, width=0.95\textwidth]{comparison_plot.pdf}}
       \caption[Comparison of uncertainty measures (facetted).]{Comparison of uncertainty measures (facetted).
-      \textit{Note:} Shaded areas denote NBER recession dates in the US. Data frequencies are monthly. The macro uncertainty series starts in July 1960, the GTU in January 2004, the EPU in January 1985, the consumer uncertainty series (Michigan Survey) in February 1978 and the VXO/stock-market volatility series in July 1962.\\
-      Note to self: We define high uncertainty events as months when either uncertainty measure was one standard deviation above its time series average. (still have to add these values to the plots!))}   \label{fig:comparison_plot}
+      \textit{Note:} Shaded areas denote NBER recession dates. Data frequencies are monthly. The macro uncertainty series starts in July 1960, the EPU in January 1960, the consumer uncertainty series (Michigan Survey) in March 1978 and the VXO in July 1962.}   \label{fig:comparison_plot}
 \end{figure}
 
 
-Figures \ref{fig:comparison_plot} (on different scales) and \ref{fig:comparison_plot_combined} (normalized to the same scale) show all uncertainty measures we have considered so far including NBER recessions for the U.S. A first preliminary visual inspection shows that similar to \citet{bachmannetal:13}'s assessment in their own comparison, almost all recession periods correspond to elevated uncertainty across all measures. Apart from this commonality, the VXO and EPU show much noisier fluctuations than e.g., the macro uncertainty index. And while the VXO and EPU show a similar trajectory prior to the crisis, the EPU remains elevated during most of the recovery period showing more variation including several spikes (comparable to the GTU over that period). At a first glance, this suggests that the EPU indeed reacts much stronger to the political turmoil in the past decade than financial markets themselves. \\
+Figures \ref{fig:comparison_plot} (on different scales) and \ref{fig:comparison_plot_combined} (normalized to the same scale) show all uncertainty measures we have considered so far including NBER recessions for the U.S. 
+
+A first preliminary visual comparison highlights that similar to \citet{bachmannetal:13}'s assessment in their own comparison, almost all recession periods correspond to elevated uncertainty across all measures. Apart from this commonality, the VXO and EPU are affected by much noisier fluctuations over time than e.g., the macro uncertainty index. The VXO and EPU often move together prior to the crisis with distinct variations due to pronounced reactions of the VXO series to events with a connection to financial markets (e.g., the Asian financial crisis, the WorldCOM fraud, the Lehman Brothers failure, etc.). On the other hand, the EPU shows stronger spikes related to e.g., the Gulf Wars, presidential elections, and fiscal uncertainties due to tax or spending debates which causes the EPU to be elevated during most of the recovery period showing more variation including several spikes. This suggests that the EPU, by construction, indeed reacts much stronger to the political turmoil in the past decade than financial markets themselves.\footnote{Specifically being aware of these differences between the VXO and their EPU measure, \citet{bakeretal:15} construct a variation of their original EPU to be more strongly geared towards uncertainty on equity markets. Naturally, they report this financed-based EPU to correlate more strongly with the VXO/volatility series. For \citet{bakeretal:15} this exercise serves as a proof-of-concept in so far that a reasonable proxy for a specific \textit{type} of economic uncertainty can indeed be constructed using text-search techniques and that the variations between the VXO/volatility series and the original EPU are important and justified by construction.} \\
 \\
-The macro uncertainty index overall stands out with an overall smoother trajectory and marked spikes that correspond to recessions but also, as aptly formulated by \citet{juradoetal:15} themselves, significant independent variation as compared to the other commonly used uncertainty measures suggesting that ``[...] quantitatively important uncertainty episodes occur far more \textit{in}frequently\footnote{Italics added.} than what is indicated from common uncertainty proxies, but that when they \textit{do} occur, they display larger and more persistent correlations with real activity'' \citep[p. 1181]{juradoetal:15}. This observation can be confirmed by looking at Figures \ref{fig:comparison_plot} and \ref{fig:comparison_plot_combined} where increases in the macro uncertainty estimates are mostly associated with protracted recessions whereas more modest recessions are accompanied with smaller spikes. A period where the macro uncertainty index stands out is the recessionary period from 1980-1982: throughout this episode the index is highly elevated while other measures are comparatively low. The VXO on the other hand also shows spikes outside of recession periods that correspond to events exclusively related to stock-markets. For example, the large spike commonly on 'Black Monday' (October, 19th 1987) when stock markets experienced their largest single-day percentage decline ever recorded, is only visible in the MSoC (with a timely delay - almost not visible) and the EPU. The macro uncertainty index, however, barely moves around that time. Interestingly, the EPU shows the largest spike surrounding the years 2001-2001 (the dot-com bubble). 
-
-\begin{landscape}
-\begin{figure}[!t]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=1cm -0.8cm 0.8cm 0.2cm, width=1.5\textwidth]{comparison_plot_combined.pdf}}
-      \caption[Comparison of uncertainty measures (combined).]{Comparison of uncertainty measures (facetted).
-      \textit{Note:} Shaded areas denote NBER recession dates in the US. Data frequencies are monthly. The macro uncertainty series starts in July 1960, the GTU in January 2004, the EPU in January 1985, the consumer uncertainty series in January 1978  and the VXO in July 1962.}   \label{fig:comparison_plot_combined}
-\end{figure}
-\end{landscape}
-
-And while there is an overall comovement between the series, the identified episodes of substantial variation in the processes' dynamics suggest that ``[t]hese [time series] are clearly not measures of the same [latent] stochastic process [...]'' \citep[p. ]{orlikandveldkamp:14}.\\
-\\
-To prove the above statement, we will study the time-series properties of the various uncertainty measures in turn (results will be plotted below!).
-
-
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+Description of difference between VIX and MSoC: ``However, the two series appear otherwise very different. One notable difference is in 1997-1998. The VIX surged following the East Asian financial crisis and the Russian debt crisis, but consumer uncertainty remained at historically low levels. Another notable difference is in late 2010, when the U.S. economy faced the possibility of  fiscal cliff'' that could potentially trigger large tax increases and government spending cuts if Congress and the White House failed to reach an agreement about deficit reductions. In that period, consumer uncertainty remained elevated but the VIX was very low. Anecdotal evidence aside, the two measures of uncertainty are only weakly correlated, with a sample correlation of about 0.24 during the period from January 1986 - October 2013.
+\endgroup
+The macro uncertainty index overall stands out with an overall smoother trajectory and marked spikes that correspond to recessions but also, as aptly formulated by \citet{juradoetal:15} themselves, significant independent variation as compared to the other commonly used uncertainty measures suggesting that ``[...] quantitatively important uncertainty episodes occur far more \textit{in}frequently\footnote{Italics added.} than what is indicated from common uncertainty proxies, but that when they \textit{do} occur, they display larger and more persistent correlations with real activity'' \citep[p. 1181]{juradoetal:15}. This observation can be confirmed by looking at Figures \ref{fig:comparison_plot} and \ref{fig:comparison_plot_combined}\footnote{And also Table~\ref{tab:summary_stats1} which we will discuss below.} where increases in the macro uncertainty estimates are mostly associated with protracted recessions whereas more modest recessions are accompanied with smaller spikes. A period where the macro uncertainty index stands out is the recessionary period from 1980-1982: throughout this episode the index is highly elevated while other measures are comparatively low. The VXO on the other hand also shows spikes outside of recession periods that correspond to events exclusively related to stock-markets. For example, the large spike commonly to as 'Black Monday' (October, 19th 1987) when stock markets experienced their largest single-day percentage decline ever recorded, is only visible in the MSoC (with a timely delay - almost not visible) and the EPU. The macro uncertainty index, however, barely moves around that time. Interestingly, the EPU shows the largest spike surrounding the years 2001-2001 (the dot-com bubble). 
 
 \begin{table}[t]
-\begin{center}
-\caption{Correlation matrix of uncertainty measures.}
+\centering
+\caption[Correlation matrix of uncertainty measures.]{Correlation matrix of uncertainty measures. [check correlation between EPU and Macro! \citet{bakeretal:15}] report a value of 0.42 while we get 0.15!}
 \scalebox{1}{ 
-  \label{} 
-	\begin{tabular}{@{\extracolsep{5pt}} cccccc} 
-	\\[-1.8ex]\hline 
-	\hline \\[-1.8ex] 
- 	& MSoC & VXO & EPU & GTU & Macro \\ 
-	\hline \\[-1.8ex] 
-	MSoC & $1$ & $0.510$ & $0.600$ & $0.240$ & $0.340$ \\ 
-	VXO & $0.510$ & $1$ & $0.530$ & $0.360$ & $0.630$ \\ 
-	EPU & $0.600$ & $0.530$ & $1$ & $0.250$ & $0.150$ \\ 
-	GTU & $0.240$ & $0.360$ & $0.250$ & $1$ & $0.620$ \\ 
-	Macro & $0.340$ & $0.630$ & $0.150$ & $0.620$ & $1$ \\ 
-	\hline \\[-1.8ex] 
+	\begin{tabular}{@{\extracolsep{5pt}} lcccc} 
+	\toprule
+ 	& MSoC & VXO & EPU & Macro \\ 
+	\midrule \\[-1.8ex] 
+	MSoC & $1$ & $0.510$ & $0.600$ &  $0.340$ \\ 
+	VXO & $0.510$ & $1$ & $0.530$ & $0.630$ \\ 
+	EPU & $0.600$ & $0.530$ & $1$ & $0.150$ \\ 
+	Macro & $0.340$ & $0.630$ & $0.150$ & $1$ \\ 
+	\bottomrule
 	\end{tabular} 
 }
 \label{tab:correlations}
-\end{center}
 \end{table}
+
+
+Despite an overall co-movement between the series, the identified episodes of substantial variation in the processes' dynamics suggest that ``[t]hese [time series] are clearly not measures of the same [latent] stochastic process [...]'' \citep[p. ]{orlikandveldkamp:14}.\\
+\\
+To shed some light on the above statement, we will comparatively discuss a few univariate and multivariate properties of the various uncertainty measures in turn.
+
+Table~\ref{tab:summary_stats1} reports several summary statistics including key figures regarding the \textit{distribution} of the uncertainty measures, their \textit{cyclicality} and its nexus to the business cycle, \textit{persistence} and whether we have any evidence for non-\textit{stationarity}. The results point at a few stylized facts:\\
+First, none of the measures passes the Shapiro-Wilk test, meaning that their respective distributions are significantly different from the normal distribution. This is in line with the figures on skewness and kurtosis: the distribution of changes in the measures are positively skewed and show excess kurtosis (fat tails), most pronounced for VXO and EPU indicating that there are more extreme values in these series as compared to Macro1 and Macro12.\footnote{The only exception being the kurtosis figure for Michigan with -0.66.}. Together, these observations point at tails on the right side of the distribution being longer than the ones on the left (meaning that the majority of the density's mass and the median lies to the left of the means). Similarly to the dynamics of business cycles, the above findings suggest that increases in the uncertainty measures tend to be larger than decreases. In other words, uncertainty increases faster than it decreases \citep{moore:17}. Further, across all uncertainty measures, the VXO and EPU suggest a higher variability (according to the variation coefficients) which is also visible from the visual inspection of Figures \ref{fig:comparison_plot} and \ref{fig:comparison_plot_combined}.
+
+Second, uncertainty appears to be countercyclical. The measures largely show means and variances that are higher during recessions versus expansions. This is further supported by negative contemporaneous correlations of the uncertainty measures with key economic indicators like industrial production and employment in manufacturing. The figures are strongest for the macro uncertainty series (Macro1 and Macro12) while VXO, Michigan and EPU are more weakly associated with the business cycle. In line with \citet{bloom:14}, uncertainty seems to be higher during recessions.\footnote{The unconditional negative correlations are, of course, uninformative about causation between real activity and uncertainty.}
+
+\begin{table}[!h]
+\tiny
+\centering
+\caption[Summary Statistics on the Dynamics of Uncertainty Proxies.]{Summary Statistics on the Dynamics of Uncertainty Proxies.\\
+\textit{Note:} IP-corr(k) and EMP-corr(k) are the absolute cross-correlation coefficients between a measure of uncertainty and the 12 month moving average of industrial production or employment in manufacturing growth in period $t+k$, i.e., $\text{IP-corr(k)} = |corr(u_t, \Delta \% IP_{t+k}|$ and $\text{EMP-corr(k)} = |corr(u_t, \Delta \% EMP_{t+k}|$. A positive $k$ means uncertainty is correlated with future IP/EMP. Half-lifes are based on estimates from a univariate AR(1) model for each series and calculated as $HL = ln(2)/ln(AR(1).coef)$. The sample for each uncertainty measure is the largest available, starting in July 1962 in the case of VXO, EPU, Macro1 and Macro12 and in March 1978 for Michigan.}
+\scalebox{1}{  % blows up or reduces the table in its entirety
+\renewcommand{\arraystretch}{1.5} % stretches vertically
+\resizebox{\textwidth}{!}{%
+    \begin{tabular}{l *{5}{d{3.3}} }
+        \toprule
+        %below multicolumn is necessary so that the effect of dcolumn is not also applied on the column headers!
+         &  \multicolumn{1}{c}{VXO} & \multicolumn{1}{c}{Michigan} &  \multicolumn{1}{c}{EPU} &  \multicolumn{1}{c}{Macro1} &  \multicolumn{1}{c}{Macro12} \\ 
+         \midrule
+         \multicolumn{6}{l}{\textit{Distribution}}\\
+        Coeff. of Variation ($\sigma/\mu)$ & 0.33 & 0.78 & 0.37 & 0.14 & 0.08 \\
+        Skewness (Levels) & 1.23 & 1.11 & 0.77 & 1.67 & 1.61 \\
+        Excess Kurtosis (Levels) & -0.98 & -2.37 & -1.21 & 0.23 &-0.08 \\
+        Skewness (Change) & 0.69 & 0.29 & 0.48 & 0.75 & 0.90 \\
+        Excess Kurtosis (Change) & 2.06 & -0.66 & 3.33 & 0.35 & 0.60 \\
+        Shapiro-Wilk (p-value) & 0 & 0 & 0 & 0 & 0 \\
+        \midrule
+        \multicolumn{6}{l}{\textit{Cyclicality}}\\
+        Downturn/Upturn $\mu$ ratios  & 1.35 & 1.73 & 1.14 & 1.25 & 1.13 \\
+        Downturn/Upturn $\sigma$ ratios & 0.98 & 1.3 & 1.33 & 1.72 & 1.58 \\
+        IP-corr(0) & -0.36 & -0.27 & -0.33 & -0.64 & -0.61 \\
+        IP-corr(-12) & -0.15 & -0.36 & -0.22 & -0.37 & -0.33 \\
+        IP-corr(+12) & -0.13 & 0.13 & -0.17 & -0.21 & -0.29 \\
+        EMP-corr(0) & -0.43 & -0.28 & -0.33 & -0.63 & -0.57 \\
+        EMP-corr(-12) & -0.21 & -0.30 & -0.24 & -0.24 & -0.20 \\
+        EMP-corr(+12) & -0.24 & 0.18 & -0.21 & -0.34 & -0.40 \\
+        \midrule
+        \multicolumn{6}{l}{\textit{Persistence}}\\
+        AR(1) & 0.83 & 0.85 & 0.81 & 0.99 & 0.99 \\
+        Half Life (in months) & 3.66 & 4.22 & 3.26 & 57.8 & 129 \\
+        \midrule
+        \multicolumn{6}{l}{\textit{Stationarity Tests}}\\
+        Level Stationary (p-value)\tablefootnote{KPSS-test with $H_0 = \text{(trend/level) stationary}$.} & 0.02 & 0.01 & 0.01 & 0.09 & 0.03 \\
+        Trend Stationary (p-value) & 0.10 & 0.05 & 0.01 & 0.01 & 0.01 \\
+        \bottomrule
+    \end{tabular}
+    }
+}
+\label{tab:summary_stats1}
+\end{table}
+
+
+Third, as persistence seems to be a relevant ingredient of the impact of uncertainty on business cycles as shown by \citet{schaal:17}, the estimated half-life shocks (derived from the AR(1)-coefficients) of Macro1 and Macro12 with 57 and 129 months, respectively, show a much higher persistency than the other uncertainty proxies with approx. 4 months which is ``[...] a finding relevant for theories where uncertainty is a driving force of economic downturns, including those with more prolonged periods of below-trend economic growth'' \citep[p. 1193]{juradoetal:15}. 
+
+Together, one could postulate that the dynamics of uncertainty tend to be characterized by ``[...] large [upward] spikes [...] after major events, followed by slow reversion'' \citep[p. 14]{moore:17}.
+
+While Table~\ref{tab:summary_stats1} looked at all recessionary periods together, Figure~\ref{fig:uncertainty_after_recessions} shows the evolution of uncertainty in the U.S., starting 9 months after uncertainty reached its peak during the respective recessions since 1960.\footnote{We look at the 1982, 1983, 1991, 2002 and 2009 recessions and exclude the 1971, 1975 recessions because our measure from the Michigan Survey only starts in 1978.} 
+
+
+While Table~\ref{tab:summary_stats1} already hints at the strong countercyclicality of uncertainty --> reproduce the Table from Kose and Terrones, 2012 where they differentiate various degrees of uncertainty and its effects on production, etc.
+
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item IMF, Kose and Terrones, 2012, p. 1: --> Derived from this statement, I should reconstruct the regressions of Kose and Terrones to prove those two points: ``Uncertainty is shown to have a harmful impact on economic activity. Second, as experienced acutely since the global financial crisis, uncertainty is highly COUNTERCYCLICAL. Thirds, cross-country evidence indicates that high uncertainty is OFTEN ASSOCIATED WITH DEPER RECESSIONS AND WEAKER RECOVERIES. 
+\end{itemize}
+\endgroup
+
+
 
 
 \begingroup
@@ -767,12 +897,10 @@ To prove the above statement, we will study the time-series properties of the va
     Note to self:
 \begin{itemize}
 	\item here we should compare the statistical features at both the univariate (persistence, seasonality and variability over time) and multivariate (Granger causality and contemporaneous correlation) levels!! (compare to \citet{bontempietal:16})!!!! i.e., add time-series analysis of the uncertainty-measures! (like the one performed in Bontempi et al, 2015) to this section!
-	\item add a table with the cross-correlation between the various measures!
-	\item \citet{juradoetal:15} provide a table with summary statistics of their uncertainty measures for $h=1$. Their table reports the first-order autocorrelation coefficient, estimates of the half-life of an aggregate uncertainty innovation from a univariate autoregression (AR) for U_t(1), estimates of skewness, and kurtosis, and IP-Corr(k) is the (absolute) cross-correlation of Ut with industrial production growth at different leads and lags, k. The same statistics are reported for other uncertainty proxies,. Several statistical facts about their own estimate of aggregate uncertainty stands out in Table 1. \\
-	Of course, these unconditional correlations are uninformative about the causal relation between uncertainty and real activity. All that can be said is that there is a strong coherence between uncertainty and real activity.
-	\item Similar to \citet{juradoetal:15} I should add a table with summary statistics of the various volatility series (including their half-life, etc.)
 	\item The following sentence is taken from \citet{bloom:09} where Bloom explains the rationale for taking the stock-market volatility: Here I should mention what is written in Bloom (2009): 'The evidence presented in Table I shows that a number of cross-sectional measures of uncertainty are highly correlated with time series stock-market volatility. Stock-market volatility has also been previously used as a proxy for uncertainty at the firm level (e.g., Leahy and Whited (1996) and Bloom, Bond, and Van REenen (2007)).'
-	\item \citet[p. 1180]{juradoetal:15} write: ``Moreover, our estimate of macroeconomic uncertainty is far more persistent than stock market volatility: the response of macro uncertainty to its own innovation from an autoregression has a half-life of 53 months; the comparable figure for stock market volatility if four months.
+	\item Here I should replicate some of the stylized facts that Bloom has mentioned in his 2012 paper as well as in the corresponding Power-Point-Presentation!\\
+\\
+I have to read the review article from Nicholas Bloom where he starts the abstract with: ``This review article tries to answer four questions: (i) what are the stylized facts about uncertainty over time; (ii) why does uncertainty vary; (iii) do fluctuations in uncertainty matter; and (iv) did higher uncertainty worsen the Great Recession?
 	\item \citet[p. 3]{bontempietal:16} write: ``The three previous approaches al have their pros and cons. On the one hand, the pre-selection of directly obesrvable specific events is easy to perceive but somewhat arbitrary. On the other hand, the methodological approaches that extract uncertainty estimates from latent processes are statistically and economically sound but are also very complex black boxes not strictly related to observable indicators of uncertainty.''
 	\item the differences between the macro uncertainty index of \citet{juradoetal:15} and other uncertainty measures cause \citet[p. 1180]{juradoetal:15} to conclude: ``Taken together, the findings imply that most movements in common uncertainty proxies, such as stock market volatility (the most common), and measures of cross-sectional dispersion, are not associated with a broad-based movement in economic uncertainty as defined in (2). This is important because it suggests that much of the variation in common uncertainty proxies is not driven by uncertainty.
 \end{itemize}
@@ -780,58 +908,240 @@ To prove the above statement, we will study the time-series properties of the va
 
 
 
-\section{Some Stylized Facts}
-Here I should replicate some of the stylized facts that Bloom has mentioned in his 2012 paper as well as in the corresponding Power-Point-Presentation!\\
+\section{Identification of Shocks and Causality}
+We do look at measures that try to model the same underlying stochastic process but .....cat in a dark room etc.
+Because in the empirical analysis we will look at samples that start in 07/1962 at the earliest (apart from the Michigan Survey), as of now we will choose that date as our starting date (unless an uncertainty measure has data only later). The end-date refers to the original estimation window used by \citet{bloom:09}.
+
+
+Bloom manages to tell a story and blablabla
+
+mention that we get slightly different results!
+
+I should move the entire part about the identification of shocks to this dedicated section (and hence de-clutter the figures with the Bloom-shocks and the shocks identified for the Macro-time-series; In this section would be the spot to discuss shock-measures in greater detail!
 \\
-I have to read the review article from Nicholas Bloom where he starts the abstract with: ``This review article tries to answer four questions: (i) what are the stylized facts about uncertainty over time; (ii) why does uncertainty vary; (iii) do fluctuations in uncertainty matter; and (iv) did higher uncertainty worsen the Great Recession?
+\\Note to self: We argue that uncertainty is a local property and not a global property, meaning that some sort of learning effect takes place (das muss ich dann noch etwas näher ausführen!) in people and that an algorithm that takes local properties
+into account is to be preferred!
+\\
+\\
+Wichtig: Bei Bloom's Herangehensweise haben wir das Endpunkt-Problem! (siehe Finanzkrise, die überhaupt nicht mit-einfließt)!
+
+
+\subsection{The Bloom-Shock}
+\label{sec:bloom_shock}
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item I definitely have to take into account what Hans said: the construction of the Bloom-shock explicitly tries to argue that the shocks are exogenous by construction - here I should 
+\end{itemize}
+\endgroup
+
+
+\citet{bloom:09} introduces stock-market volatility indicators (periods of high uncertainty; henceforth called 'Bloom-shocks') with the following approach:
+\begin{enumerate}[i]
+	\item detrending the uncertainty measure using a HP-filter with $\lambda = 129,600$; 
+	\item shocks are then chosen as those events with stock-market volatility more than 1.65 standard deviations above the HP-detrended mean (selected as the 5\% one-tailed significance level) of the measures' time series; thereby each month is being treated as an independent observation
+	\item within a series of resulting adjacent shock-months, \citet{bloom:09} further distinguishes between months corresponding to the maximum volatility and months corresponding to the first occurrence of significantly high volatility; the actual 'Bloom-shocks' are months with the maximum volatility
+\end{enumerate}
+
+In Figure~\ref{fig:bloom_shock_all} we can see what the construction of 'Bloom-shocks' would mean for all uncertainty measures we have introduced in Section~\ref{sec:MeasuringUncertainty}. Correspondingly, for a more detailed reference, Table~\ref{tab:tab_bloom_shock_all} outlines all 'shock' - periods in greater detail across all measures including information about 'first' (f) and 'maximum' volatility. 
+
+To be able to compare our results to \citet{bloom:09} in case of the VXO, for both the construction of Figure~\ref{fig:bloom_shock_all} and Table~\ref{tab:tab_bloom_shock_all} we have limited the data for the shock-calculation for all uncertainty measures to the period of 07/1962 - 06/2008\footnote{02/1978 in the case of the Michigan Survey}. 
+
+
+In Table A.1, \citet[p. 676]{bloom:09} reports 17 events of maximum stock market volatility and assigns each of theses event dates to actual events categorized as either 'war', 'terror', 'oil', or 'economic'. In our reproduction of Bloom's Table in Table~\ref{tab:bloom_shocks} we record a few discrepancies: we do not pick up November 1978 (OPEC II) and instead pick up October 1966, August 1982, January 1991, August 2007 and November 2007. 
+
+Apart from this, a comparison of the identified shock-periods across our uncertainty measures confirms our observation from Section~\ref{sec:ComparisonOfMeasures}: despite a considerable amount of overlapping shock-periods, the various uncertainty measures at the same time also produce distinct shock-periods that are limited to one or maximum two of the uncertainty measures simultaneously, suggesting that indeed the various measures seem to be steered partly by a common underlying stochastic process in combination with an own distinct component (financial in the case of the VXO, political in the case of the EPU, etc).
+
+the most notably observations are 
+
+. While easily deductible from Table~\ref{tab:tab_bloom_shock_all}, we have reproduced our 
+He thereby links all identified shocks by actual events classified in 'Terror', 'War', 'Oil', and 'Economic'. But since the classification of a 'shock' is an in-sample property and changes depending on the time-span usw.....
+Mention: The result has to be seen with caution because it is an in-sample property: to highlight this we have produced the exact same plot for the full available samples of the various uncertainty measures that are avialable (including the financial crisis) this time --> This significantly alters the picture!!!
+
+\begin{landscape}
+\begin{figure}[!ht]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -1.5cm 0.8cm -0cm, width=1.5\textwidth]{BLOOM_Shocks_plot_combined.pdf}}
+      \caption[Comparison of uncertainty measures including 'Bloom-shocks' (facetted).]{Comparison of uncertainty measures including 'Bloom-shocks' (facetted).
+      \textit{Note:} Shaded areas denote shock-periods (high uncertainty periods) following \citet{bloom:09} according to the following definition: high uncertainty periods are defined as periods where a series value is more than 1.65 standard deviations above the HP-detrended mean of the series. Data frequencies are monthly. Blue horizontal lines mark months of maximum volatility within a high-uncertainty period (the actual 'Bloom-Shocks'). All series apart from consumer uncertainty series (Michigan Survey) start in July 1962, Michigan Survey in March 1978.}   \label{fig:bloom_shock_all}
+\end{figure}
+\end{landscape}
+
+
+\subsection{Modeling Uncertainty Shifts}
+
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Related Literature}
+\chapter{The Channels, \textit{or}: The Micro-Macro-Nexus}
 \label{UncertaintyandBusinessCyclesRelatedLiterature}
-The literature that investigates the linkages of uncertainty on various macroeconomic aggregates (and beyond) is extensive including both empirical and theoretical work. An often-cited theoretical study which is seen as a pioneering work in the field of uncertainty-studies is \citet{bernanke:83} who investigates optimal investment decisions under uncertainty in an oil cartel and finds that high uncertainty causes firms to postpone investments and hiring in an environment where investment projects cannot easily be undone and labor market laws cause changes to the labor force (either hires or fires) to be costly. Subsequent selected works include, for example, \citet{rameyandramey:95}, \citet{aghionetal:05}, \citet{mills:00} and \citet{imbs:07} on the relationship of volatility and growth, \citet{leahyandwhited:96} and \citet{bloometal:07} on the effect of uncertainty on investment, \citet{barlevy:04} and \citet{gilchristandwilliams:05} on the effects of uncertainty on business cycles, etc.\footnote{Note that the list of studies is not supposed to be exhaustive.} \\
-\\
-The growing body literature that has recently started to systematically study economic uncertainty in an attempt to understand its origins and the \textit{potential} causal effects of time-varying economic uncertainty on macroeconomic fluctuations (business cycles) largely has one thing in common: in a VAR context, uncertainty shocks seem to have a negative effect on output (or proxies thereof such as industrial production or employment). But as summarized by \citet[p. 23]{bontempietal:16}, ``[...] this key finding is only robust in regard to the uncertainty impact in the short run, whereas in the long run different works have pointed to somewhat heterogeneous output responses.'' \\
-\\
-The study whose results serve as a benchmark for our own analysis by replicating parts of it in Section~\ref{sec:EmpiricalAnalysis} below is \citet{bloom:09} who proposed uncertainty shocks as a 'new' driver of business cycles and triggered much of the literature in subsequent years. \citet{bloom:09} himself links his work with earlier publications of \citet{bernanke:83} and \citet{hassler:96} and conducts a comprehensive analysis of the impact of uncertainty shocks on business cycle fluctuations by (1) building a model with a time-varying second moment from which he then simulates a macro uncertainty shock and (2) compares the results to the impulse response functions of vector autoregression (VAR) estimations on actual data. While the bulk of his work concentrates on the former, interestingly it is the latter (the empirical analysis using VARs) that has triggered much of the controversy in the literature. In particular, using 17 identified exogenous shocks, \citet{bloom:09} estimates VARs showing that volatility shocks generate a short-run drop in industrial production of 1\% which last for about 6 months and subsequently creates a longer-run overshoot. In his setting, these results are robust to the effect of an uncertainty shock on employment and a range of alternative approaches (including variable ordering, variable inclusion, shock definitions, shock timing, and detrending).\\
-\\
-Contrary to Bloom's findings when using stock market volatility as a proxy for uncertainty, \citet{juradoetal:15} and \citet{bachmannetal:13} using forecast-based measures find a rather different response-pattern: their VARs show a sharp reduction in output at impact whose effect is far more persistent lasting for a couple of years after the shock with no signs of the overshooting effect as in \citealp{bloom:09}).\\
-\\
-While \citet{bloom:09} sees a confirmation for the 'wait-and-see approach' (Maybe I should add here a sentence starting with 'Central to Bloom's argumentation is the 'wait-and-see approach' and then explain the intuition behind it as outlined in \citet{bachmannetal:13}) according to his results, whereas \citet{bachmannetal:13}, using survey data get contrary predictions: 
-\\
-citet{bachmannetal:13} write on p. 28: ``This is at least suggestive evidence that uncertainty is a concomitant factor of bad economic times rather than a causal factor for them.''
+While uncertainty in economics has been dealt with already long before the Great Recession, it is safe to say that research in the field surged in the past decade to put, among others, arguments that point at increased uncertainty as a compounding factor to the Great Recession and subsequent slow recovery on steadier grounds. This growing body of literature covers the entire spectrum including studies examining the matter from solely (i) purely theoretical, (ii) purely empirical or (iii) both perspectives in both micro- and macroeconomic analyses deploying and developing various uncertainty measures (see Section~\ref{sec:MeasuringUncertainty}). In our review below we will refer to works falling into either of three categories whereby contributions having both an empirical and theoretical component are in a slight majority.  Note, however that also purely theoretical or empirical works often pick up previous theoretical or empirical results that have been reported in the literature and thereby all the more establish a theory-empirics-nexus. Further, while the Great Recession is frequently mentioned as a reference, the implications of the results are often-times generalized without specific attribution to the Great Recession. At most, key economics features (e.g. zero lower bounds, etc.) are considered in model extensions.
 
-Here I then should summarize the papers that refer to Bloom's paper and everything related to papers that study the effect of uncertainty on business cycles.
-Here I should mention that uncertainty is an ubiqitous concern of policymakers (and quote a few examples that also Bloom refers to both in Bloom (2009) and his presentation slides that are based on Bloom (2012)).\\
+
+%%%%\section{The Potential Channels, \textit{or}: The Micro-Macro-Nexus}
+A large body of the literature (both theoretical and empirical) studies potential channels through which macroeconomic uncertainty might alter economic agent's behavior both in PE and GE settings which in turn adversely affects economic activity. In particular, the literature largely discusses \textit{real-options-}, \textit{risk-aversion-} and \textit{risk premia-effects} that affect investment, consumption and the access to finance. In both PE and GE settings (with additional frictions), time-varying uncertainty suggests to play a role.\\
 \\
+The \textit{real-options-effect} touches upon both firms (investment and hiring decisions) and households (consumption and thus saving decisions) and under certain conditions establishes the following results: For firms, the idea is that when being faced with uncertainty, firms become more cautious about investment and hiring if those decisions cannot easily be reversed (so-called 'investment adjustment costs') which is summarized under the \textit{delay effect}.\footnote{These option-effects are alleviated, however, if, on the other hand, delays would be so costly as to hamper firm's ability to wait. } Works in the field include, among others, \citet{dixitandpindyck:94}, \citet{bernanke:83}[READ!], \citet{abelandeberly:96} and \citet{siegel:86}.\footnote{\citet{dixitandpindyck:94}[READ!], primarily looking at investment, introduce the ``option value for better (but never complete) information'' when it comes to investment decisions.\footnote{In fact, the term 'options-effect' in this context borrows from an analogy of option theory in finance.} \citet{bernanke:83} investigates optimal investment decisions under uncertainty in an oil cartel and finds that high uncertainty causes firms to postpone investments and hiring in an environment where investment projects cannot easily be undone and labor market laws cause changes to the labor force (either hires or fires) to be costly.} For effects on hiring see e.g. \citet{bentoliliaandbertola:90}.
+
+Besides uncertainty affecting the \textit{levels} of investment and hiring (the delay effect), theory suggests that economic agents also become \textit{less sensitive} to changes in external conditions in an uncertain environment (the \textit{caution effect}).\footnote{This result, among others, increases pressure on authorities to put forth monetary and fiscal interventions strong enough to outweigh these effects.} In this \citet{bloom:14} also sees an explanation for uncertainty stalling productivity growth due to an impediment to the productivity-enhancing reallocation of resources across firms (see also \citealp{bloometal:12}[READ!]).\\
+
+On the consumption side, equivalent patterns arise (delay and caution effect) and lead to precautionary spending cutbacks: uncertainty causes households to reduce the consumption of durable goods (items with a high real option value under uncertainty) like houses, cars, etc. (see e.g., \citealp{eberly:94, romer:90}).\\
+Risk aversion might turn this precautionary spending effect into precautionary \textit{savings} effect with a likely aggregate contractionary effect in the short run. While in theory (as mentioned by \citealp{bloom:14}), consumption cutbacks and a higher saving rate may induce investment and growth in the longer term, \citet{villaverdeetal:11} suggest that for a small open economy also potential positive long-run effects are impeded due to money fleeing the country. Likewise, in New Keynesian models they show that for large but more closed economies no positive savings (investment)-effects apply because through interactions between sticky prices (nominal rigidities) and search frictions missing market adjustments of interest rates and output prices might cause uncertainty shocks to translate into 'aggregate demand shocks' (see in particular \citealp{leducandliu:16} and \citealp{basuandbundick:17}).\\
+\\
+Turning to financial markets, the idea is that frictions cause uncertainty to put upward pressures on the cost of finance by increasing risk premia due to investors' demand for an adequate risk-compensation. In addition, creditors might drive up interest rates and retract overall lending activity which further hampers firms' ability to borrow and in effect contracts investment and subsequently output (see e.g., \citealp{gilchristetal:14}[READ!], \citealp{christianoetal:14}, \citealp{arenalloetal:11})[READ!]. A potential additional precautionary effect studied in the literature is managerial risk aversion whereby under uncertainty investment decreases in particular for firms where the managers themselves hold a considerable amount of shares (see e.g. \citealp{panousiandpananikolaou:12}).\\
+\\
+Besides the above mentioned detrimental effects of uncertainty, \citet{bloom:14} also mentions potential channels through which uncertainty can have a positive effect on growth in the long run. First, within the framework of real options the effects are not universal insofar as they are strongly subject to the condition of (ir)reversibility: if firms can easily adjust their behavior to allow for more flexibility under deteriorating circumstances the expected detrimental effects might be alleviated (see, e.g., \citealp{vallettaandbengali:13})[READ!]. Second, 
+
+Apart from the above mentioned literature, investigations into uncertainty go into many various directions. Among others (a non-exhaustive list), this and that and a literature on the linkage between this and that and so on....(MAYBE I SHOULD BETTER PUT THIS INTO A BIGGER FOOTNOTE WHERE I BRIEFLY MENTION OTHER STRNDS OF THE LITERATURE!) Example: Various studies look into particular types of uncertainty (e.g., effects of political uncertainty, etc.)......
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item
+	IMF-Paper:	
+	The impact of uncertainty differs across sectors and countries. The sectors that produce durable goods - including machinery and equipment, automobiles, houses, and furniture - are often the most affected by increases in uncertainty. The impact of an uncertainty shock on consumption and investment is larger in emerging market economies than in advanced economies, probably because the former group tends to have less developed financial markets and institutions (Carriere-Swallow and Cespedes, 2011). [...] High uncertainty tends to be associated with a lager drop in investment than in output and consumption growth. These findings lend support to the validity of different theoretical channels through which uncertainy adverseley affects economic adtivity. \\
+	Policy-induced uncertainty is also negatively associated with growth. The adverse impact works mainly through two channels. [...] As noted, policy uncertainty has increased to record levels since the Great Recessions. Specifically, the increase in policy uncertainty between 2006 and 2011 was about 5 standard deviations. (see Baker, Bloom, and Davis (2012).).
+	\item \citet[p. 1597]{bakeretal:15} write: ``Second, there is a literature focused explicitly on policy uncertainty Friedman (1968), Rodrik (1991), Higgs (1997), and Hassett and Metcalf (1999), among others, consider the detrimental economic effects of monetary, fiscal, and regulatory policy uncertainty. More recently, Born and Pfeifer (2014) and Fernandez-Villaverde et al. (2015) study policy uncertainty in DSEG models, finding moderately negative effects, while Pastor and Veronesi (2012, 2013) model the theoretical links among fluctuations, policy uncertainty, and stock market volatility. In other related work, Julio and Vook (2012) find that investment falls around national elections, Durnev (2010) finds that corporate investment becomes less responsive to stock prices in election years, Brogaard and Detzel (2015) find that policy uncertainty reduces asset returns, Handley and Limao (2015) find that trade policy uncertainty delays firm entry, Gulen and Ion (2016) find negative responses of corporate investment to our EPU index, Koijen et al. (2016) develop evidence that government-induced uncertainty about profitability generates a large equity risk premium for firms in the health care sector and reduces their medical R\&D, and Giavazzi and McMahon (2012) find that policy uncertainty led German households to increase savings in the run-up to the close and consequential general elections in 1998. 
+\end{itemize}
+\endgroup
+
+Ferrara Guerin (2016) write: “While there are different ways to measure uncertainty, qualitatively, there seems to be a strong convergense of results concerning the effects of uncertainty shocks on macroeconomic activity[we should better call this AGGREGATES], regardless of the measure used in the empirical analysis.
+
+
+%%%%\section{Analyzing Aggregate Macroeconomic Effects}
+
+The study whose results serve as a benchmark for our own analysis by replicating its empirical part in Section~\ref{sec:EmpiricalAnalysis} below is \citet{bloom:09} who proposed uncertainty shocks as a 'new' driver of business cycles and triggered much of the literature in subsequent years. \citet{bloom:09} himself links his work to earlier publications of \citet{bernanke:83} and \citet{hassler:96} and conducts a comprehensive analysis of the impact of uncertainty shocks on business cycle fluctuations by (1) building a model with a time-varying second moment from which he simulates a macro uncertainty shock and (2) compares the results to the impulse response functions of vector autoregression (VAR) estimations on actual data. While the bulk of his work concentrates on the former, interestingly it is the latter (the empirical analysis using VARs) that has triggered much controversy in the literature. In particular, using 17 identified 'exogenous shocks' (which we have discussed in Section~\ref{sec:bloom_shock}), in support of his theoretical model \citet{bloom:09} estimates VARs showing that an uncertainty shock in the data (the VXO-measure) produces a short-run drop in industrial production of 1\% which lasts for about 6 months (a confirmation for the ’wait-and-see approach’) and subsequently creates a longer-run overshoot. In his setting, these results are robust to the effect of an uncertainty shock on employment and a range of alternative approaches (including variable ordering, variable inclusion, shock definitions, shock timing, and detrending).\\
+\\
+
+%%%%Before diving into a detailed analyses of some of the works, I should explain a few key-terms so that they can be assumed to be known in the review!!!!!
+
+I should describe the terms before discussing the various papers: SEARCH FRICTIONS --> isolated description of search-frictions (\citet{leducandliu:16} write: ``Indeed, in our model with search frictions, uncertainty shocks can be contractionary even with flexible prices, in contrast to the real business cycles (RBC) model with a spot labor market.): \citet{leducandliu:16} write: ``Search frictions provide an additional mechanism for uncertainty shocks to generate large increases in unemployment via an option-value channel. With search frictions, a job match represents a long-term employment relationship that is irreversible. When times are uncertain, the option value of waiting increases and the match value declines. Firms respond by reducing hiring. This option-value effect in our model with search frictions arises for a similar reason as in the literature of irreversible investment decisions under uncertainty (\citet{bernanke:83}; \citet{bloom:09}; \citet{bloometal:12}.''
+
+NOMINAL RIGIDITIES/STICKY PRICES --> isolated description of search-frictions: \citet{leducandliu:16} write: Nominal rigidities are a key ingredient of many uncertainty studies because they ``help amplifying the effect of uncertainty shocks on the unemployment rate through declines in aggregate demand. In addition, with sticky prices (i.e., nominal rigidities), inflation falls as aggregate demand declines, in line with our evidence.''
+
+
+%%%%bachmannandbayer:13
+\citet{bachmannandbayer:13} .......
+
+%%%%bakeretal:15
+%%% --> mentioned in \citet{leducandliu:16}: ``For this purpose, we follow an approach similar to Baker et al (2015) and estimate 
+%%% a five-variable BVAR model that includes a consumer sentiment index as an additional variable to control for potential effects
+%%% from movements in consumer confidence.
+\citet{bakeretal:15} ..........
+
+
+%%%%bloometal:12
+\citet{bloometal:12} .......
+Bloom, Foetotto, Jaimovich, Saporta-Eksten, and Terr (2014) read --> add a summary about it here!
+
+%%%%bloom:09
+%%%%--> This option value effect in our model with serach frictions arises for a similar reason as in the literature of irreversible investment decisions under uncertainty (bernanke:83; bloom:09; bloometal:12)
+\citet{bloom:09}.............
+
+
+%%%%bachmannetal:13
+\citet{bachmannetal:13}........
+
+
+%%%%bornandpfeifer:14
+%%%--> the large real effect of uncertainty shocks present a challenge for standard DSGE models (as in bornandpfeifer:14)
+%%%--> leducandliu:16: We also examine the relative importance of these two channels through the lens of our model. The relatively small impact of uncertainty on real economic activity in case of absent search frictions is in line with the recent findings of born and pfeifer (2014) using a standard DSGE model without search frictions.
+\citet{bornandpfeifer:14}
+
+%%%%juradoetal:15
+\citet{juradoetal:15}...........
+
+
+%%%%villaverdeetal:11
+\citet{villaverdeetal:11} ......
+
+%%%%schaal:17
+\citet{schaal:17}...........\citet{leducandliu:16} refer to \citet{schaal:17} when they write about their findings regarding the interplay between nominal rigidities and search frictions: ``This finding is consistent with \citet{schaal:17}, who studies a search model with flexible prices. He obtains sizable effects from idiosyncratic volatility shocks - his measure of uncertainty - but partly by assuming that these volatility shock are negatively correlated with the level of aggregate productivity. Instead, when the option-value channel and the demand channel are simultaneously operating, as in our model, they interact to amplify the effects of uncertainty shocks and generate unemployment responses that are broadly in line with the data.''
+
+%%%%leducandliu:16 referring to several works:
+Stating their relation to the literature, \citet{leducandliu:16} refer to \citet{bloom:09}, \citet{bloometal:12}, \citet{juradoetal:15}, \citet{scotti:16}, \citet{bachmannetal:13} and \citet{villaverdeetal:11} when they write: ``On the empirical side, we document a new stylized fact that uncertainty acts like a negative aggregate demand shock that raises unemployment and lowers inflation. [...] Our empirical approach thus complements those in the literature, where uncertainty is measured using cross-sectional dispersions of earnings or productivity at the firm or industry levels (\citet{bloom:09}; \citet{bloometal:12}), the conditional variance of the unforecastable component in statistical models (\citet{juradoetal:15}; \citet{scotti:16}), forecast disagreements (\citet{bloom:09}; \citet{bachmannetal:13}) or the volatility of fiscal instruments estimated under time-varying volatilites (\citet{villaverdeetal:13}--> will not read!).
+
+
+%%%%%leducandliu:16
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+	\citet{leducandliu:16} write: ``On the theory side, we show that an uncertainty shock can generate the observed demand-like macroeconomic effects through interactions between an option-value channel stemming from search frictions and an aggregate demand channel associated with nominal rigidities. Our model complements the recent theoretical literature on the macroeconomics effects of uncertainty. This strand of literature is too vast to enumerate (see \citet{bloom:09}, \citet{gilchristetal:14}, \citet{arenalloetal:11}, \citet{basuandbundick:17}, \citet{bloometal:12}, \citet{bornandpfeifer:14} --> see \citet{bloom:14} for an overview.).
+\endgroup
+While \citet{bornandpfeifer:14} don't find convincing evidence for large real effects of policy uncertainty shocks in a standard DSGE model,  \citet{leducandliu:16} find that uncertainty shocks produce effect similar to aggregate demand shocks. To highlight aggregate demand effects (and abstracting from additional features that would also shed light on effects on investment), their theoretical DSGE framework incorporates both search frictions and nominal rigidities as key ingredients where the interplay of the reciprocal amplification of an option-value channel arising from search frictions in the labor market and decreases in aggregate demand stemming from sticky prices in the goods market produces a transmission mechanism of uncertainty on unemployment and inflation that is consistent with their empirical observation.\footnote{Under existing search frictions that reduce the value of a new match and cause firms to reduce hiring which drives up unemployment and ultimately reduces aggregate demand, when additionally prices are sticky, an increase in uncertainty also leads to a decline in aggregate demand which reinforces the option-value channel and generates an increase in unemployment. Under existing nominal rigidities the effect of decreasing aggregate demand is amplified when adding search frictions because the value of a new match decreases even further which ultimately pushes up the unemployment rate which in turn reduces households' income even further and aggravates the reduction in aggregate demand. This interaction considerably amplifies the fall in aggregate demand in response to uncertainty shocks in comparison to standard DSGE models that solely consider nominal rigidities and go without search frictions as in e.g. \citet{basuandbundick:17}.} Specifically, their theoretical model is guided by the empirical evidence derived from a four-variable Bayesian VAR (BVAR) on US data consisting of a measure of uncertainty, the unemployment rate, the CPI year-on-year inflation rate and a short-term interest rate (as represented by the three-month Treasury bills rate). In this setting, the authors declare the observed joint dynamics of sharply rising unemployment and decreasing inflation following an uncertainty shock to resemble features of a negative aggregate demand shock.\footnote{Adding habit formation to their model, their calibrated DSGE model comes closest to the empirical results from the VAR-model.} Contrary to the sole usage of the VIX as an uncertainty measure, \citet{leducandliu:16} report the dynamics to be robust to their alternative uncertainty measure of consumers' perceived uncertainty derived from the Thomson Reuters/University of Michigan Surveys of Consumers.\footnote{Due to data availability of the respective uncertainty measures, their estimation window accordingly covers 01/1978 - 10/2013 for the model containing the consumers' perceived uncertainty and 01/1986 - 10/2013 in case of the VIX.} Their rationale for using a consumer uncertainty measure is that, by construction of the survey, interviewees do not have (complete) information of the current month's macroeconomic data. Hence, it is assumed that survey participants will condition their answers on all previous realizations of macroeconomic indicators except time $t$.\footnote{Placing the uncertainty measure first in their Choleski ordering hence implies that on impact of a shock only unemployment, inflation and the nominal interest rate are allowed to respond. With their identification strategy \citet[p. 23]{leducandliu:16} assume that their ``[...] measured uncertainty contains \textit{some}\footnote{Author's italics.} exogenous component and does not reflect endogenous responses of other macroeconomic variables.} The resulting IRFs at impact of an uncertainty shock show a strongly persistent unemployment increase, peaking after approx. 18 months and significantly lasting for about three years. Inflation shoots in the opposite direction with a peak effect after around 20 months and staying significant for almost two years.\footnote{To accomodate the zero lower bound (ZLB) in U.S. monetary policy after 2008, \citet{leducandliu:16} report their VAR to also be robust to the usage of the two-year Treasury bond yield (that did not reach the ZLB) as an alternative indicator of the monetary policy stance. To accomodate the possibility of survey respondents' perceptions of bad economic times instead of uncertainty about the future, \citet{leducandliu:16} follow a similar approach like \citet{bakeretal:15} and add a variable for consumer sentiment as an additional control to their BVAR. The results suggest that uncertainty is indeed forward-looking.}
+
+%%%%%basuandbundick:17 
+%%%--> leducandliu:16 refer to both villaverdeetal:11 and basuandbundick:17 by writing: ``First, nominal rigidities 
+%%%      help amplify the the effect of uncertainty shocks on the unemployment rate through declines in aggregate demand, as in the
+%%%      standard DSGE model without search frictions (villaverdeetal:11, basuandbundick:17).
+Based on the empirical evidence of a VAR including the VXO as a measure of uncertainty, gross domestic product (GDP), consumption, investment, hours worked, the GDP deflator, the M2 money stock, and a measure of the monetary policy stance (in that order) over the 1986-2014 sample period\footnote{All variable apart from the monetary policy measure enter the VAR in log levels.}, \citet{basuandbundick:17} argue for the resulting co-movement of output, consumption, investment, and hours worked to be a key empirical feature of an economy's (i.e., the data's) response following an uncertainty shock and hence also as a ``[...] key minimum condition that business-cycle models driven by uncertainty fluctuations should satisfy'' \citep[p. 937]{basuandbundick:17}.\footnote{At the same time, they see this feature as missing from the related work of \citet{bloom:09}, \citet{bachmannandbayer:13} or \citet{gilchristetal:14}. } Identifying the uncertainty-shock using a Cholesky decomposition with the VXO ordered first, the authors assume that uncertainty shocks can affect output and its components immediately but that non-uncertainty shocks, however, do not influence the VXO on impact. With this ordering, their VAR generates statistically significant co-moving declines in output, consumption, investment, and hours worked with a peak response after approximately one year whereby their key stylized fact is robust to several modifications.\footnote{These modifications include: inclusions of stock prices in the VAR (as is done e.g., by \citet{bloom:09}), measurement of uncertainty using the VIX instead of the VXO, a re-ordering of the VAR placing uncertainty last or an adjustment of the sample period to exclude the Great Recession.} These insights are subsequently brought into a DSGE model (non-competitive, one-sector closed-economy model) where they calibrate their uncertainty shock process using fluctuations in the VXO and add nominal price rigidities (sticky prices) to replicate the transmission mechanism which was identified in the data. According to \citet{basuandbundick:17}, the resulting dynamics due to the incorporated price rigidity in a model where output is demand-determined are able to support the intuition that an increase in uncertainty which induces precautionary savings, reduces household expenditures, output and labor input and eventually the demand for capital and investment as suggested by their VAR-model.
+\\
+\\
+Contrary to Bloom's findings, \citet{juradoetal:15} and \citet{bachmannetal:13} using their own forecast-based measures (see Section~\ref{sec:macrouncertainty}) find a rather different response-pattern: their VARs show a sharp reduction in output at impact whose effect is far more persistent lasting for a couple of years after the shock with no signs of the overshooting effect as in \citet{bloom:09}.\\
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item Ferrara Guerin (2016) write: ``While there are different ways to measure uncertainty, qualitatively, there seems to be a strong convergense of results concerning the effects of uncertainty shocks on macroeconomic activity[we should better call this AGGREGATES], regardless of the measure used in the empirical analysis.
+	\item \citet[p. 1597]{bakeretal:15} write: ``This article relates to at least three strands of literature. Recent empirical papers include Bloom (2009), Bachman et al (2013), Bloom et al. (2014) and Scotti (2016) with a review in Bloom (2014).\\
+ \item IMF-Paper: Empirical evidence based on VAR models points to a significant neagtive impact of uncertainty shocks on output and epmloyment. (Bloom 2009, Hirata and others, 2012). These results also echo the findings in a broader area of reserach on the negative impact of macroeconomic and policy volatility on economic growth ( Ramey and Ramey, 1995); Kose, Prasad and Terrones, 2006).\\
+\end{itemize}
+\endgroup
+
+
+
 Auch, wenn wir dann die Literatur zusammenfassen: alles richtig einbetten in meine Auseinandersetzung. Nicht einfach nur beschreiben, was in den Papern drinnensteht, sondern wie das related zu dem was ich bringe. Jeder Absatz der drinnensteht, muss einen Grund haben, warum er drinnensteht im Hinblick auf die Fragestellung usw. 
 
 Also: wohldefinierte Fragestellung, überschaubare Methode, Resultate. Das sollten die Kernkompetenzen sein (dass alles sauber beschrieben ist und zugänglich abgebildet ist, dass man weiß woher die Daten kommen und alles replizierbar ist).
 \\
 \\
-\citet{juradoetal:15} write on p. 1182: ``Bloom's VAR estimates suggest that uncertainty has an impact on output and employment in the six months after an innovation in these measures, with a rise in volatility at first depressing real activity and then increasing it, leading to an over-shoot of its long-run level, consistent with the predictions of models with uncertainty as a driving force of macroeconomic fluctuations. Bloom et al. (2012) also documented a relation between real activity and uncertainty as proxied by dispersion in firm-level earnings, industry-level earnings, total factor productivity, and the predictions of forecasters. A recurring feature of these studies is that the uncertainty proxies are strongly countercyclical.''
-\\
-\\
-\citet{orlikandveldkamp:14} write
+
 
 As formulated by \citet[p. 24]{bontempietal:16}, the results found in the literature to date raise the following questions:
 \begin{enumerate}
-	\item are uncertainty shocks temporary or permanent?
+	\item are uncertainty shocks temporary or more persistent?
 	\item is the degree of persistence of identified negative uncertainty effects related to the econometric specification and/or the particular uncertainty measure used?
 	\item does the time span over which a model is estimated play any role?
+	\item \item \citet[p. 1595]{bakeretal:15} write: ``In Section IV we provide evidence of how firm-level and aggregate outcomes evolve in the wake of policy uncertainty movements. Causal inference is challenging, because policy responds to economic conditions and is likely to be forward looking. To make progress we follow a micro and a macro estimation approach. [...] Our second approach fits vector autoregressive (VAR) models to U.S. data. [...] The U.S. VAR results indicate that a policy uncertainty innovation equivalent to the actual EPU increase from 2005-2006 to 2011-2012 foreshadows declines of about 6\% in gross investment, 1.1\% in industrial production, and 0.35\% in employment. 
 \end{enumerate}
 
 We want to discuss these questions in our penultimate Section~\ref{sec:EmpiricalAnalysis} below.
 
-\chapter{Empirical Analysis}
+works that combine empirics with theory and establish dsge-models in conjunction with empirical analysis on a micro or macro-level; I have to include this footnote somewhere where it makes sense.\footnote{A non exhaustive list of selected works includes, for example, \citet{rameyandramey:95}, \citet{aghionetal:05}, \citet{mills:00} and \citet{imbs:07} on the relationship of volatility and growth, \citet{leahyandwhited:96} and \citet{bloometal:07} on the effect of uncertainty on investment, \citet{barlevy:04} and \citet{gilchristandwilliams:05} on the effects of uncertainty on business cycles, etc.}
+
+Besides theoretical approaches, one part of the empirical literature uses micro-data (mostly firm-level data) in an attempt to extract uncertainty effects 
+
+
+The growing body of recent empirical literature on the \textit{potential} causal effects of time-varying economic uncertainty on macroeconomic activity (aggregates) qualitatively largely has one thing in common: in a VAR context, uncertainty shocks seem to have a negative effect on output (or proxies thereof such as industrial production or employment). But as summarized by \citet[p. 23]{bontempietal:16}, ``[...] this key finding is only robust in regard to the uncertainty impact in the short run, whereas in the long run different works [using different uncertainty proxies and slight modifications in the econometric specifications] have pointed to somewhat heterogeneous output responses.''\\
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%EMPIRICALANALYSIS%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%EMPIRICALANALYSIS%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%EMPIRICALANALYSIS%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%EMPIRICALANALYSIS%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Empirical Analysis: Effects of Uncertainty on the U.S. Economy}
 \label{sec:EmpiricalAnalysis}
 \begingroup
     \fontsize{8pt}{12pt}\selectfont
     Note to self:
 \begin{itemize}
+	\item as written in the Appendix of \citet[p. 5]{basuandbundick:17}: ``As we discuss in the main text, the Federal Reserve hit the zero lower bound on nominal interest rates at the end of 2008. While we model this outcome rigorously using our theoretical model, it is less clear how to model the stance of monetary policy during our 1986-2014 sample period econometrically. [...] If we use the 1962-2008 sample of Bloom (2009) with the federal funds rate as the measure of monetary policy, our stylized fact remains: Higher uncertainty generates declines in output, consumption, investment, and hours worked.
 	\item  In line with the mainstream perspective and for the purpose of this work, we will elaborate below whether or not we can reasonably argue that the measures of uncertainty that we look at can indeed be regarded as exogenous sources of shocks within our empirical model. 
 	\item Here in the introduction to the Empirical Analysis I should outline the intuition behind the benchmark-model that we are analyzing (\citet{bloom:09}) which \citet{bachmannetal:13} describe very well in their introduction to Section 2: ``Time-varying uncertainty at the firm level may have economic consequences when there is a degree of irreversibility to firm actions. For a concrete example, suppose that a firm faces fixed costs to adjusting the size of its labor force and/or physical capital stock. Suppose further that there is a mean-preserving spread on the distribution of future demand for the firm's product. With fixed adjustments costs, higher uncertainty over future demand makes new hiring and investment less attractive. The reason for this is intuitive - if a large fixed cost must be paid do adjust the firm'S labor or capital, then there is reason to minimize the number of times this cost must be paid. If the future is very uncertain (in the sense that demand could be either very high or very low relative to the present), then it makes sense to wait until the uncertainty is resolved to undertake new hiring and investment.'' --> ``An increase in uncertainty thus makes inaction relatively more attractive.'' 
 \end{itemize}
@@ -1019,7 +1329,24 @@ This part provides results from a large number of robustness exercises designed 
     \fontsize{8pt}{12pt}\selectfont
     Note to self:
 \begin{itemize}
-	\item \citet[p. 1181]{juradoetal:15} write: ``While we find that increases in uncertainty are associated with large declines in real activity, we caution that our results are silent on wehther uncertainty is the cause or effect of such declines. Our goal is to develop a defensible measure of time-varying macro uncertainty that can be tracked over time and related to fluctuations in real activity and asset markets. Our estimates do, however, imply that the economy is objectively less predictable in recessions thatn it is in normal times. This result is not a statement about changing subjective perceptions of uncertainty in recessions as compared to booms. Any theory for which uncertainty is entirely the effect of recessions would need to be consistent with these basic findings.  
+	\item \citet[p. 1181]{juradoetal:15} write: ``While we find that increases in uncertainty are associated with large declines in real activity, we caution that our results are silent on wehther uncertainty is the cause or effect of such declines. Our goal is to develop a defensible measure of time-varying macro uncertainty that can be tracked over time and related to fluctuations in real activity and asset markets. Our estimates do, however, imply that the economy is objectively less predictable in recessions thatn it is in normal times. This result is not a statement about changing subjective perceptions of uncertainty in recessions as compared to booms. Any theory for which uncertainty is entirely the effect of recessions would need to be consistent with these basic findings.
+	\item \item \citet[p. 1596/1597]{bakeretal:15} write:  ``Although our results are not necessarily causal, one plausible interpretation of our micro and macro evidence is that policy uncertainty retards investment, hiring, and growth in policy-sensitive sectors like defense, finance, healthcare, and construction, and these sectors are important enough for policy uncertainty to matter at the aggregate level.'' --> \\
+	In this report, on p. 20, the authors write: \\
+	*``A basic challenge for policymakers is thus to move away from an incremental approach to policymaking and address the many downside risks to global activity with strong medium-term fiscal and structural reform programs in order to rebuild confidence. In the euro area, action is also needed to address the current crisis and, over the medium term, to complete the EMU. \\
+	*Fiscal adjustment has become necessary in many
+cases to strengthen confidence in sovereign balance
+sheets and in many other cases because the prospects
+for future potential output—and hence revenue
+growth—are substantially less promising than they
+were before 2008. Unless governments spell out
+how they intend to effect the necessary adjustment
+over the medium term, a cloud of uncertainty will
+continue to hang over the international economy,
+with downside risks for output and employment in
+the short term.
+Fiscal adjustment should be gradual and sustained,
+where possible, supported by structural
+changes, as, inevitably, it weighs on weak demand. 
 \end{itemize}
 \endgroup
 
@@ -1027,6 +1354,11 @@ This part provides results from a large number of robustness exercises designed 
 \chapter{Conclusion}
 \label{Conclusion}
 
+
+In the article ``Held Back by Uncertainty'' Bloom and his Colleagues write: '' Policymakers can help.'' --> I should build the conclusion up along these lines! \\
+\\
+In Kose and Terrones, 2012 (How Does Uncertainty Affect Economic Performance"), p. 5, the authors write: ``Policymakers can do little to alleviate the intrinsic uncertainty economies typically face over the business cycle. However, policy uncertainty is unusually high, and it contributes significantly to macroeconomic uncertainty. By implementing bold and timely measures, policymakers can reduce policy-induced uncertainty and help kick-start economic growth. What precisely policymakers need to do is discussed in the main text of Chapter 1:\\
+There, the authors suggest: 
 
 
 
@@ -1036,51 +1368,282 @@ This part provides results from a large number of robustness exercises designed 
 \newpage
 \appendix
 
+
+\chapter{Appendix}
+\label{VARAndLocalProjection}
+\section{IRFs in a VAR-Setting}
+\section{IRFs and Local Projections}
+
+\section{Additional Tables}
+\begin{spacing}{.3}
+\begin{landscape}
+    \centering
+    \begin{scriptsize}
+    \begin{longtable}{|l|lll|lll|lll|lll|lll|}
+    \caption[Comparison of uncertainty measures including shocks following identification methodology of \citet{bloom:09}.]{Comparison of uncertainty measures including shocks following identification methodology of \citet{bloom:09}. \\
+    \textit{Note:} High uncertainty periods are defined as periods where a series value is more than 1.65 standard deviations above the HP-detrended mean of the series (\citealp{bloom:09}). Data frequencies are monthly. All series apart from consumer uncertainty series (Michigan Survey) start in July 1962, Michigan Survey in March 1978 and range until June 2008. Column 'ID' marks periods of continuously high uncertainty without interruption (considered a continuous block of 'shocks'), corresponding to an 'ID' the column 'label' marks periods \textit{within} the same 'ID' as either 'f' (first month volatility in a continuous period) or 'm' (maximum volatility in a continuous period) or both (i.e., 'fm').}\\    %%%%<===
+\toprule
+    \textbf{Date} & \textbf{Michigan} & \textbf{Label} & \textbf{ID} & \textbf{EPU Hist} & \textbf{Label} & \textbf{ID} & \textbf{Macro12} & \textbf{Label} & \textbf{ID} & \textbf{Macro1} & \textbf{Label} & \textbf{ID} & \textbf{VXO} & \textbf{Label} & \textbf{ID} \\ 
+    \midrule
+    \endhead
+       Oct 1962 &  &  &  &  &  &  &  &  &  &  &  &  & 26 & f m & 1 \\
+        Nov 1963 &  &  &  &  &  &  &  &  &  &  &  &  & 28.7 & f m & 2 \\
+        Aug 1966 &  &  &  &  &  &  &  &  &  &  &  &  & 24.4 & f m & 3 \\
+        Oct 1966 &  &  &  &  &  &  &  &  &  &  &  &  & 23.9 & f m & 4 \\
+        Jan 1968 &  &  &  & 144 & f m & 1 &  &  &  &  &  &  &  &  &  \\
+        Mar 1968 &  &  &  & 123 & f m & 2 &  &  &  &  &  &  &  &  &  \\
+        May 1970 &  &  &  &  &  &  &  &  &  &  &  &  & 37.6 & f m & 5 \\
+        Nov 1971 &  &  &  & 154 & f m & 3 &  &  &  &  &  &  &  &  &  \\
+        Jul 1973 &  &  &  &  &  &  & 1.02 & f  & 1 &  &  &  &  &  &  \\
+        Aug 1973 &  &  &  &  &  &  & 1.04 &   & 1 & 0.79 & f  & 1 &  &  &  \\
+        Sep 1973 &  &  &  &  &  &  & 1.04 &   & 1 & 8$\times10^{-1}$ &   & 1 &  &  &  \\
+        Oct 1973 &  &  &  &  &  &  & 1.04 &   & 1 & 8$\times10^{-1}$ &  m & 1 &  &  &  \\
+        Nov 1973 &  &  &  &  &  &  & 1.04 &   & 1 & 0.79 &   & 1 & 28.8 & f  & 6 \\
+        Dec 1973 &  &  &  &  &  &  & 1.03 &   & 1 & 0.79 &   & 1 & 34.1 &  m & 6 \\
+        Jan 1974 &  &  &  & 160 & f m & 4 & 1.03 &   & 1 & 8$\times10^{-1}$ &   & 1 &  &  &  \\
+        Feb 1974 &  &  &  &  &  &  & 1.03 &   & 1 &  &  &  &  &  &  \\
+        Mar 1974 &  &  &  &  &  &  & 1.03 &   & 1 &  &  &  &  &  &  \\
+        Apr 1974 &  &  &  &  &  &  & 1.03 &   & 1 & 0.79 & f m & 2 &  &  &  \\
+        May 1974 &  &  &  &  &  &  & 1.04 &   & 1 &  &  &  &  &  &  \\
+        Jun 1974 &  &  &  &  &  &  & 1.04 &   & 1 &  &  &  &  &  &  \\
+        Jul 1974 &  &  &  &  &  &  & 1.05 &   & 1 & 8$\times10^{-1}$ & f  & 3 & 29.8 & f  & 7 \\
+        Aug 1974 &  &  &  &  &  &  & 1.06 &   & 1 & 0.82 &   & 3 & 29.2 &   & 7 \\
+        Sep 1974 &  &  &  &  &  &  & 1.06 &   & 1 & 0.82 &   & 3 & 36.8 &   & 7 \\
+        Oct 1974 &  &  &  &  &  &  & 1.06 &   & 1 & 0.83 &   & 3 & 38.4 &  m & 7 \\
+        Nov 1974 &  &  &  &  &  &  & 1.06 &  m & 1 & 0.85 &   & 3 &  &  &  \\
+        Dec 1974 &  &  &  & 162 & f m & 5 & 1.06 &   & 1 & 0.87 &  m & 3 &  &  &  \\
+        Jan 1975 &  &  &  &  &  &  & 1.04 &   & 1 & 0.84 &   & 3 &  &  &  \\
+        Feb 1975 &  &  &  &  &  &  & 1.03 &   & 1 & 0.82 &   & 3 &  &  &  \\
+        Mar 1975 &  &  &  &  &  &  &  &  &  & 8$\times10^{-1}$ &   & 3 &  &  &  \\
+        Jul 1979 &  &  &  & 175 & f m & 6 &  &  &  &  &  &  &  &  &  \\
+        Jan 1980 &  &  &  &  &  &  & 1.12 & f  & 2 &  &  &  &  &  &  \\
+        Feb 1980 &  &  &  &  &  &  & 1.15 &   & 2 & 9$\times10^{-1}$ & f  & 4 &  &  &  \\
+        Mar 1980 &  &  &  &  &  &  & 1.18 &   & 2 & 0.95 &   & 4 & 29.2 & f m & 8 \\
+        Apr 1980 &  &  &  &  &  &  & 1.21 &  m & 2 & 1 &  m & 4 &  &  &  \\
+        May 1980 &  &  &  &  &  &  & 1.21 &   & 2 & 0.98 &   & 4 &  &  &  \\
+        Jun 1980 &  &  &  &  &  &  & 1.2 &   & 2 & 0.95 &   & 4 &  &  &  \\
+        Jul 1980 &  &  &  &  &  &  & 1.18 &   & 2 & 0.95 &   & 4 &  &  &  \\
+        Aug 1980 &  &  &  &  &  &  & 1.17 &   & 2 & 0.93 &   & 4 &  &  &  \\
+        Sep 1980 &  &  &  &  &  &  & 1.16 &   & 2 & 0.91 &   & 4 &  &  &  \\
+        Oct 1980 &  &  &  &  &  &  & 1.15 &   & 2 & 9$\times10^{-1}$ &   & 4 &  &  &  \\
+        Nov 1980 &  &  &  &  &  &  & 1.15 &   & 2 & 0.89 &   & 4 &  &  &  \\
+        Dec 1980 &  &  &  &  &  &  & 1.16 &   & 2 & 0.89 &   & 4 &  &  &  \\
+        Jan 1981 &  &  &  &  &  &  & 1.16 &   & 2 & 0.89 &   & 4 &  &  &  \\
+        Feb 1981 &  &  &  &  &  &  & 1.16 &   & 2 & 0.88 &   & 4 &  &  &  \\
+        Mar 1981 &  &  &  &  &  &  & 1.15 &   & 2 &  &  &  &  &  &  \\
+        Apr 1981 &  &  &  &  &  &  & 1.15 &   & 2 &  &  &  &  &  &  \\
+        May 1981 &  &  &  &  &  &  & 1.14 &   & 2 &  &  &  &  &  &  \\
+        Jun 1981 &  &  &  &  &  &  & 1.15 &   & 2 &  &  &  &  &  &  \\
+        Jul 1981 &  &  &  &  &  &  & 1.14 &   & 2 &  &  &  &  &  &  \\
+        Aug 1981 &  &  &  &  &  &  & 1.13 &   & 2 &  &  &  &  &  &  \\
+        Sep 1981 &  &  &  &  &  &  & 1.13 &   & 2 &  &  &  &  &  &  \\
+        Oct 1981 &  &  &  &  &  &  & 1.13 &   & 2 &  &  &  &  &  &  \\
+        Nov 1981 &  &  &  &  &  &  & 1.12 &   & 2 &  &  &  &  &  &  \\
+        Jan 1982 &  &  &  &  &  &  &  &  &  & 0.88 & f  & 5 &  &  &  \\
+        Feb 1982 &  &  &  &  &  &  &  &  &  & 0.88 &  m & 5 &  &  &  \\
+        Aug 1982 &  &  &  &  &  &  &  &  &  &  &  &  & 32.4 & f m & 9 \\
+        Oct 1982 &  &  &  &  &  &  &  &  &  &  &  &  & 32.8 & f m & 10 \\
+        Nov 1982 &  &  &  &  &  &  &  &  &  &  &  &  & 32.4 &   & 10 \\
+        Jan 1986 &  &  &  & 202 & f m & 7 &  &  &  &  &  &  &  &  &  \\
+        Oct 1987 &  &  &  & 236 & f m & 8 &  &  &  &  &  &  & 58.2 & f m & 11 \\
+        Nov 1987 &  &  &  & 227 &   & 8 &  &  &  &  &  &  & 49.4 &   & 11 \\
+        Dec 1987 & 5 & f m & 1 & 197 &   & 8 &  &  &  &  &  &  & 41.8 &   & 11 \\
+        Jan 1988 & 5 &  m & 1 &  &  &  &  &  &  &  &  &  & 38.3 &   & 11 \\
+        Feb 1988 &  &  &  &  &  &  &  &  &  &  &  &  & 33.7 &   & 11 \\
+        Sep 1990 &  &  &  & 195 & f m & 9 &  &  &  &  &  &  & 28.8 & f  & 12 \\
+        Oct 1990 &  &  &  &  &  &  &  &  &  &  &  &  & 30.1 &  m & 12 \\
+        Nov 1990 & 8.33 & f  & 2 & 190 & f m & 10 &  &  &  &  &  &  &  &  &  \\
+        Dec 1990 & 11 &   & 2 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Jan 1991 & 11.7 &  m & 2 & 242 & f m & 11 &  &  &  &  &  &  &  &  &  \\
+        Feb 1991 & 11.7 &  m & 2 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Mar 1991 & 8.67 &   & 2 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Dec 1991 & 8 & f  & 3 & 220 & f m & 12 &  &  &  &  &  &  &  &  &  \\
+        Jan 1992 & 10 &   & 3 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Feb 1992 & 10.3 &   & 3 & 190 & f m & 13 &  &  &  &  &  &  &  &  &  \\
+        Mar 1992 & 11 &  m & 3 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Apr 1992 & 9.67 &   & 3 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        May 1992 & 8.33 &   & 3 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Aug 1992 & 8.33 & f  & 4 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Sep 1992 & 9.33 &   & 4 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Oct 1992 & 9.67 &  m & 4 & 204 & f m & 14 &  &  &  &  &  &  &  &  &  \\
+        Nov 1992 & 8 &   & 4 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Nov 1997 &  &  &  &  &  &  &  &  &  &  &  &  & 31.5 & f m & 13 \\
+        Aug 1998 &  &  &  & 176 & f  & 15 &  &  &  &  &  &  &  &  &  \\
+        Sep 1998 &  &  &  & 216 &  m & 15 &  &  &  &  &  &  & 39.2 & f m & 14 \\
+        Oct 1998 &  &  &  & 193 &   & 15 &  &  &  &  &  &  & 37.5 &   & 14 \\
+        Nov 2000 &  &  &  & 221 & f m & 16 &  &  &  &  &  &  &  &  &  \\
+        Dec 2000 &  &  &  & 2$\times10^{2}$ &   & 16 &  &  &  &  &  &  &  &  &  \\
+        Jun 2001 & 5.33 & f m & 5 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Sep 2001 & 5.33 & f  & 6 & 313 & f m & 17 &  &  &  & 0.78 & f  & 6 & 42.7 & f m & 15 \\
+        Oct 2001 & 7 &   & 6 & 288 &   & 17 &  &  &  & 0.79 &  m & 6 & 34.5 &   & 15 \\
+        Nov 2001 & 8 &  m & 6 & 215 &   & 17 &  &  &  & 0.76 &   & 6 &  &  &  \\
+        Dec 2001 & 6 &   & 6 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Jan 2002 &  &  &  & 197 & f m & 18 &  &  &  &  &  &  &  &  &  \\
+        Jul 2002 &  &  &  &  &  &  &  &  &  &  &  &  & 38.5 & f  & 16 \\
+        Aug 2002 &  &  &  &  &  &  &  &  &  &  &  &  & 37.2 &   & 16 \\
+        Sep 2002 &  &  &  &  &  &  &  &  &  &  &  &  & 41.7 &  m & 16 \\
+        Oct 2002 &  &  &  &  &  &  &  &  &  &  &  &  & 41.4 &   & 16 \\
+        Nov 2002 &  &  &  & 2$\times10^{2}$ & f m & 19 &  &  &  &  &  &  &  &  &  \\
+        Jan 2003 &  &  &  & 230 & f m & 20 &  &  &  &  &  &  &  &  &  \\
+        Feb 2003 & 5.67 & f  & 7 &  &  &  &  &  &  &  &  &  & 36.5 & f m & 17 \\
+        Mar 2003 & 6.67 &  m & 7 & 250 & f m & 21 &  &  &  &  &  &  & 35.2 &   & 17 \\
+        Apr 2003 & 6.33 &   & 7 & 207 &   & 21 &  &  &  &  &  &  &  &  &  \\
+        May 2003 & 5.67 &   & 7 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        Aug 2007 &  &  &  &  &  &  &  &  &  &  &  &  & 25.1 & f m & 18 \\
+        Nov 2007 &  &  &  &  &  &  &  &  &  &  &  &  & 26.7 & f m & 19 \\
+        Jan 2008 &  &  &  & 240 & f m & 22 &  &  &  &  &  &  & 28 & f  & 20 \\
+        Feb 2008 &  &  &  &  &  &  &  &  &  &  &  &  & 27.2 &   & 20 \\
+        Mar 2008 &  &  &  &  &  &  &  &  &  &  &  &  & 29 &  m & 20 \\
+        Apr 2008 & 7 & f  & 8 &  &  &  &  &  &  &  &  &  &  &  &  \\
+        May 2008 & 7.33 &  m & 8 &  &  &  &  &  &  & 8$\times10^{-1}$ & f  & 7 &  &  &  \\
+        Jun 2008 & 6.67 &   & 8 &  &  &  & 1.04 & f m & 3 & 0.83 &  m & 7 &  &  &  \\
+        \bottomrule
+        \end{longtable}
+\end{scriptsize}
+\end{landscape}
+\label{tab:tab_bloom_shock_all}
+\end{spacing}
+
+
+\begin{spacing}{.9}
+\begin{landscape}
+\centering
+    \begin{longtable}{rrrrllrr}
+    \caption[Major Stock-Market Volatility Shocks following \citet{bloom:09}.]{Major Stock-Market Volatility Shocks. Replication of Table A.1 in \citet{bloom:09}.} \\
+    \toprule
+         ID & Date Begin & Date End & Duration & Max Vol & First Vol & Date Max Vol & Date First Vol \\ \midrule
+         1 & Oct 1962 & Oct 1962 & 1 & 26 & 26 & Oct 1962 & Oct 1962 \\
+         2 & Nov 1963 & Nov 1963 & 1 & 28.7 & 28.7 & Nov 1963 & Nov 1963 \\
+         3 & Aug 1966 & Aug 1966 & 1 & 24.4 & 24.4 & Aug 1966 & Aug 1966 \\
+         4 & Oct 1966 & Oct 1966 & 1 & 23.9 & 23.9 & Oct 1966 & Oct 1966 \\
+         5 & May 1970 & May 1970 & 1 & 37.6 & 37.6 & May 1970 & May 1970 \\
+         6 & Nov 1973 & Dec 1973 & 2 & 34.1 & 28.8 & Dec 1973 & Nov 1973 \\
+         7 & Jul 1974 & Oct 1974 & 4 & 38.4 & 29.8 & Oct 1974 & Jul 1974 \\
+         8 & Mar 1980 & Mar 1980 & 1 & 29.2 & 29.2 & Mar 1980 & Mar 1980 \\
+         9 & Aug 1982 & Aug 1982 & 1 & 32.4 & 32.4 & Aug 1982 & Aug 1982 \\
+        10 & Oct 1982 & Nov 1982 & 2 & 32.8 & 32.8 & Oct 1982 & Oct 1982 \\
+        11 & Oct 1987 & Feb 1988 & 5 & 49.4 & 40.8 & Nov 1987 & Oct 1987 \\
+        12 & Aug 1990 & Oct 1990 & 3 & 30.1 & 27.8 & Oct 1990 & Aug 1990 \\
+        13 & Jan 1991 & Jan 1991 & 1 & 26.9 & 26.9 & Jan 1991 & Jan 1991 \\
+        14 & Nov 1997 & Nov 1997 & 1 & 31.6 & 31.6 & Nov 1997 & Nov 1997 \\
+        15 & Sep 1998 & Oct 1998 & 2 & 39.2 & 39.2 & Sep 1998 & Sep 1998 \\
+        16 & Sep 2001 & Oct 2001 & 2 & 42.6 & 42.6 & Sep 2001 & Sep 2001 \\
+        17 & Jul 2002 & Oct 2002 & 4 & 41.7 & 38.5 & Sep 2002 & Jul 2002 \\
+        18 & Feb 2003 & Mar 2003 & 2 & 36.5 & 36.5 & Feb 2003 & Feb 2003 \\
+        19 & Aug 2007 & Aug 2007 & 1 & 25.1 & 25.1 & Aug 2007 & Aug 2007 \\
+        20 & Nov 2007 & Nov 2007 & 1 & 26.7 & 26.7 & Nov 2007 & Nov 2007 \\
+        21 & Jan 2008 & Mar 2008 & 3 & 29 & 28.1 & Mar 2008 & Jan 2008 \\
+\bottomrule
+        \end{longtable}
+\end{landscape}
+\label{tab:bloom_shocks}
+\end{spacing}
+
+
+\section{Additional Figures}
+\begin{landscape}
+\begin{figure}[!t]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=1cm -0.8cm 0.8cm 0.2cm, width=1.5\textwidth]{comparison_plot_combined.pdf}}
+      \caption[Comparison of uncertainty measures (combined).]{Comparison of uncertainty measures (facetted).
+      \textit{Note:} Shaded areas denote NBER recession dates in the US. Data frequencies are monthly. The macro uncertainty series starts in July 1960, the GTU in January 2004, the EPU in January 1985, the consumer uncertainty series in January 1978  and the VXO in July 1962.}   \label{fig:comparison_plot_combined}
+\end{figure}
+\end{landscape}
+
+\section{Additional VAR Results}
+
+
+
+
 \chapter{Appendix}
 \label{DataAndCode}
 \section{Data: Sources and Description}
 \label{sec:data}
+Table~\ref{tab:data_sources} lists all data and their sources that appear in the main text. Variables that enter the VAR and/or Local Projection estimations in Section~\ref{sec:EmpiricalAnalysis} are listed below.
 
 
-Table with all the series used (using an internal numbering)
+\paragraph{Monthly VAR-8 following \citet{bloom:09}} Endogenous variables, in order:\\
+Then we create separate explanations about which variables were used for which model:\\
 
-
-
-No.	Short Name	Source			Code			Tran 		Description
-1	IP: mfg		IHS Global Insights	M_116461013		deltaln	Industrial Production Index - Manufacturing
-IP_MAN: Industrial Production: Manufacturing (NAICS) (Board of Governors) Obtained via FRED (series name: IPMAN)
-
-(note: I have, for now, downloaded the data from FRED; therefore my numbers are slightly different!)
-2	Emp: mfg		IHS Global Insights	M_123109542		deltaln	Employees on Nonfarm PAyrolls: manufacturing
-EMP_MAN: AAll Employees: Manufacturing, SA (BLS) Obtained via FRED (series name: MANEMP)
-
-3	Avg hrs: mfg	IHS Global Insights	M_14386098		deltaln	Average Weekly Hours of Production and Nonsupervisory Workers: manufacturing
-HOURS_MAN: Average Weekly Hours of Production and Nonsupervisory Emploees: Manufacturing, SA (BLS)
-Obtained via FRED (series name: AWHMAN)
-
-4	CPI-U: all		IHS Global Insights	M_110157323		delta^2 ln	CPI-U: all items
-CPI: Consumer Price Index for All Urban Consumers: All Items (BLS) Obtained via FRED (series name: CPIAUSCL)
-
-5	AHE: mfg		IHS Global Insights	M_123109552		delta^2 ln	Avg Hourly Earnings of PRod or Nonsup Workers Private Nonfarm - Manufacturing
-EARN_MAN: Average Hourly Earnings of Production and Nonsupervisory Employees: Manufacturing, SA (BLS)
-Obtained via FRED (series name: AHEMAN)
-
-6	Fed Funds	IHS Global Insights	M_110155157		deltalv	Interest Rate: Federal Funds
-FEDFUNDS: Loga Effective Federal Funds Rate, NSA (Boar dof Governors) Obtained via FRED (series name: FEDFUNDS)
-
-7	S\&P 500		IHS Global Insights	M_110155044		deltaln	S\&P's Common Stock Price Index: Composite
-												
+\begingroup
+\begin{spacing}{0.5}
+    \fontsize{10pt}{12pt}\selectfont
+\begin{enumerate}
+	\item log($\text{S\&P500}_t$)
+	\item uncertainty (various measures)
+	\item $\text{FFR}_t$
+	\item log($\text{WAGE}_t$)
+	\item log($\text{CPI}_t$)
+	\item log($\text{HOURS}_t$)
+	\item log($\text{EMPM}_t$)	
+	\item log($\text{IP}_t$)		
+\end{enumerate}
+\end{spacing}
+\endgroup
 
 
 
+\paragraph{Monthly VAR-11 following \citet{juradoetal:15}} Endogenous variables, in order:\\
+Then we create separate explanations about which variables were used for which model:\\
+
+\begingroup
+\begin{spacing}{0.5}
+    \fontsize{10pt}{12pt}\selectfont
+\begin{enumerate}
+	\item log($\text{IP}_t$)
+	\item log($\text{EMPM}_t$)
+	\item log(real consumption --> still to be added! download from IHS!
+	\item log($\text{PCE deflator}_t$) --> still to be added! download from IHS!
+	\item log($\text{NO}_t$ $=$ $\text{NO capital}_t$ $+$ $\text{NO cons}_t$) --> two components to be added! download from IHS!
+	\item log($\text{WAGE}_t$)
+	\item log($\text{HOURS}_t$)
+	\item $\text{FFR}_t$
+	\item log($\text{S\&P500}_t$)
+	\item growth rate of $\text{M2}_t$
+	\item uncertainty (various measures)
+\end{enumerate}
+\end{spacing}
+\endgroup
 
 
-Then we create separate explanations about which variables were used for which model:
+\paragraph{Local Projections \citep{jorda:05}}
 
-for VAR-8 estimations (following \citet{bloom:09}
-Industrial Production Index (IP): manufacturing --> Source: IHS Global Insights
 
-for VAR-11 estimations (following \citet{bloom:09}
+\begin{table}[!h]
+\caption[Data Sources.]{Data Sources.\\
+\textit{Note:} Federal Reserve Economic Data (FRED); Chicago Board Options Exchange (CBOE); Michigan Survey of Consumers (MSoC); }
+\renewcommand{\arraystretch}{1.5}
+\resizebox{\textwidth}{!}{%
+\centering % used for centering table
+% note: the letter 'p' helps to vertically align all rows (even if one row has more text than others!)
+\begin{tabular}{L{2.7cm}p{5.4cm}p{2.5cm}p{3.4cm}L{2.5cm}} % centered columns (4 columns)
+\toprule
+         Variable & Name &  Source & Code & Period \\ 
+         \midrule
+        $\text{IP}_t$ & Industrial Production Index (Monthly, Seasonally Adjusted) & FRED & INDPRO & 1962M07- \\
+        $\text{EMPM}_t$ & All Employees: Manufacturing (Monthly, Seasonally Adjusted) & FRED & MANEMP & 1962M07- \\
+                $\text{HOURS}_t$ & Average Weekly Hours of Production and Nonsupervisory Employees: Manufacturing (Monthly, Seasonally Adjusted) & FRED & AWHMAN & 1962M07- \\
+         $\text{CPI}_t$ & Consumer Price Index for All Urban Consumers: All Items (Monthly, Seasonally Adjusted) & FRED & CPIAUSCSL & 1962M07- \\
+ 	$\text{NO capital}_t$ & Value of Manufacturers' New Orders for Capital Goods: Nondefense Capital Goods Industries (Monthly, Seasonally Adjusted) & IHS & M_178554409  & 1962M07- \\
+ 	$\text{NO cons}_t$ & Value of Manufacturers' New Orders for Capital Goods: Nondefense Capital Goods Industries (Monthly, Seasonally Adjusted) & IHS & M_14385863 & 1962M07- \\
+         $\text{WAGE}_t$ & Average Hourly Earnings of Production and Nonsupervisory Employees: Manufacturing (Monthly, Seasonally Adjusted) & FRED & AHEMAN & 1962M07- \\
+           $\text{M2}_t$ & M" Money Stock (Monthly, Seasonally Adjusted) & FRED & M2SL & 1962M07- \\
+         $\text{FFR}_t$ & Effective Federal Funds Rate & FRED & FEDFUNDS & 1962M07- \\
+         $\text{S\&P500}_t$ & S\&P's Common Stock Price Index: Composite (Monthly) & YAHOO Finance & S\&P 500 (^GSPC) & 1962M07- \\
+         $\text{VXO}_t$ & Cboe S\&P 100 Volatility Index - VXO & CBOE & VXO & 1986M01- \\
+         $\text{Michigan}_t$ & Consumer Uncertainty (Michigan Survey of Consumers) & MSoC & veh_fb_unc & 1978M03- \\
+ 	$\text{Macro1/3/12}_t$ & Macro Uncertainty Index & \citet{juradoetal:15}\footnote{Downloaded from \url{https://www.sydneyludvigson.com/data-and-appendixes}.} &  & 1962M07- \\
+	$\text{EPU}_t$ & Economic Policy Uncertainty Index & \citet{bakeretal:15}\footnote{Downloaded from \url{http://www.policyuncertainty.com/}.} & News Based Policy Uncert Index & 1962M07- \\
+	$\text{EPU Historical}_t$ & Economic Policy Uncertainty Index & \citet{bakeretal:15}\footnote{Downloaded from \url{http://www.policyuncertainty.com/}.} & News-Based Historical Economic Policy Uncertainty & 1962M07- \\
+        \bottomrule
+\end{tabular}
+}
+\label{tab:data_sources} % is used to refer this table in the text
+\end{table}
+
+
 
 
 \newgeometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
@@ -1105,20 +1668,11 @@ for VAR-11 estimations (following \citet{bloom:09}
 
 
 
-
-
-
-
-
 \end{verbatim}  
 \endgroup
 
 
 \restoregeometry
-\chapter{Appendix}
-\label{VARAndLocalProjection}
-\section{IRFs in a VAR-Setting}
-\section{IRFs and Local Projections}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%BIBLIOGRAPHY%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%BIBLIOGRAPHY%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1150,6 +1704,17 @@ The work contained in this thesis has neither been previously submitted to any o
     Innsbruck, \makebox[1.8in][l]{\hrulefill} \qquad \makebox[2.6in]{\hrulefill}\\
     \makebox[2.95in][l]      \hfill\makebox[2.0in][l]{(Signature: Marcel Kropp)}
 
+\clearpage
+\thispagestyle{empty}
+\null\vspace{46pt}
+\paragraph{\large{Eidesstattliche Erklärung}}
+\vspace{43pt}
+Ich erkläre hiermit an Eides Statt, dass ich dir vorliegende Masterarbeit selbständig angefertig habe. Die aus fremden Quellen direkt oder indirekt übernommenen Gedanken sind als solche kenntlich gemacht. \\
+\\
+Die Arbeit wurde bisher weder in gleicher noch in ähnlicher Form einer anderen Prüfungsbehörde vorgelegt und auch noch nicht veröffentlicht.\\[10mm]
+
+    Innsbruck, \makebox[1.8in][l]{\hrulefill} \qquad \makebox[2.6in]{\hrulefill}\\
+    \makebox[2.95in][l]      \hfill\makebox[2.0in][l]{(Unterschrift: Marcel Kropp)}
 
 
 %%%%%%%%%%%%%%%%%%%%%%EIDESSTATTLICHE ERKLÄRUNG%%%%%%%%%%%%%%%%%%%%%%

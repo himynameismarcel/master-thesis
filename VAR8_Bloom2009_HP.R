@@ -625,10 +625,10 @@ var8_bloom_JFV_h12.var.irfs.df <- var8_bloom_JFV_h12.var.irfs.df %>%
 # identified error;
 
 var8_bloom_JFV_h1.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_h1.var.irfs.df[, 2:ncol(var8_bloom_JFV_h1.var.irfs.df)]*420/
+  var8_bloom_JFV_h1.var.irfs.df[, 2:ncol(var8_bloom_JFV_h1.var.irfs.df)]*400/
   (var8_bloom_JFV_h1.var.irfs.df[1, 1]*100)
 var8_bloom_JFV_h12.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_h12.var.irfs.df[, 2:ncol(var8_bloom_JFV_h12.var.irfs.df)]*220/
+  var8_bloom_JFV_h12.var.irfs.df[, 2:ncol(var8_bloom_JFV_h12.var.irfs.df)]*200/
   (var8_bloom_JFV_h12.var.irfs.df[1, 1]*100)
 
 # lastly, we create the desired data-frames using the function
