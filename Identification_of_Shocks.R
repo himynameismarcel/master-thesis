@@ -365,9 +365,11 @@ identify_shocks <- as.tibble(right_join(x = epu_index[,
 # time-range (in our baseline case this
 # is the 'Bloom-window' 
 # (i.e., July 1962 - June 2008))
+# identify_shocks.sub <- identify_shocks  %>%
+#                       filter(Date <="2008-06-01" & Date >= "1962-07-01")
+# alternative range: (i.e., July 1962 - June 2018))
 identify_shocks.sub <- identify_shocks  %>%
-                      filter(Date <="2008-06-01" & Date >= "1962-07-01")
-  
+                      filter(Date <="2018-06-01" & Date >= "1962-07-01")  
 
 #####################
 ## function for creation of Bloom-Shock,
@@ -1083,9 +1085,10 @@ comparison_measures
 
 # for plotting purpose we restrict the data to the window
 # 1962/07 - 2008/06 (the window that Bloom looked at)
+# comparison_measures.sub <- comparison_measures %>%
+#                       filter(my >= 1962.583 & my <= 2008.500)
 comparison_measures.sub <- comparison_measures %>%
-                      filter(my >= 1962.583 & my <= 2008.500)
-
+                      filter(my >= 1962.583 & my <= 2016.500)
 
 # to bring the dataset into a useful shape for our purposes,
 # we 'gather()' the variables with the variable-Names
@@ -1146,7 +1149,7 @@ max_shocks_stacked <- bind_rows(VXO[[4]] %>%
                 # at the same time we remove all columns which we
                 # we don't need further down below
                 # (better: only keep the ones we need)
-                      dplyr::select(yearmon_max, uncert_measure) %>%
+                      dplyr::select(yearmon_max, uncert_measure, max_vol) %>%
                 # rename 'yearmon_max' to 'yearmon_max_start'
                       dplyr::rename(yearmon_max_start = yearmon_max) %>%
                 # and add a column that is yearmon_max + 1/12 
@@ -1171,12 +1174,17 @@ BLOOM_Shocks_plot_combined <- ggplot(comparison_measures.sub.stacked, aes(x=my,
   facet_grid(uncert_measure ~ ., scales="free_y") +
   geom_rect(data=shocks_stacked, aes(x = NULL, y=NULL, xmin=start, xmax=end,
                                      ymin=ymin, ymax=ymax), 
-                                     alpha=0.3, fill="red") +
+                                     alpha=0.2, fill="red") +
   geom_rect(data=max_shocks_stacked, aes(x = NULL, y=NULL, 
                                          xmin=yearmon_max_start, 
                                          xmax=yearmon_max_end,
                                          ymin=ymin, ymax=ymax),
-                                        fill="blue") +
+                                        fill="red") +
+  # following the latest paper of Jurado et al, 
+  # we add dots that identify the shock-events 
+  # (in addition to the blue vertical lines!)
+  geom_point(data=max_shocks_stacked, aes(x = yearmon_max_start, y=max_vol), 
+             alpha=0.9, colour="red") + 
   scale_y_continuous(name = "Uncertainty Measures") +
   scale_x_continuous(name = "Year", 
                      breaks = seq(1960, 2018, by = 5),
@@ -1204,7 +1212,8 @@ BLOOM_Shocks_plot_combined
 # see https://stackoverflow.com/questions/44616530/axis-labels-on-two-
 # lines-with-nested-x-variables-year-below-months
 
-ggsave(file="BLOOM_Shocks_plot_combined.pdf")
+# ggsave(file="BLOOM_Shocks_plot_combined.pdf")
+ggsave(file="BLOOM_Shocks_plot_combined_all2016.pdf")
 
 
 

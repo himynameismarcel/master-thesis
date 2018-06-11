@@ -1947,7 +1947,7 @@ macroUncertainty_index_plot <- ggplot() +
   geom_line(data = macroUncertainty_index, 
                     aes(x = my, 
                         y = h3),
-            color="green",
+            color="darkgreen",
             size=1, 
             linetype = 1) +
   geom_line(data = macroUncertainty_index, 
@@ -1987,7 +1987,7 @@ macroUncertainty_index_plot <- ggplot() +
   # change ratio of y and x - axis
   # coord_fixed(ratio = 40)
   
-macroUncertainty_index_plot + theme(aspect.ratio = 2 / (1 + sqrt(5)))
+macroUncertainty_index_plot
 
 
 
@@ -2204,15 +2204,14 @@ scaled_comparison_measures <- scaled_comparison_measures %>%
               # message because 'Michigan' enter as a 'zoo' - object!
               gather(uncert_measure, value, -my, na.rm = TRUE)
 
-  
-  
-ggplot(scaled_comparison_measures) +
-    geom_line(aes(x = my, y = value, colour=uncert_measure),
-              size=0.8) +
-  geom_point(aes(x = my, y = value, colour=uncert_measure), size=0.5) + 
+ggplot(scaled_comparison_measures, 
+       aes(x = my, y = value, colour=uncert_measure,
+           linetype = uncert_measure, shape=uncert_measure)) +
+    geom_line(size=0.6) +
+  geom_point(size=1) + 
   scale_color_manual(values=c("#CC0000",
-                              "#009900",
-                              "#202020", "#00FFFF", "#FF69B4")) + 
+                              "#2ac113",
+                              "#202020", "#0452d1", "#FF69B4")) + 
   scale_y_continuous(name = "Uncertainty Measures") +
   scale_x_continuous(name = "Year", limits = c(1960, 2018), 
                      breaks = seq(1960, 2018, by = 5),
@@ -2221,12 +2220,14 @@ ggplot(scaled_comparison_measures) +
   labs(color=NULL) +
   theme(axis.text=element_text(size=14),
         axis.title=element_text(size=15,face="bold"),
-        legend.text=element_text(size=14), 
+        #legend.text=element_text(size=14), 
         panel.grid.major.x = element_blank()) + 
   # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!
   geom_rect(data=recessions_start_end, inherit.aes = FALSE,
             aes(xmin=my_start, xmax=my_end, ymin=-Inf, ymax=+Inf), 
-            fill='#606060', alpha=0.5)
+            fill='#606060', alpha=0.5) + 
+  scale_linetype_manual(values = c(1,1,1,1)) +
+  scale_shape_manual(values=c(0,1,2,3))
 
 ggsave("comparison_plot_combined.pdf")
 

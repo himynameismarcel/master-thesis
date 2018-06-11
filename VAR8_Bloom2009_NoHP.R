@@ -655,16 +655,17 @@ var8_irfs_results_all <- var8_irfs_results_all %>%
 # now we can finally plot the irfs:
 var8_plot_all_NoHP_until2008 <- ggplot(data = var8_irfs_results_all) +
   # geom_point() + 
-  geom_line(aes(x = step, y = Up), color="#e80628", 
-            size=0.5,linetype = 3) +
-  geom_line(aes(x = step, y = Lo), color="#e80628", 
-            size=0.5, linetype = 3) +
-  geom_ribbon(aes(x = step, ymax=Up, ymin=Lo), 
-              fill="#706c6c", alpha=.3) +
+  # geom_line(aes(x = step, y = Up), color="#e80628", 
+  #           size=0.5,linetype = 3) +
+  # geom_line(aes(x = step, y = Lo), color="#e80628", 
+  #           size=0.5, linetype = 3) +
+  geom_ribbon(aes(x = step, ymax=Up, ymin=Lo, fill=shock_name,
+                  colour=shock_name), 
+              alpha=.5) +
   geom_line(aes(x = step, y = oirf), color="black", 
             size=0.8) +
-  geom_point(aes(x = step, y = oirf), color="black", 
-             size=0.8) +
+  # geom_point(aes(x = step, y = oirf), color="black", 
+  #            size=0.8) +
   # annotation_custom("decreasing %<->% increasing") +
   scale_x_continuous(name = NULL, 
                      limits = c(0, 60), 
@@ -682,6 +683,7 @@ var8_plot_all_NoHP_until2008 <- ggplot(data = var8_irfs_results_all) +
   theme(axis.text=element_text(size=10),
         plot.title = element_text(size=10, face="bold", hjust = 0.5),
         axis.title=element_text(size=10),
+        legend.position="none",
         #legend.text=element_text(size=14),
         #axis.text.x=element_blank(),
         plot.margin = unit(c(0,0,0,0), "mm"),
