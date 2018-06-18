@@ -89,7 +89,7 @@ for (i in seq_along(cols_log)) {
 ## be Step 7 at the very end).
 
 ########################################################################
-### PART 1: VAR8_Bloom_2009_noHP with Bloom-Shocks (marking months
+### PART 1: VAR8_Bloom_2009_HP with Bloom-Shocks (marking months
 ###         with maximum volatility)
 ########################################################################
 # because we do not want to 'destroy' the data-frame 'var8_bloom_JFV'
@@ -150,30 +150,49 @@ var8_bloom_JFV_1 <- var8_bloom_JFV_1 %>%
 # estimate model (12 lags + constant) + compute impulse-responses:
 # because we do not necessarily need the output from the 'var' - function
 # as a separate object, we pipe 'var' and 'irf' together:
-var8_bloom_JFV_1.var.irfs <- var8_bloom_JFV_1 %>% VAR(p=12, type="const") %>%
+
+
+# var8_bloom_JFV_1.var <- var8_bloom_JFV_1 %>% VAR(p=12, type="const")
+# resid <- residuals(var8_bloom_JFV_1.var)
+
+
+# because we want to plot both the 68% and 95% CIs, we call the VAR-
+# function twice and later merge the values for the 68% and 95% CIs together
+var8_bloom_JFV_1.var.irfs.68 <- var8_bloom_JFV_1 %>% VAR(p=12, type="const") %>%
   irf(response = c("IPM", "EMPM", "bloom_shock"), 
       impulse = "bloom_shock", n.ahead = 59, 
-      boot = TRUE, ortho = TRUE, runs=100)
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
+var8_bloom_JFV_1.var.irfs.95 <- var8_bloom_JFV_1 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "bloom_shock"), 
+      impulse = "bloom_shock", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95)      
 
-
-# Note: all results are now stored in var8_bloom_JFV_1.var.irfs
+# Note: all results are now stored in var8_bloom_JFV_1.var.irfs.68
+# and var8_bloom_JFV_1.var.irfs.95, respectively;
 # running the below reveals the nested list-structure of the
 # 'varirf' - object:
-str(var8_bloom_JFV_1.var.irfs)
+str(var8_bloom_JFV_1.var.irfs.68)
 
 # first preliminary plots
-# matplot(var8_bloom_JFV_1.var.irfs$irf$bloom_shock[, 3], type='l') 
-# lines(var8_bloom_JFV_1.var.irfs$Lower$bloom_shock[, 3], col="blue")     
-# lines(var8_bloom_JFV_1.var.irfs$Upper$bloom_shock[, 3], col="blue") 
+# matplot(var8_bloom_JFV_1.var.irfs.68$irf$bloom_shock[, 3], type='l') 
+# lines(var8_bloom_JFV_1.var.irfs.68$Lower$bloom_shock[, 3], col="blue")     
+# lines(var8_bloom_JFV_1.var.irfs.68$Upper$bloom_shock[, 3], col="blue")
+# lines(var8_bloom_JFV_1.var.irfs.95$Lower$bloom_shock[, 3], col="blue")     
+# lines(var8_bloom_JFV_1.var.irfs.95$Upper$bloom_shock[, 3], col="blue") 
 
 # we now need a smart way to extract the relevant components from the
-# 'varirf' - object (which we have called 'var8_bloom_JFV_1.var.irfs'
+# 'varirf' - object (which we have called 'var8_bloom_JFV_1.var.irfs.68'
+# and 'var8_bloom_JFV_1.var.irfs.95'
 # in our case), including the values for the oirfs, Lower- and Upper
 # bounds of the confidence intervals:
 # to do that, we first store the results in a data-frame/tibble
-var8_bloom_JFV_1.var.irfs.df <- data.frame(var8_bloom_JFV_1.var.irfs$irf,
-                                           var8_bloom_JFV_1.var.irfs$Lower,
-                                           var8_bloom_JFV_1.var.irfs$Upper)
+var8_bloom_JFV_1.var.irfs.df <- data.frame(
+  var8_bloom_JFV_1.var.irfs.68$irf,
+  var8_bloom_JFV_1.var.irfs.68$Lower,
+  var8_bloom_JFV_1.var.irfs.68$Upper,
+  var8_bloom_JFV_1.var.irfs.95$Lower,
+  var8_bloom_JFV_1.var.irfs.95$Upper)
+
 # and then restructure the data-frame in the way we need it:
 # rename the columns with the values for the Upper- and Lower
 # CI to sensible names and at the same time delete
@@ -182,23 +201,29 @@ var8_bloom_JFV_1.var.irfs.df <- var8_bloom_JFV_1.var.irfs.df %>%
   dplyr::rename(blo.blo.oirf = bloom_shock.bloom_shock, 
                 EMPM.oirf = bloom_shock.EMPM,
                 IPM.oirf = bloom_shock.IPM,
-                EMPM.Lo = bloom_shock.EMPM.1,
-                IPM.Lo = bloom_shock.IPM.1,
-                EMPM.Up = bloom_shock.EMPM.2,
-                IPM.Up = bloom_shock.IPM.2) %>%
+                EMPM.Lo.68 = bloom_shock.EMPM.1,
+                IPM.Lo.68 = bloom_shock.IPM.1,
+                EMPM.Up.68 = bloom_shock.EMPM.2,
+                IPM.Up.68 = bloom_shock.IPM.2,
+                EMPM.Lo.95 = bloom_shock.EMPM.3,
+                IPM.Lo.95 = bloom_shock.IPM.3,
+                EMPM.Up.95 = bloom_shock.EMPM.4,
+                IPM.Up.95 = bloom_shock.IPM.4) %>%
   dplyr::select(-c(bloom_shock.bloom_shock.1, 
-                   bloom_shock.bloom_shock.2))
+                   bloom_shock.bloom_shock.2,
+                   bloom_shock.bloom_shock.3, 
+                   bloom_shock.bloom_shock.4))
 
 # to normalize the orthogonalized irfs, we rescale them by dividing
 # all values for response = EMPM/IPM by the first entry of
 # bloom_shock on itself;
-# finally, to rescale, we divide all columns in the data-rame (apart from the
+# finally, to rescale, we divide all columns in the data-frame (apart from the
 # first one) by the first value of blo.blo.oirf (for n=1),
 # and at the same time multiply with 100:
 
 var8_bloom_JFV_1.var.irfs.df.rescaled <- 
   var8_bloom_JFV_1.var.irfs.df[, 2:ncol(var8_bloom_JFV_1.var.irfs.df)] /
-  var8_bloom_JFV_1.var.irfs.df[1, 1]*50
+  var8_bloom_JFV_1.var.irfs.df[1, 1]*100
 
 # now we perform three 'gather' - commands inside a 'bind_cols'
 # - command; the penulatimate command adds a step-counter and references to the
@@ -227,17 +252,29 @@ create_irf_dataframe <- function(dataframe, shock_name){
           "% Impact on Production", 
         TRUE ~ "% Impact on Employment")),
     dataframe %>%
-      gather('IPM.Lo', 
-             'EMPM.Lo', 
+      gather('IPM.Lo.68', 
+             'EMPM.Lo.68', 
              key="response", 
-             value="Lo") %>%
-      dplyr::select(Lo), 
+             value="Lo.68") %>%
+      dplyr::select(Lo.68), 
     dataframe %>%
-      gather('IPM.Up', 
-             'EMPM.Up', 
+      gather('IPM.Up.68', 
+             'EMPM.Up.68', 
              key="response", 
-             value="Up")%>%
-      dplyr::select(Up)
+             value="Up.68") %>%
+      dplyr::select(Up.68),
+    dataframe %>%
+      gather('IPM.Lo.95', 
+             'EMPM.Lo.95', 
+             key="response", 
+             value="Lo.95") %>%
+      dplyr::select(Lo.95),
+    dataframe %>%
+      gather('IPM.Up.95', 
+             'EMPM.Up.95', 
+             key="response", 
+             value="Up.95") %>%
+      dplyr::select(Up.95)
   ) %>%
     group_by(response) %>% 
     mutate(step = row_number())) %>%
@@ -247,12 +284,12 @@ create_irf_dataframe <- function(dataframe, shock_name){
 
 # creation of data-frame for Bloom_shock
 var8_irfs_results_blo <- create_irf_dataframe(
-                        var8_bloom_JFV_1.var.irfs.df.rescaled,
-                        'Bloom-Shock')
+  var8_bloom_JFV_1.var.irfs.df,
+  'Bloom-Shock')
 
 
 ########################################################################
-### PART 2: VAR8_Bloom_2009_noHP with actual VXO/volatility series
+### PART 2: VAR8_Bloom_2009_HP with actual VXO/volatility series
 ########################################################################
 # because we do not want to 'destroy' the data-frame 'var8_bloom_JFV'
 # which we have set up above, we create a new data-frame on which we
@@ -270,6 +307,14 @@ var8_bloom_JFV_2 <- var8_bloom_JFV_2 %>%
   dplyr::select(STOCK, VOLATBL, FFR, WAGE,
                 CPI, HOURSM, EMPM, IPM)
 
+# testing an approach to make impulse-responses comparable:
+# we standardize the uncertainty-measures:
+# var8_bloom_JFV_2 <- var8_bloom_JFV_2 %>%
+#                         dplyr::mutate(VOLATBL = 
+#                                         (VOLATBL - mean(VOLATBL, 
+#                                                         na.rm=TRUE))/
+#                                         sd(VOLATBL, na.rm=TRUE))
+
 
 ####################
 ## VARs (VAR8)
@@ -277,16 +322,32 @@ var8_bloom_JFV_2 <- var8_bloom_JFV_2 %>%
 # estimate model (12 lags + constant) + compute impulse-responses:
 # because we do not necessarily need the output from the 'var' - function
 # as a separate object, we pipe 'var' and 'irf' together:
-var8_bloom_JFV_2.var.irfs <- var8_bloom_JFV_2 %>% VAR(p=12, type="const") %>%
+
+# the below is just a step in-between to calculate the standard
+# deviation of the residuals from the uncertainty measure
+var8_bloom_JFV_2.var <- var8_bloom_JFV_2 %>% VAR(p=12, type="const")
+resid <- residuals(var8_bloom_JFV_2.var)
+
+
+# because we want to plot both the 68% and 95% CIs, we call the VAR-
+# function twice and later merge the values for the 68% and 95% CIs together
+var8_bloom_JFV_2.var.irfs.68 <- var8_bloom_JFV_2 %>% VAR(p=12, type="const") %>%
   irf(response = c("IPM", "EMPM", "VOLATBL"), 
       impulse = "VOLATBL", n.ahead = 59, 
       boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
+var8_bloom_JFV_2.var.irfs.95 <- var8_bloom_JFV_2 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "VOLATBL"), 
+      impulse = "VOLATBL", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95)  
+
 
 # we first store the results in a data-frame/tibble
-var8_bloom_JFV_2.var.irfs.df <- data.frame(var8_bloom_JFV_2.var.irfs$irf,
-                                           var8_bloom_JFV_2.var.irfs$Lower,
-                                           var8_bloom_JFV_2.var.irfs$Upper)
-
+var8_bloom_JFV_2.var.irfs.df <- data.frame(
+  var8_bloom_JFV_2.var.irfs.68$irf,
+  var8_bloom_JFV_2.var.irfs.68$Lower,
+  var8_bloom_JFV_2.var.irfs.68$Upper,
+  var8_bloom_JFV_2.var.irfs.95$Lower,
+  var8_bloom_JFV_2.var.irfs.95$Upper)
 
 # and then restructure the data-frame in the way we need it:
 # rename the columns with the values for the Upper- and Lower
@@ -296,12 +357,18 @@ var8_bloom_JFV_2.var.irfs.df <- var8_bloom_JFV_2.var.irfs.df %>%
   dplyr::rename(VOLATBL.VOLATBL.oirf = VOLATBL.VOLATBL, 
                 EMPM.oirf = VOLATBL.EMPM,
                 IPM.oirf = VOLATBL.IPM,
-                EMPM.Lo = VOLATBL.EMPM.1,
-                IPM.Lo = VOLATBL.IPM.1,
-                EMPM.Up = VOLATBL.EMPM.2,
-                IPM.Up = VOLATBL.IPM.2) %>%
+                EMPM.Lo.68 = VOLATBL.EMPM.1,
+                IPM.Lo.68 = VOLATBL.IPM.1,
+                EMPM.Up.68 = VOLATBL.EMPM.2,
+                IPM.Up.68 = VOLATBL.IPM.2,
+                EMPM.Lo.95 = VOLATBL.EMPM.3,
+                IPM.Lo.95 = VOLATBL.IPM.3,
+                EMPM.Up.95 = VOLATBL.EMPM.4,
+                IPM.Up.95 = VOLATBL.IPM.4) %>%                              
   dplyr::select(-c(VOLATBL.VOLATBL.1, 
-                   VOLATBL.VOLATBL.2))
+                   VOLATBL.VOLATBL.2,
+                   VOLATBL.VOLATBL.3,
+                   VOLATBL.VOLATBL.4))
 
 
 # to normalize the orthogonalized irfs, we rescale them by dividing
@@ -311,14 +378,15 @@ var8_bloom_JFV_2.var.irfs.df <- var8_bloom_JFV_2.var.irfs.df %>%
 # first one) by the first value of blo.blo.oirf (for n=1),
 # and at the same time multiply with 100:
 var8_bloom_JFV_2.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_2.var.irfs.df[, 2:ncol(var8_bloom_JFV_2.var.irfs.df)]*15 /
-  var8_bloom_JFV_2.var.irfs.df[1, 1]*50
+  var8_bloom_JFV_2.var.irfs.df[, 2:ncol(var8_bloom_JFV_2.var.irfs.df)] /
+  var8_bloom_JFV_2.var.irfs.df[1, 1]*100
 
 # lastly, we create the desired data-frame using the function
 # 'create_irf_dataframe':
 var8_irfs_results_vol <- create_irf_dataframe(
-  var8_bloom_JFV_2.var.irfs.df.rescaled,
+  var8_bloom_JFV_2.var.irfs.df,
   'VXO/volatility')
+
 
 
 ########################################################################
@@ -364,13 +432,19 @@ var8_bloom_JFV_3 <- var8_bloom_JFV_3 %>%
 # we reorder variables (and only select the ones we
 # want for the VARs)
 var8_bloom_JFV_3 <- var8_bloom_JFV_3 %>%
-                                        dplyr::select(STOCK, vehrn_fb_all, 
-                                                      FFR, WAGE,
-                                                      CPI, HOURSM, EMPM, IPM) %>%
-                                        dplyr::rename(Michigan = 
-                                                        vehrn_fb_all)
+  dplyr::select(STOCK, vehrn_fb_all, 
+                FFR, WAGE,
+                CPI, HOURSM, EMPM, IPM) %>%
+  dplyr::rename(Michigan = 
+                  vehrn_fb_all)
 
-
+# testing an approach to make impulse-responses comparable:
+# we standardize the uncertainty-measures:
+# var8_bloom_JFV_3 <- var8_bloom_JFV_3 %>%
+#                         dplyr::mutate(Michigan = 
+#                                         (Michigan - mean(Michigan, 
+#                                                         na.rm=TRUE))/
+#                                         sd(Michigan, na.rm=TRUE))
 
 ####################
 ## VARs (VAR8)
@@ -378,31 +452,47 @@ var8_bloom_JFV_3 <- var8_bloom_JFV_3 %>%
 # estimate model (12 lags + constant) + compute impulse-responses:
 # because we do not necessarily need the output from the 'var' - function
 # as a separate object, we pipe 'var' and 'irf' together:
-var8_bloom_JFV_3.var.irfs <- var8_bloom_JFV_3 %>% VAR(p=12, type="const") %>%
-                                          irf(response = c("IPM", "EMPM", "Michigan"), 
-                                              impulse = "Michigan", n.ahead = 59, 
-                                              boot = TRUE, ortho = TRUE, runs=100)
+# because we want to plot both the 68% and 95% CIs, we call the VAR-
+# function twice and later merge the values for the 68% and 95% CIs together
+var8_bloom_JFV_3.var.irfs.68 <- var8_bloom_JFV_3 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "Michigan"), 
+      impulse = "Michigan", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
+var8_bloom_JFV_3.var.irfs.95 <- var8_bloom_JFV_3 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "Michigan"), 
+      impulse = "Michigan", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95) 
 
 
 # we first store the results in data-frames/tibbles
-var8_bloom_JFV_3.var.irfs.df <- data.frame(var8_bloom_JFV_3.var.irfs$irf,
-                                           var8_bloom_JFV_3.var.irfs$Lower,
-                                           var8_bloom_JFV_3.var.irfs$Upper)
+var8_bloom_JFV_3.var.irfs.df <- data.frame(
+  var8_bloom_JFV_3.var.irfs.68$irf,
+  var8_bloom_JFV_3.var.irfs.68$Lower,
+  var8_bloom_JFV_3.var.irfs.68$Upper,
+  var8_bloom_JFV_3.var.irfs.95$Lower,
+  var8_bloom_JFV_3.var.irfs.95$Upper)
+
 
 # and then restructure the data-frames in the way we need them:
 # rename the columns with the values for the Upper- and Lower
 # CI to sensible names and at the same time delete
-# the Upper and Lower CI bands for VOLATBL.VOLATBL
+# the Upper and Lower CI bands for Michigan.Michigan
 var8_bloom_JFV_3.var.irfs.df <- var8_bloom_JFV_3.var.irfs.df %>%
   dplyr::rename(Michigan.Michigan.oirf = Michigan.Michigan, 
-                                          EMPM.oirf = Michigan.EMPM,
-                                          IPM.oirf = Michigan.IPM,
-                                          EMPM.Lo = Michigan.EMPM.1,
-                                          IPM.Lo = Michigan.IPM.1,
-                                          EMPM.Up = Michigan.EMPM.2,
-                                          IPM.Up = Michigan.IPM.2) %>%
-                            dplyr::select(-c(Michigan.Michigan.1, 
-                                             Michigan.Michigan.2))
+                EMPM.oirf = Michigan.EMPM,
+                IPM.oirf = Michigan.IPM,
+                EMPM.Lo.68 = Michigan.EMPM.1,
+                IPM.Lo.68 = Michigan.IPM.1,
+                EMPM.Up.68 = Michigan.EMPM.2,
+                IPM.Up.68 = Michigan.IPM.2,
+                EMPM.Lo.95 = Michigan.EMPM.3,
+                IPM.Lo.95 = Michigan.IPM.3,
+                EMPM.Up.95 = Michigan.EMPM.4,
+                IPM.Up.95 = Michigan.IPM.4) %>%
+  dplyr::select(-c(Michigan.Michigan.1, 
+                   Michigan.Michigan.2,
+                   Michigan.Michigan.3,
+                   Michigan.Michigan.4))
 
 # to rescale, we divide all columns in the data-rame (apart from the
 # first one) by the first value of h1.h1.oirf (for n=1),
@@ -412,19 +502,21 @@ var8_bloom_JFV_3.var.irfs.df <- var8_bloom_JFV_3.var.irfs.df %>%
 # which amounts to approx four standard deviations of the
 # identified error;
 
-var8_bloom_JFV_3.var.irfs.df.rescaled <- 
-      var8_bloom_JFV_3.var.irfs.df[, 2:ncol(var8_bloom_JFV_3.var.irfs.df)]*50000/
-                                    (var8_bloom_JFV_3.var.irfs.df[1, 1]*100)
+var8_bloom_JFV_3.var.irfs.df.rescaled <-
+  var8_bloom_JFV_3.var.irfs.df[, 2:ncol(var8_bloom_JFV_3.var.irfs.df)]/
+  (var8_bloom_JFV_3.var.irfs.df[1, 1]*100)
 
 
 # lastly, we create the desired data-frames using the function
 # 'create_irf_dataframe':
 var8_irfs_results_michigan <- create_irf_dataframe(
-                                          var8_bloom_JFV_3.var.irfs.df.rescaled,
-                                          'Michigan')
+  var8_bloom_JFV_3.var.irfs.df,
+  'Michigan')
+
+
 
 ########################################################################
-### PART 4: VAR8_Bloom_2009_noHP with Economic Policy Uncertainty
+### PART 4: VAR8_Bloom_2009_HP with Economic Policy Uncertainty
 ###         following Baker et al (2015)
 ########################################################################
 
@@ -444,7 +536,7 @@ var8_bloom_JFV_4 <- var8_bloom_JFV
 var8_bloom_JFV_4 <- var8_bloom_JFV_4 %>%
   dplyr::rename(year = YEAR,
                 month = MONTH)
-# next, we perform a right-join to have the data for the EPU in our
+# next, we perform an inner join to have the data for the EPU in our
 # data.frame; we perform an inner join to be only left with a dataset
 # that ranges from the start of the availability of the EPU-index
 # until 2008/06;
@@ -463,22 +555,32 @@ var8_bloom_JFV_4 <- var8_bloom_JFV_4 %>%
   dplyr::rename(EPU = News_Based_Policy_Uncert_Index)
 
 
+
 ####################
-## VARs (VAR8) (note that we perform every step for h=1 and h=12)
+## VARs (VAR8)
 ####################
 # estimate model (12 lags + constant) + compute impulse-responses:
 # because we do not necessarily need the output from the 'var' - function
 # as a separate object, we pipe 'var' and 'irf' together:
-var8_bloom_JFV_4.var.irfs <- var8_bloom_JFV_4 %>% VAR(p=12, type="const") %>%
+# because we want to plot both the 68% and 95% CIs, we call the VAR-
+# function twice and later merge the values for the 68% and 95% CIs together
+var8_bloom_JFV_4.var.irfs.68 <- var8_bloom_JFV_4 %>% VAR(p=12, type="const") %>%
   irf(response = c("IPM", "EMPM", "EPU"), 
       impulse = "EPU", n.ahead = 59, 
       boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
+var8_bloom_JFV_4.var.irfs.95 <- var8_bloom_JFV_4 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "EPU"), 
+      impulse = "EPU", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95) 
 
 
 # we first store the results in data-frames/tibbles
-var8_bloom_JFV_4.var.irfs.df <- data.frame(var8_bloom_JFV_4.var.irfs$irf,
-                                           var8_bloom_JFV_4.var.irfs$Lower,
-                                           var8_bloom_JFV_4.var.irfs$Upper)
+var8_bloom_JFV_4.var.irfs.df <- data.frame(
+  var8_bloom_JFV_4.var.irfs.68$irf,
+  var8_bloom_JFV_4.var.irfs.68$Lower,
+  var8_bloom_JFV_4.var.irfs.68$Upper,
+  var8_bloom_JFV_4.var.irfs.95$Lower,
+  var8_bloom_JFV_4.var.irfs.95$Upper)
 
 # and then restructure the data-frames in the way we need them:
 # rename the columns with the values for the Upper- and Lower
@@ -488,12 +590,18 @@ var8_bloom_JFV_4.var.irfs.df <- var8_bloom_JFV_4.var.irfs.df %>%
   dplyr::rename(EPU.EPU.oirf = EPU.EPU, 
                 EMPM.oirf = EPU.EMPM,
                 IPM.oirf = EPU.IPM,
-                EMPM.Lo = EPU.EMPM.1,
-                IPM.Lo = EPU.IPM.1,
-                EMPM.Up = EPU.EMPM.2,
-                IPM.Up = EPU.IPM.2) %>%
+                EMPM.Lo.68 = EPU.EMPM.1,
+                IPM.Lo.68 = EPU.IPM.1,
+                EMPM.Up.68 = EPU.EMPM.2,
+                IPM.Up.68 = EPU.IPM.2,
+                EMPM.Lo.95 = EPU.EMPM.3,
+                IPM.Lo.95 = EPU.IPM.3,
+                EMPM.Up.95 = EPU.EMPM.4,
+                IPM.Up.95 = EPU.IPM.4) %>%
   dplyr::select(-c(EPU.EPU.1, 
-                   EPU.EPU.2))
+                   EPU.EPU.2,
+                   EPU.EPU.3, 
+                   EPU.EPU.4))
 
 # to rescale, we divide all columns in the data-rame (apart from the
 # first one) by the first value of h1.h1.oirf (for n=1),
@@ -504,18 +612,18 @@ var8_bloom_JFV_4.var.irfs.df <- var8_bloom_JFV_4.var.irfs.df %>%
 # identified error;
 
 var8_bloom_JFV_4.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_4.var.irfs.df[, 2:ncol(var8_bloom_JFV_4.var.irfs.df)]*580820/
+  var8_bloom_JFV_4.var.irfs.df[, 2:ncol(var8_bloom_JFV_4.var.irfs.df)]/
   (var8_bloom_JFV_4.var.irfs.df[1, 1]*100)
 
 
 # lastly, we create the desired data-frames using the function
 # 'create_irf_dataframe':
 var8_irfs_results_epu <- create_irf_dataframe(
-  var8_bloom_JFV_4.var.irfs.df.rescaled,
+  var8_bloom_JFV_4.var.irfs.df,
   'EPU')
 
 ########################################################################
-### PART 6: VAR8_Bloom_2009 with Macro Uncertainty Index
+### PART 6: VAR8_Bloom_2009_HP with Macro Uncertainty Index
 ###         following Jurado et al. (2015);
 ###         We specifically use the data for h=1 and h=12 to see how
 ###         they perform compared to each other
@@ -561,23 +669,43 @@ var8_bloom_JFV_h12 <- var8_bloom_JFV_6 %>%
 # estimate models (12 lags + constant) + compute impulse-responses:
 # because we do not necessarily need the output from the 'var' - function
 # as a separate object, we pipe 'var' and 'irf' together:
-var8_bloom_JFV_h1.var.irfs <- var8_bloom_JFV_h1 %>% VAR(p=12, type="const") %>%
+
+var8_bloom_JFV_h1.var <- var8_bloom_JFV_h1 %>% VAR(p=12, type="const")
+resid <- residuals(var8_bloom_JFV_h1.var)
+var8_bloom_JFV_h12.var <- var8_bloom_JFV_h12 %>% VAR(p=12, type="const")
+resid <- residuals(var8_bloom_JFV_h12.var)
+
+var8_bloom_JFV_h1.var.irfs.68 <- var8_bloom_JFV_h1 %>% VAR(p=12, type="const") %>%
   irf(response = c("IPM", "EMPM", "h1"), 
       impulse = "h1", n.ahead = 59, 
       boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
-var8_bloom_JFV_h12.var.irfs <- var8_bloom_JFV_h12 %>% VAR(p=12, type="const") %>%
+var8_bloom_JFV_h1.var.irfs.95 <- var8_bloom_JFV_h1 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "h1"), 
+      impulse = "h1", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95)
+var8_bloom_JFV_h12.var.irfs.68 <- var8_bloom_JFV_h12 %>% VAR(p=12, type="const") %>%
   irf(response = c("IPM", "EMPM", "h12"), 
       impulse = "h12", n.ahead = 59, 
       boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
-
+var8_bloom_JFV_h12.var.irfs.95 <- var8_bloom_JFV_h12 %>% VAR(p=12, type="const") %>%
+  irf(response = c("IPM", "EMPM", "h12"), 
+      impulse = "h12", n.ahead = 59, 
+      boot = TRUE, ortho = TRUE, runs=100, ci=0.95)
 
 # we first store the results in data-frames/tibbles
-var8_bloom_JFV_h1.var.irfs.df <- data.frame(var8_bloom_JFV_h1.var.irfs$irf,
-                                            var8_bloom_JFV_h1.var.irfs$Lower,
-                                            var8_bloom_JFV_h1.var.irfs$Upper)
-var8_bloom_JFV_h12.var.irfs.df <- data.frame(var8_bloom_JFV_h12.var.irfs$irf,
-                                             var8_bloom_JFV_h12.var.irfs$Lower,
-                                             var8_bloom_JFV_h12.var.irfs$Upper)
+var8_bloom_JFV_h1.var.irfs.df <- data.frame(
+  var8_bloom_JFV_h1.var.irfs.68$irf,
+  var8_bloom_JFV_h1.var.irfs.68$Lower,
+  var8_bloom_JFV_h1.var.irfs.68$Upper,
+  var8_bloom_JFV_h1.var.irfs.95$Lower,
+  var8_bloom_JFV_h1.var.irfs.95$Upper)
+
+var8_bloom_JFV_h12.var.irfs.df <- data.frame(
+  var8_bloom_JFV_h12.var.irfs.68$irf,
+  var8_bloom_JFV_h12.var.irfs.68$Lower,
+  var8_bloom_JFV_h12.var.irfs.68$Upper,
+  var8_bloom_JFV_h12.var.irfs.95$Lower,
+  var8_bloom_JFV_h12.var.irfs.95$Upper)
 
 # and then restructure the data-frames in the way we need them:
 # rename the columns with the values for the Upper- and Lower
@@ -587,22 +715,35 @@ var8_bloom_JFV_h1.var.irfs.df <- var8_bloom_JFV_h1.var.irfs.df %>%
   dplyr::rename(h1.h1.oirf = h1.h1, 
                 EMPM.oirf = h1.EMPM,
                 IPM.oirf = h1.IPM,
-                EMPM.Lo = h1.EMPM.1,
-                IPM.Lo = h1.IPM.1,
-                EMPM.Up = h1.EMPM.2,
-                IPM.Up = h1.IPM.2) %>%
+                EMPM.Lo.68 = h1.EMPM.1,
+                IPM.Lo.68 = h1.IPM.1,
+                EMPM.Up.68 = h1.EMPM.2,
+                IPM.Up.68 = h1.IPM.2,
+                EMPM.Lo.95 = h1.EMPM.3,
+                IPM.Lo.95 = h1.IPM.3,
+                EMPM.Up.95 = h1.EMPM.4,
+                IPM.Up.95 = h1.IPM.4) %>%
   dplyr::select(-c(h1.h1.1, 
-                   h1.h1.2))
+                   h1.h1.2,
+                   h1.h1.3,
+                   h1.h1.4))
+
 var8_bloom_JFV_h12.var.irfs.df <- var8_bloom_JFV_h12.var.irfs.df %>%
   dplyr::rename(h12.h12.oirf = h12.h12, 
                 EMPM.oirf = h12.EMPM,
                 IPM.oirf = h12.IPM,
-                EMPM.Lo = h12.EMPM.1,
-                IPM.Lo = h12.IPM.1,
-                EMPM.Up = h12.EMPM.2,
-                IPM.Up = h12.IPM.2) %>%
+                EMPM.Lo.68 = h12.EMPM.1,
+                IPM.Lo.68 = h12.IPM.1,
+                EMPM.Up.68 = h12.EMPM.2,
+                IPM.Up.68 = h12.IPM.2,
+                EMPM.Lo.95 = h12.EMPM.3,
+                IPM.Lo.95 = h12.IPM.3,
+                EMPM.Up.95 = h12.EMPM.4,
+                IPM.Up.95 = h12.IPM.4) %>%
   dplyr::select(-c(h12.h12.1, 
-                   h12.h12.2))
+                   h12.h12.2,
+                   h12.h12.3, 
+                   h12.h12.4))
 
 
 # to rescale, we divide all columns in the data-rame (apart from the
@@ -614,19 +755,19 @@ var8_bloom_JFV_h12.var.irfs.df <- var8_bloom_JFV_h12.var.irfs.df %>%
 # identified error;
 
 var8_bloom_JFV_h1.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_h1.var.irfs.df[, 2:ncol(var8_bloom_JFV_h1.var.irfs.df)]*320/
+  var8_bloom_JFV_h1.var.irfs.df[, 2:ncol(var8_bloom_JFV_h1.var.irfs.df)]/
   (var8_bloom_JFV_h1.var.irfs.df[1, 1]*100)
 var8_bloom_JFV_h12.var.irfs.df.rescaled <- 
-  var8_bloom_JFV_h12.var.irfs.df[, 2:ncol(var8_bloom_JFV_h12.var.irfs.df)]*120/
+  var8_bloom_JFV_h12.var.irfs.df[, 2:ncol(var8_bloom_JFV_h12.var.irfs.df)]/
   (var8_bloom_JFV_h12.var.irfs.df[1, 1]*100)
 
 # lastly, we create the desired data-frames using the function
 # 'create_irf_dataframe':
 var8_irfs_results_h1 <- create_irf_dataframe(
-  var8_bloom_JFV_h1.var.irfs.df.rescaled,
+  var8_bloom_JFV_h1.var.irfs.df,
   'macro: h1')
 var8_irfs_results_h12 <- create_irf_dataframe(
-  var8_bloom_JFV_h12.var.irfs.df.rescaled,
+  var8_bloom_JFV_h12.var.irfs.df,
   'macro: h12')
 
 
@@ -659,11 +800,12 @@ var8_plot_all_NoHP_until2008 <- ggplot(data = var8_irfs_results_all) +
   #           size=0.5,linetype = 3) +
   # geom_line(aes(x = step, y = Lo), color="#e80628", 
   #           size=0.5, linetype = 3) +
-  geom_ribbon(aes(x = step, ymax=Up, ymin=Lo, fill=shock_name,
-                  colour=shock_name), 
-              alpha=.5) +
+  geom_ribbon(aes(x = step, ymax=Up.68, ymin=Lo.68, fill=shock_name), 
+              alpha=.6) +
+  geom_ribbon(aes(x = step, ymax=Up.95, ymin=Lo.95, fill=shock_name), 
+              alpha=.3) +
   geom_line(aes(x = step, y = oirf), color="black", 
-            size=0.8) +
+            size=0.5) +
   # geom_point(aes(x = step, y = oirf), color="black", 
   #            size=0.8) +
   # annotation_custom("decreasing %<->% increasing") +
@@ -671,10 +813,10 @@ var8_plot_all_NoHP_until2008 <- ggplot(data = var8_irfs_results_all) +
                      limits = c(0, 60), 
                      breaks = seq(0, 60, by = 12),
                      minor_breaks = NULL) + 
-  scale_y_continuous(name = NULL, 
-                     limits = c(-2.5, 2.5), 
-                     breaks = seq(-2, 2, by=2), 
-                     minor_breaks = NULL) + 
+  scale_y_continuous(name = NULL,  
+                     limits = c(-0.008, 0.004),
+                     breaks = seq(-0.008, 0.004, by=0.002),
+                     minor_breaks = NULL) +
   #ggtitle("% impact on industrial production") + 
   # theme_minimal() + 
   labs(color=NULL) +
@@ -692,7 +834,8 @@ var8_plot_all_NoHP_until2008 <- ggplot(data = var8_irfs_results_all) +
         strip.background = element_rect(colour="black", fill="white", 
                                         size=1.5, linetype="solid")) + 
   # change ratio of y and x - axis
-  coord_fixed(ratio = 5) + facet_grid(shock_name ~ response)
+  coord_fixed(ratio = 5) + facet_grid(shock_name ~ response,
+                                      scales="free_y")
 
 var8_plot_all_NoHP_until2008
 

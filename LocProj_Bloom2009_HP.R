@@ -73,7 +73,7 @@
 # additional_vars <- read.csv(file="additional_vars.csv", header=TRUE, sep=",",
 #                            stringsAsFactors = FALSE)
 # additional_vars <- read.csv(file="additional_vars_ext.csv", header=TRUE, sep=",",
-                            stringsAsFactors = FALSE)
+#                            stringsAsFactors = FALSE)
 additional_vars <- read.csv(file="additional_vars_ext_long.csv", header=TRUE, sep=",",
                             stringsAsFactors = FALSE)
 
