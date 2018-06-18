@@ -46,7 +46,7 @@
 \usepackage{amsmath, amssymb, amstext} %für Mathematik
 \usepackage{mathstyle} %mehr Infos: http://www.ctan.org/pkg/mathstyle
 \usepackage{blindtext} %to be able to place blindtext at certain locations
-\usepackage[left=35mm, right=35mm, top=55mm, bottom=35mm]{geometry}%Seitenränder anpassen
+\usepackage[left=35mm, right=35mm, top=50mm, bottom=35mm]{geometry}%Seitenränder anpassen
 \usepackage[onehalfspacing]{setspace} %1.5 Zeilgenabstand
 \usepackage[round, comma]{natbib} %für die Bibliographie
 %all four of the below packages are included for table creation
@@ -224,6 +224,11 @@
 \newcommand{\hatt}[1]{\oldhat{\boldsymbol{\mathbf{#1}}}}
 
 
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%BEGINNING OF THE DOCUMENT%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,10 +244,10 @@
         \HRule \\[-1mm]
         \Huge{\scshape\bfseries Time-Varying Uncertainty and Business Cycles} \\[-5mm]
         \HRule \\[2mm]
-        \large {\scshape An Inquiry into the Theory, Measurement and \\
+        \Large {\scshape An Inquiry into the Theory, Measurement and \\
         				Macroeconomic Effects of Uncertainty} \\[10mm]
-        \large Master's Thesis \\[10mm]
-        \large in partial fulfillment of the requirements \\for the degree of Master of Science (M.Sc.)\\
+        \Large Master's Thesis \\[10mm]
+        \Large in partial fulfillment of the requirements \\for the degree of Master of Science (M.Sc.)\\
                   in Applied Economics \\[10mm]
                   
         submitted to\\
@@ -254,6 +259,7 @@
         Innsbruck, July 2018
     \end{center}
 \end{titlepage}
+
 %----------------------------------------------------------- Ende Titelseite -------------------------------------------------------------------------------
 \restoregeometry
 
@@ -580,7 +586,7 @@ Studies that try to explain the impact of uncertainty, if any, on aggregate econ
 In what follows below we, first, want to review a selection\footnote{We have decided to restrain ourselves to \textit{four} measures which are among the most commented-on in the literature and which we examine in more detail for the purpose of this thesis.} of uncertainty measures that have been used/suggested in the literature to date (some of which we have already mentioned in Section~\ref{sec:UncertaintyandBusinessCyclesRelatedLiterature}) including their pros and cons and, second, investigate some stylized facts. These are an stock-market volatility (realized volatility or implied volatility as measured by the VXO/VIX), survey-based forecasts, index based on the frequency of 'uncertainty-related' key-words or phrases found in a large number of newspapers \citep{bakeretal:15} and an index generated from the common variation in the unforecastable component of a large number of economic indicators \citep{juradoetal:15}.
 
 
-\section{Measuring Macroeconomic Uncertainty}
+\section{Measuring Macroeconomic Uncertainty Over Time}
 \label{sec:MeasuringUncertainty}
 \begingroup
     \fontsize{8pt}{12pt}\selectfont
@@ -1200,10 +1206,10 @@ Further, Bloom writes: ``The only historical example of a persistent second-mome
 \end{itemize}
 \endgroup
 
-We now want to devote the rest of this thesis to the study of the dynamic relationships between and responses of a set of key macroeconomic variables to innovations (we'll call them 'shocks' in the following) of the various uncertainty measures which we have introduced in Section~\ref{MeasuringUncertaintyandaHistoricalView}. Various models have been suggested/studied in the literature each of them suggesting a slightly different set of variables to include and/or ordering with which the variables enter the VAR. For us, the benchmark model with which we will start is \citet{bloom:09} (see Section~\ref{sec:VAR8}), followed by a macro VAR in the style of \citet{christianoetal:05} 
+In this last section we want to study the dynamic relationships between and responses of a set of key macroeconomic variables to innovations (shocks) of the various uncertainty measures which we have introduced in Section~\ref{MeasuringUncertaintyandaHistoricalView}. Various models have been suggested/studied in the literature each of them suggesting a slightly different set of variables to include, a different specification overall and/or ordering with which the variables enter the VAR. We will start with a replication of the baseline VAR($12$-8)\footnote{Our notation 'VAR($p$) - $v$' denotes the number of lags $p$ and the number of variables included $v$.} that \citet{bloom:09} used for the support of his theoretical model of the firm to disentangle responses of output and employment to heightened uncertainty in Section~\ref{sec:VAR8}, explore the trajectory of impulse responses by deploying a different estimation technique as suggested by \citet{jorda:05} in Section~\ref{sec:jorda05} and finally try to disentangle cause and effect by deploying SVARs as suggested by \citet{ludvigsonetal:18} in Section~\ref{sec:ludvigsonetal18}.
 
 %\newpage
-\section{The Benchmark Model: Recursive VAR-8 following \citet{bloom:09}}
+\section{The Benchmark Model: Recursive VAR($12$)-8 following \citet{bloom:09}}
 \label{sec:VAR8}
 
 
@@ -1249,7 +1255,7 @@ To summarize the dynamic relationship between the variables in our equation syst
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.1cm -1cm -0.5cm 0.9cm, width=1\textwidth]{var8_plot_all_HP_until2008.pdf}}
+   \fbox{\includegraphics[trim=0.1cm -1cm -0.5cm 0.9cm, width=0.9\textwidth]{var8_plot_all_HP_until2008.pdf}}
       \caption[Impulse Response Functions of Production and Employment from Estimations of VAR-8 following \citet{bloom:09} using all uncertainty measures.]{Impulse Response Functions of Production and Employment from Estimations of VAR-8 following \citet{bloom:09} using all uncertainty measures. Variables enter the VAR-8 according to \ref{eq:VAR8}.\\
       \textit{Note:} Dashed lines show 68\% standard error bands. The data are monthly and span the period 1962:07-2008:06 for the Bloom-Shock and VXO/volatility series, 1978:02-2008:06 for the MSoC uncertainty series, 1975:01-2008:06 for the EPU and 1962:07-2008:06 for the Macro Uncertainty Index (both $h=1$ and $h=12$).}   \label{fig:VAR8_HP_until2008}
 \end{figure}
@@ -1258,7 +1264,7 @@ To summarize the dynamic relationship between the variables in our equation syst
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.1cm -1cm -0.5cm 0.9cm, width=1\textwidth]{var8_plot_all_NoHP_until2008.pdf}}
+   \fbox{\includegraphics[trim=0.1cm -1cm -0.5cm 0.9cm, width=0.9\textwidth]{var8_plot_all_NoHP_until2008.pdf}}
       \caption[Impulse Response Functions of Production and Employment from Estimations of a modified version of the VAR-8 following \citet{bloom:09} using all uncertainty measures.]{Impulse Response Functions of Production and Employment from Estimations of a modified version of the VAR-8 \citet{bloom:09} using all uncertainty measures. Variables enter the VAR-8 according to \ref{eq:VAR8}.\\
        \textit{Note:} Dashed lines show 68\% standard error bands. The data are monthly and span the period 1962:07-2008:06 for the Bloom-Shock and VXO/volatility series, 1978:02-2008:06 for the MSoC uncertainty series, 1975:01-2008:06 for the EPU and 1962:07-2008:06 for the Macro Uncertainty Index (both $h=1$ and $h=12$).}   \label{fig:VAR8_NoHP_until2008}
 \end{figure}
@@ -1276,15 +1282,18 @@ Another sentence that \citet{bachmannetal:13} use on p. 6: ``Figure 2 provides a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%LOCALPROJECTIONS%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Alternative Estimations I: Local Projections following \citet{jorda:05}}
-Potential endogeneity in the VAR specifications from Section~\ref{sec:VAR8} is an important issue in our attempts to disentangle the real effects of uncertainty, meaning that uncertainty itself may be a function of the business cycle. As discussed in Section~\ref{sec:exoEndoJuradoetal}, the VARs employed in the literature might not be capable of adequately separating cause and effect (--> go in a little more detail here!!!). IRFs are sensitive to misspecifications in the underlying data generating process. Instead of relying on the recursive scheme of a reduced-form VAR-system to estimate IRFs, it is possible to estimate the IRFs directly from the data by regressing future values of the variable of interest on current values of the set of control variables. This methodology was first proposed by \citet{jorda:05} that labelled his novel methodology of estimating impulse response functions \textit{model-free} or \textit{locla projection} estimator.\\
+\label{sec:jorda05}
+
+Potential endogeneity in the VAR specifications from Section~\ref{sec:VAR8} is an important issue in our attempts to disentangle the real effects of uncertainty, meaning that uncertainty itself may be a function of the business cycle. As discussed in Section~\ref{sec:exoEndoJuradoetal}, the VARs employed in the literature might not be capable of adequately separating cause and effect (--> go in a little more detail here!!!). IRFs are sensitive to misspecifications in the underlying data generating process. Instead of relying on the recursive scheme of a reduced-form VAR-system to estimate IRFs, it is possible to estimate the IRFs directly from the data by regressing future values of the variable of interest on current values of the set of control variables. \\
 \\
-In particular, \citet{jorda:05} popularized the idea of computing impulse responses for vector time series based on \textit{local projections} that go without the specification and estimation of the ``[...] unknown true multivariate dynamic system itself'' \citep[p. 1]{jorda:05}. \\
+\citet{jorda:05} popularized the idea of computing impulse responses for vector time series based on \textit{local projections} that go without the specification and estimation of the ``[...] unknown true multivariate dynamic system itself'' \citep[p. 1]{jorda:05}. \\
 As part of the advantages, \citet{jorda:05}, among others, shows that local projections provide appropriate inference that goes without asymptotic delta-method approximations or numerical techniques, are robust to misspecificaions of the DGP and more easily allow non-linear specifications. The key argument regards the original purpose of time-series models, i.e., forecasting: A (multiple) linear system (like a VAR) is optimally designed for one-period ahead forecasts and will still produce reasonable forecasts under a misspecified model.\footnote{Using the term 'linear projection' to describe a forecast formed from a linear function of past observations as it is the case in traditional time-series forecasting emphasizes the common goal of traditional time-series forecasting versus local projections.} In case of an acute misspecification, however, looking at more distant horizons, misspecification errors are worsened along with the forecast horizon and passed on to the point forecasts. 
 
 Technically, local projections are the result of sequential regressions of a dependent variable shifted several steps ahead, i.e., regressions of the dependent variables at horizon $t+h$ on the set of regressors at time $t$. As such, the method shares many similarities with direct multi-step forecasting techniques.\footnote{See e.g., \citet{marcellinoetal:06} for a comparison of direct and iterated multistep methods in forecasting practice for univariate time series. They describe forecasts based on a multiperiod model (direct forecast) as regressing a multiperiod-ahead value of the dependent variable on current and lagged values of the variable and show that the comparison between iterated (i.e., forecasts derived from time series models) and direct forecasts involve a trade-off between bias and efficiency: iterated methods win with respect to parameter efficiency but produce a compounded bias if the one-step-ahead model is already misspecified. Similarly like \citet{jorda:05} write that the idea of direct multiperiod forecasts (in comparison to iterated forecasts based on a univariate or multivariate time-series models) goes back to at least \citet{cox:61} whereas \citet{weiss:91} established consistency and asymptotic normality of direct forecasts under general conditions. \citet{bhansali:02} provides a review of the literature.} While direct forecasting aims at an optimal multi-step point forecast of the dependent variable, local projections target a consistent estimation of the corresponding impulse response coefficients (which are obviously two interrelated goals).\\
 \\
 To put Jordá's local projections properly in context with respect to VARs, we will briefly outline some theory regarding VARs which will allow us then to seamlessly introduce local projections into the picture:\\
-\\
+
+\paragraph{VARs and the Derivation of Impulse Responses}
 We start with a stable bivariate dynamic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$ whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).}
 \begin{equation} \label{eq:svar1}
 \begin{split}
@@ -1336,13 +1345,13 @@ or
  	\end{bmatrix} 
 \end{split}								
 \end{equation}
-which, in matrix notation, most compactly reduces to 
+which, in matrix notation, compactly reduces to 
 \begin{equation} \label{eq:svar4}
 \begin{split}
 	\vect{A_0 y_t} = \vect{A_1}\vect{y_{t-1}} + \vect{\epsilon_t}
 \end{split}								
 \end{equation}
-with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemporaneous effects of the increase of each endogenous variable on the other variable, respectively and
+with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemporaneous effects of an increase of each endogenous variable on the other variable, respectively and
 \begin{equation}
 \begin{split}
 	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
@@ -1353,7 +1362,7 @@ with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemp
 \end{split}								
 \end{equation}
 
-The SVAR can be translated into its \textit{reduced form} representation, i.e., a standard VAR model (in this case a VAR(1)), by premultiplying \ref{eq:svar4} with the inverse of the impact matrix $\vect{A_0}$ (assuming that it exists) which gives
+The SVAR can be translated into its \textit{reduced form} representation, i.e., a standard VAR model (in this case a VAR(1) because we are considering only one lag at the moment), by premultiplying \ref{eq:svar4} with the inverse of the impact matrix $\vect{A_0}$ (assuming that it exists) which gives
 \begin{equation} \label{eq:svar5}
 \begin{split}
 	          \vect{A_0^{-1}}\vect{A_0}\vect{y_t} & = \vect{A_0^{-1}}\vect{A_1}\vect{y_{t-1}} + \vect{A_0^{-1}}\vect{\epsilon_t}     \iff \\
@@ -1531,7 +1540,7 @@ With $\vect{A_0}$ being a lower triangular matrix of the above form, further the
  								\end{bmatrix} 			
 \end{split}								
 \end{equation}
-The SVAR representation derived under above the assumption hence establishes a recursive causal ordering which may be computed using the Choleski factorization of the reduced from covariance matrix $\vect{\Sigma_u}$ (the Choleski identification is hence also called recursive identification).\footnote{In this identification scheme the order of the variables entering the VAR matters because the variable placed on top is assumed to be the most exogenous and is only affected by a shock to itself.} 
+The SVAR representation derived under above the assumption hence establishes a recursive causal ordering which may be computed using the Choleski factorization of the reduced form covariance matrix $\vect{\Sigma_u}$ (the Choleski identification is hence also called recursive identification).\footnote{In this identification scheme the order of the variables entering the VAR matters because the variable placed on top is assumed to be the most exogenous and is only affected by a shock to itself.} 
 \\
 Writing down the Choleski factorization of the positive semi-definite matrix $\vect{\Sigma_u}$ gives
 \begin{equation} \label{eq:svar14}
@@ -1543,7 +1552,7 @@ Writing down the Choleski factorization of the positive semi-definite matrix $\v
  							\end{bmatrix}
 \end{split}								
 \end{equation}
-with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$. A closely related variant of the this classical representation of the Cholesky decomposition is the LDL decomposition (triangular factorization) in the form of 
+with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$. A closely related variant of the this classical representation of the Cholesky decomposition is the L$\Lambda$L decomposition (triangular factorization) in the form of 
 \begin{equation} \label{eq:svar15}
 \begin{split}
  		\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L'}
@@ -1615,8 +1624,24 @@ meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm
 \end{split}								
 \end{equation}
 
+\paragraph{Defining Impulse Responses Under Unknown Wold Decomposition}
+\citet{jorda:05} outlines that the deployment of the Wold decomposition (i.e., transformation of a VAR into its MA($\infty$) counterpart) to be able to recover the impulse responses is justified under the premise that the estimated model indeed resembles the DGP. To focus on the actual goal of impulse responses in a model-free context, \citet{jorda:05} reverts back to the original definition of impulse responses without reference to the unknown DGP (and hence without knowing the Wold decomposition) as fdescribed by \citet{koopetal:96} and \citet{hamilton:94}:\\
+\citet{koopetal:96}\footnote{\citet{hamilton:94} uses a similar description.} introduce the (as they call it) \textit{traditional} definition of an impulse response function as the difference between two different realizations of $\vect{y_{t+s}}$ that are identical up to time $t-1$ but diverge in time $t$ so that 
+\begin{equation}
+	\vect{x_{t-1}'} = (\vect{y_{t-1}^'}, \vect{y_{t-2}^'}, \dots, \vect{y_{t-p}^'})
+\end{equation}
+is the information received about the system up to date $t-1$. Then one realization assumes that the system was hit by a shock of size $\vect{\delta}$ between $t$ and $t+s$ while the other realization (called benchmark) is not impacted between $t$ and $t+s$. Based on this distinction, even if its Wold decomposition does not exist (as mentioned in above) the impulse response function can be defined as the difference between the two forecasts
+\begin{equation}\label{eq:IRForecast}
+\begin{split}
+	IRF(t, s, \vect{\delta}) & = \mathbb{E}(\vect{y_{t+s}}|\vect{\epsilon_t}=\vect{\delta}; \vect{x_{t-1}}) - \mathbb{E}(\vect{y_{t+s}}|\vect{\epsilon_t}=\vect{0};\vect{x_{t-1}}) \\
+	& = \vect{\Psi_s \delta} \\
+	\text{for} \quad s & = 0, 1, 2, \dots
+\end{split}
+\end{equation}
+where $\mathbb{E}(.|.)$ denotes the best, mean squared error prediction, $\vect{y_t}$ is an $(n \times 1)$ random vector, $\vect{0}$ is of dimension $(n \times 1)$ and $\vect{\delta}$ is an $(n \times 1)$ vector containing the respective changes of $\vect{\epsilon_t}$ and answers the question: ``What is the effect of a shock of size $\vect{\delta}$ hitting the system at time $t$ on the state of the system at time $t+n$, given that no other shocks hit the system?'' \citep{koopetal:96}. As stated above, the representation of IRFs in Equations~\ref{eq:IRForecast} or \ref{eq:svar10} give the effect to a one-time unit increase to one of the shocks while holding all else constant.
 
-\paragraph{Estimation of Impulse Responses}
+
+\paragraph{Estimation of Impulse Responses Under Local Projections}
 By referring to Equation~\ref{eq:irfswithoutwold}, \citet[p. 4]{jorda:05} abstracts from the technicalities involved in the estimation of impulse responses with VARs (first estimating a reduced-form model, inverting its estimates for the MA($\infty$) - representation, and recursively iterating through the parameters, etc.) and stresses that the ``[...] statistical objective in calculating impulse responses is to obtain the best, mean-squared, multi-step predictions'' and instead suggests to directly project the $s$-step ahead forecast $\vect{y_{t+s}}$ onto the linear space generated by $(\vect{y_{t-1}}, \vect{y_{t-2}}, \dots, \vect{y_{t-2}})$ which yields the following specification
 \begin{equation} \label{eq:localproj42}
 \begin{split}
@@ -1872,7 +1897,11 @@ changes, as, inevitably, it weighs on weak demand.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%STRUCTURALVARS%%%&%%%%%%%%%%%%%%%%%%%%%%%
 \section{Alternative Estimations II: Structural VARs following \citet{ludvigsonetal:18}}
+\label{sec:ludvigsonetal18}
 
+A few sentences from other parts that actually belong here:\\
+-) Consequently, in an SVAR framework as suggested by \citet{ludvigsonetal:18}, the $\vect{P}$-matrix to orthogonalize the reduced-form disturbances is not mechanically constructed as the Cholesky decomposition of the error covariance matrix (zero short-run restrictions; recursive identification) but rather is obtained from contemporaneous and theor-based restrictions placed on the $\vect{P}$ - matrix.\\
+-) 
 
 %\newpage
 \chapter{Conclusion}
