@@ -181,8 +181,8 @@ locproj8_bloom_JFV <- read_excel("VARDATA_UPDATED_JFV.xlsx")
 # 'month' to be able to use them below when merging with the
 # data.frame containing the uncertainty-measures!
 locproj8_bloom_JFV <- locproj8_bloom_JFV %>%
-                          dplyr::rename(year = YEAR,
-                                        month = MONTH)
+  dplyr::rename(year = YEAR,
+                month = MONTH)
 
 # note: the data.frame 'identify_shocks' already contains
 # all uncertainty measures we want to merge in here;
@@ -190,51 +190,51 @@ locproj8_bloom_JFV <- locproj8_bloom_JFV %>%
 # uncertainty measures available in our data.frame
 # 'locproj8_bloom_JFV':
 locproj8_bloom_JFV <- as.tibble(
-                    right_join(x = identify_shocks[, 
-                                c("VXO", "EPU", "EPU_Hist", "Michigan",
-                                  "Macro1", "Macro12","year",
-                                  "month")],
-                                        y = locproj8_bloom_JFV,
-                                        by = c("year", "month"))) %>%
-                    # we add further steps to the newly created
-                    # tibble:
-                    # Bloom_Shock: we want to define an indicator function 
-                    # on the 17 events defined
-                    # in the original contribution by Bloom (2009)
-                    # first, we change the name of the column VOLATBL,
-                    # then we set the indicator variable to 1 for months 
-                    # where the volatility had reached its peak (according to 
-                    # Table A.1, Bloom, 2009, p. 35)
-                    dplyr::rename(bloom_shock = VOLATBL) %>%
-                    unite(YEARMONTH, year, month, remove = FALSE,
-                          sep="-") %>%
-                    # change the type to 'yearmon' to be able to
-                    # replace the Bloom-dates accordingly!
-                    mutate(YEARMONTH = as.yearmon(YEARMONTH)) %>%
-                    mutate(bloom_shock = case_when(
-                      YEARMONTH %in% 
-                        as.yearmon(c("Oct 1962", #Cuban missile crisis
-                                     "Nov 1963", #Assassination of JFK
-                                     "Aug 1966", #Vietnam buildup
-                                     "Dec 1973", #OPEC I, Arab-Israeli War
-                                     "Oct 1974", #Franklin National Financial Crisis
-                                     "Nov 1978", #OPEC II
-                                     "Mar 1980", #Afghanistan, Iran hostages
-                                     "Oct 1982", #Monetary cycle turning point
-                                     "Nov 1987", #Black Monday
-                                     "Oct 1990", #Gulf War I
-                                     "Nov 1997", #Asian Crisis
-                                     "Sep 1998", #Russian, LTCM default
-                                     "Sep 2001", #9/11 terrorist attack
-                                     "Sep 2002", #Worldcom and Enron
-                                     "Feb 2003", #Gulf War II
-                                     "Mar 2008")) ~ 1, #Credit Crunch
-                      TRUE                    ~ 0)) %>%
-                    # in a last step, we remove all date variables;
-                    # note that we do not yet remove the variable
-                    # 'YEARMONTH' but will only do this below
-                    # in the next stage!
-                    dplyr::select(-c(year, month))
+  right_join(x = identify_shocks[, 
+                                 c("VXO", "EPU", "EPU_Hist", "Michigan",
+                                   "Macro1", "Macro12","year",
+                                   "month")],
+             y = locproj8_bloom_JFV,
+             by = c("year", "month"))) %>%
+  # we add further steps to the newly created
+  # tibble:
+  # Bloom_Shock: we want to define an indicator function 
+  # on the 17 events defined
+  # in the original contribution by Bloom (2009)
+  # first, we change the name of the column VOLATBL,
+  # then we set the indicator variable to 1 for months 
+  # where the volatility had reached its peak (according to 
+  # Table A.1, Bloom, 2009, p. 35)
+  dplyr::rename(bloom_shock = VOLATBL) %>%
+  unite(YEARMONTH, year, month, remove = FALSE,
+        sep="-") %>%
+  # change the type to 'yearmon' to be able to
+  # replace the Bloom-dates accordingly!
+  mutate(YEARMONTH = as.yearmon(YEARMONTH)) %>%
+  mutate(bloom_shock = case_when(
+    YEARMONTH %in% 
+      as.yearmon(c("Oct 1962", #Cuban missile crisis
+                   "Nov 1963", #Assassination of JFK
+                   "Aug 1966", #Vietnam buildup
+                   "Dec 1973", #OPEC I, Arab-Israeli War
+                   "Oct 1974", #Franklin National Financial Crisis
+                   "Nov 1978", #OPEC II
+                   "Mar 1980", #Afghanistan, Iran hostages
+                   "Oct 1982", #Monetary cycle turning point
+                   "Nov 1987", #Black Monday
+                   "Oct 1990", #Gulf War I
+                   "Nov 1997", #Asian Crisis
+                   "Sep 1998", #Russian, LTCM default
+                   "Sep 2001", #9/11 terrorist attack
+                   "Sep 2002", #Worldcom and Enron
+                   "Feb 2003", #Gulf War II
+                   "Mar 2008")) ~ 1, #Credit Crunch
+    TRUE                    ~ 0)) %>%
+  # in a last step, we remove all date variables;
+  # note that we do not yet remove the variable
+  # 'YEARMONTH' but will only do this below
+  # in the next stage!
+  dplyr::select(-c(year, month))
 
 
 
@@ -263,29 +263,22 @@ locproj8_bloom_JFV <- as.tibble(
 # and at the end remove the helper-variable
 # 'YEARMONTH' again:
 locproj8_bloom_JFV <- locproj8_bloom_JFV %>% 
-                    drop_na %>%
-                    # note that we have muted the filtering
-                    # for the moment
-                    # filter(YEARMONTH <= "Jun 2008") %>%
-                    dplyr::select(-YEARMONTH)
+  drop_na %>%
+  # note that we have muted the filtering
+  # for the moment
+  # filter(YEARMONTH <= "Jun 2008") %>%
+  dplyr::select(-YEARMONTH)
 
 #####
 ## log- and/or HP-transformations
 #####
-# variables with log-and HP-transformations
-cols_log_hp <- c("STOCK", "WAGE", "CPI", "EMPM", "IPM")
-for (i in seq_along(cols_log_hp)) {
-  locproj8_bloom_JFV[cols_log_hp[i]] <- log(locproj8_bloom_JFV[cols_log_hp[i]])
-  var_aux <- hpfilter(locproj8_bloom_JFV[cols_log_hp[i]],freq=129600)
-  locproj8_bloom_JFV[cols_log_hp[i]] <- var_aux$cycle
+# variables only with log-transformations
+cols_log <- c("STOCK", "WAGE", "CPI", "EMPM", "IPM")
+for (i in seq_along(cols_log)) {
+  locproj8_bloom_JFV[cols_log[i]] <- log(locproj8_bloom_JFV[cols_log[i]])
 }
 
-# variables only with HP-transformations
-cols_hp <- c("HOURSM", "FFR")
-for (i in seq_along(cols_hp)) {
-  var_aux <- hpfilter(locproj8_bloom_JFV[cols_hp[i]],freq=129600)
-  locproj8_bloom_JFV[cols_hp[i]] <- var_aux$cycle
-}
+# no variables with HP-transformations!
 
 
 
@@ -296,55 +289,6 @@ for (i in seq_along(cols_hp)) {
 # the last command adds the name of the shock and references to the
 # entire previously created tibble to have the 'shock' - variable
 # available;
-
-# because we will perform this operation multiple times, below is a function
-# which we can hand over to a data-frame which will then apply the necessary 
-# manipulations to arrive at the desired result (note that the below
-# funtion only works on data-frame with the exact corresponding naming
-# of the variables, etc):
-
-create_irf_dataframe_locproj <- function(dataframe, shock_name){
-                    (bind_cols(
-                      dataframe %>% 
-                        gather('IPM.locproj', 
-                               'EMPM.locproj', 
-                               key="response", 
-                               value="locproj") %>%
-                        dplyr::select(response, locproj) %>%
-                        mutate(response = case_when(
-                          response == 'IPM.locproj' ~ 
-                            "% Impact on Production", 
-                          TRUE ~ "% Impact on Employment")),
-                      dataframe %>%
-                        gather('IPM.Lo.68', 
-                               'EMPM.Lo.68', 
-                               key="response", 
-                               value="Lo.68") %>%
-                        dplyr::select(Lo.68), 
-                      dataframe %>%
-                        gather('IPM.Up.68', 
-                               'EMPM.Up.68', 
-                               key="response", 
-                               value="Up.68") %>%
-                        dplyr::select(Up.68),
-                      dataframe %>%
-                        gather('IPM.Lo.95', 
-                               'EMPM.Lo.95', 
-                               key="response", 
-                               value="Lo.95") %>%
-                        dplyr::select(Lo.95),
-                      dataframe %>%
-                        gather('IPM.Up.95', 
-                               'EMPM.Up.95', 
-                               key="response", 
-                               value="Up.95") %>%
-                        dplyr::select(Up.95)
-                    ) %>%
-                      group_by(response) %>% 
-                      mutate(step = row_number())) %>%
-                      mutate(shock_name = shock_name)
-}
-
 
 
 
@@ -375,8 +319,8 @@ create_irf_dataframe_locproj <- function(dataframe, shock_name){
 # we only select the variables that are actually necessary for this
 # step:
 locproj8_bloom_JFV.1 <- locproj8_bloom_JFV %>%
-          dplyr::select(c(bloom_shock, IPM, EMPM, HOURSM, CPI, WAGE, FFR,
-                          STOCK))
+  dplyr::select(c(bloom_shock, IPM, EMPM, HOURSM, CPI, WAGE, FFR,
+                  STOCK))
 
 # we want to check whether the procedure below indeed runs all regressions
 # correctly; therefore, we create the 12 lags for all 8 variables manually!
@@ -424,49 +368,49 @@ regressions_out <- data.frame(
 
 
 for (i in 0:60){
-      
-      # i stands for the horizons that we consider
-      # i <- 60
-      #i <- 1
-      print(i)
-      
-      # for each i, we take the variable "IPM" and shift it accordingly:
-      df.reg <- locproj8_bloom_JFV.1 %>%
-                      dplyr::mutate(IPM = data.table::shift(IPM, type="lead", i))
-      
-      reg <- lm(IPM ~ ., df.reg[, c(1:2, 9:104)])
-      #reg <- dynlm(L(lip_cycle, -i) ~ bloom_shock + L(lip, seq.int(1:3)*(-1)), 
-      # regressions)
-      # transformation to newey-west standard errors
-      SE_robust <- sqrt(diag(vcovHAC(reg)))
-      # good explanation between the vairous 'flavours' of options that the
-      # 'sandwich' - package offers:
-      # https://stats.stackexchange.com/questions/15608/vcovhc-vcovhac-
-      # neweywest-which-function-to-use
-      # note: there are slight discrepancies between the above and the
-      # below estimation of the standard errors which I still have to
-      # figure out!
-      # reg_helper <- coeftest(reg, vcov = vcovHAC(reg))
-      
-      # having estimated the model with HAC-consistent standard errors, we can
-      # store the coefficients and upper and lower bounds of the corresponding
-      # confidence bands for each horizon:
-      estimates <- c(summary(reg)$coefficients[2, 1], 
-                     as.numeric(summary(reg)$coefficients[2, 1]+ 1.68*SE_robust[2]),
-                     as.numeric(summary(reg)$coefficients[2, 1] - 1.68*SE_robust[2]),
-                     as.numeric(summary(reg)$coefficients[2, 1] + 0.47*SE_robust[2]),
-                     as.numeric(summary(reg)$coefficients[2, 1] - 0.47*SE_robust[2])
-      )
-      regressions_out <- rbind(regressions_out, estimates)
-
-      # and again add a column 'h'
-      regressions_out  <- as.data.frame(regressions_out  %>%
-                                         mutate(h = seq(0, 
-                                                        nrow(regressions_out)-1)))
-      
-      rm(reg, SE_robust, estimates)
-}
   
+  # i stands for the horizons that we consider
+  # i <- 60
+  #i <- 1
+  print(i)
+  
+  # for each i, we take the variable "IPM" and shift it accordingly:
+  df.reg <- locproj8_bloom_JFV.1 %>%
+    dplyr::mutate(IPM = data.table::shift(IPM, type="lead", i))
+  
+  reg <- lm(IPM ~ ., df.reg[, c(1:2, 9:104)])
+  #reg <- dynlm(L(lip_cycle, -i) ~ bloom_shock + L(lip, seq.int(1:3)*(-1)), 
+  # regressions)
+  # transformation to newey-west standard errors
+  SE_robust <- sqrt(diag(vcovHAC(reg)))
+  # good explanation between the vairous 'flavours' of options that the
+  # 'sandwich' - package offers:
+  # https://stats.stackexchange.com/questions/15608/vcovhc-vcovhac-
+  # neweywest-which-function-to-use
+  # note: there are slight discrepancies between the above and the
+  # below estimation of the standard errors which I still have to
+  # figure out!
+  # reg_helper <- coeftest(reg, vcov = vcovHAC(reg))
+  
+  # having estimated the model with HAC-consistent standard errors, we can
+  # store the coefficients and upper and lower bounds of the corresponding
+  # confidence bands for each horizon:
+  estimates <- c(summary(reg)$coefficients[2, 1], 
+                 as.numeric(summary(reg)$coefficients[2, 1]+ 1.68*SE_robust[2]),
+                 as.numeric(summary(reg)$coefficients[2, 1] - 1.68*SE_robust[2]),
+                 as.numeric(summary(reg)$coefficients[2, 1] + 0.47*SE_robust[2]),
+                 as.numeric(summary(reg)$coefficients[2, 1] - 0.47*SE_robust[2])
+  )
+  regressions_out <- rbind(regressions_out, estimates)
+  
+  # and again add a column 'h'
+  regressions_out  <- as.data.frame(regressions_out  %>%
+                                      mutate(h = seq(0, 
+                                                     nrow(regressions_out)-1)))
+  
+  rm(reg, SE_robust, estimates)
+}
+
 
 regressions_out_ipm <- regressions_out
 
@@ -489,7 +433,7 @@ regressions_out <- data.frame(
   e=numeric(),
   stringsAsFactors=FALSE
 )
-      
+
 for (i in 0:60){
   
   # i stands for the horizons that we consider
@@ -533,7 +477,7 @@ for (i in 0:60){
   
   rm(reg, SE_robust, estimates)
 }      
-      
+
 regressions_out_empm <- regressions_out
 # rename the column names
 colnames(regressions_out_empm)[1] <- "EMPM.locproj"
@@ -549,8 +493,8 @@ regressions_out_bloom <- data.frame(regressions_out_empm,
 # creation of data-frame for Bloom_shock
 # Achtung: wir haben 'rescaled' ersetzt!
 locproj_results_bloom <- create_irf_dataframe_locproj(
-                            regressions_out_bloom,
-                            'Bloom-Shock')
+  regressions_out_bloom,
+  'Bloom-Shock')
 
 
 ########################################################################
@@ -728,7 +672,7 @@ colnames(regressions_out_empm)[4] <- "EMPM.Lo.68"
 colnames(regressions_out_empm)[5] <- "EMPM.Up.68" 
 
 regressions_out_VXO <- data.frame(regressions_out_empm,
-                                    regressions_out_ipm)
+                                  regressions_out_ipm)
 
 
 # creation of data-frame for Bloom_shock
@@ -913,7 +857,7 @@ colnames(regressions_out_empm)[4] <- "EMPM.Lo.68"
 colnames(regressions_out_empm)[5] <- "EMPM.Up.68" 
 
 regressions_out_Michigan <- data.frame(regressions_out_empm,
-                                  regressions_out_ipm)
+                                       regressions_out_ipm)
 
 
 # creation of data-frame for Bloom_shock
@@ -1099,7 +1043,7 @@ colnames(regressions_out_empm)[4] <- "EMPM.Lo.68"
 colnames(regressions_out_empm)[5] <- "EMPM.Up.68" 
 
 regressions_out_EPU <- data.frame(regressions_out_empm,
-                                       regressions_out_ipm)
+                                  regressions_out_ipm)
 
 
 # creation of data-frame for Bloom_shock
@@ -1118,7 +1062,7 @@ locproj_results_EPU <- create_irf_dataframe_locproj(
 # we only select the variables that are actually necessary for this
 # step:
 locproj8_bloom_JFV.5 <- locproj8_bloom_JFV %>%
-              dplyr::select(c(Macro1, Macro12, IPM, EMPM, HOURSM, CPI, WAGE, FFR,
+  dplyr::select(c(Macro1, Macro12, IPM, EMPM, HOURSM, CPI, WAGE, FFR,
                   STOCK))
 
 # we want to check whether the procedure below indeed runs all regressions
@@ -1290,14 +1234,14 @@ colnames(regressions_out_empm)[4] <- "EMPM.Lo.68"
 colnames(regressions_out_empm)[5] <- "EMPM.Up.68" 
 
 regressions_out_macro1 <- data.frame(regressions_out_empm,
-                                    regressions_out_ipm)
+                                     regressions_out_ipm)
 
 
 # creation of data-frame for Bloom_shock
 # Achtung: wir haben 'rescaled' ersetzt!
 locproj_results_macro1 <- create_irf_dataframe_locproj(
-                                      regressions_out_macro1,
-                                      'Macro1')
+  regressions_out_macro1,
+  'Macro1')
 
 # for h=12:
 
@@ -1435,14 +1379,14 @@ colnames(regressions_out_empm)[4] <- "EMPM.Lo.68"
 colnames(regressions_out_empm)[5] <- "EMPM.Up.68" 
 
 regressions_out_macro12 <- data.frame(regressions_out_empm,
-                                     regressions_out_ipm)
+                                      regressions_out_ipm)
 
 
 # creation of data-frame for Bloom_shock
 # Achtung: wir haben 'rescaled' ersetzt!
 locproj_results_macro12 <- create_irf_dataframe_locproj(
-                      regressions_out_macro12,
-                      'Macro12')
+  regressions_out_macro12,
+  'Macro12')
 
 
 ####################
@@ -1461,31 +1405,31 @@ locproj_irfs_results_all <- bind_rows(locproj_results_bloom,
 # we need to create ordered factors, otherwise 'facet_wrap' combines the plots
 # in alphabetical order:
 locproj_irfs_results_all <- locproj_irfs_results_all %>%
-                             ungroup %>%
-                             mutate(shock_name = factor(shock_name, 
+  ungroup %>%
+  mutate(shock_name = factor(shock_name, 
                              ordered = TRUE,
                              levels=unique(shock_name)),
-                             response = factor(response,
-                             ordered = TRUE,
-                             levels=unique(response)))
+         response = factor(response,
+                           ordered = TRUE,
+                           levels=unique(response)))
 
 # now we can finally plot the irfs:
 
 # next we can plot everything we had plotted above
-locproj_plot_all_HP_until2008 <- ggplot(data = locproj_irfs_results_all) + 
+locproj_plot_all_NoHP_until2008 <- ggplot(data = locproj_irfs_results_all) + 
   # geom_point() + 
   # below ribbon is for 68% confidence band
   geom_ribbon(aes(x=step, ymax=100*(exp(Lo.68)-1), 
-                          ymin=100*(exp(Up.68)-1),
-                          fill=shock_name), 
-                          alpha=.6) +
+                  ymin=100*(exp(Up.68)-1),
+                  fill=shock_name), 
+              alpha=.6) +
   # and this one for the 95% confidence band
   geom_ribbon(aes(x=step, ymax=100*(exp(Lo.95)-1), 
-                          ymin=100*(exp(Up.95)-1),
-                          fill=shock_name), 
-                          alpha=.3) +  
+                  ymin=100*(exp(Up.95)-1),
+                  fill=shock_name), 
+              alpha=.3) +  
   geom_line(aes(x = step, y = 100*(exp(locproj)-1)), 
-             color="black", size=0.5) + 
+            color="black", size=0.5) + 
   # annotation_custom("decreasing %<->% increasing") +
   scale_x_continuous(name = NULL, limits = c(0, 60), 
                      breaks = seq(0, 60, by = 12),
@@ -1513,14 +1457,11 @@ locproj_plot_all_HP_until2008 <- ggplot(data = locproj_irfs_results_all) +
   # change ratio of y and x - axis
   coord_fixed(ratio = 5) + 
   facet_grid(shock_name ~ response,
-                                    scales="free_y")
+             scales="free_y")
 
-locproj_plot_all_HP_until2008
+locproj_plot_all_NoHP_until2008
 
 # and we save the plot to be used in our latex-document
-ggsave(file="locproj_plot_all_HP_until2008.pdf", width = 210, height = 297, units = "mm")
-
-
-
+ggsave(file="locproj_plot_all_NoHP_until2008.pdf", width = 210, height = 297, units = "mm")
 
 

@@ -37,11 +37,6 @@
 ### '12052018_thesis_master.R'; therefore this R-Script should be run 
 ### before running this one, to have all necessary objects available.
 
-### Note: Because each of the below parts uses a different uncertainty
-###       measure for the VARs, each part is self-contained in the sense
-###       that it starts again from scratch with the reading-in of the
-###       raw data 'VAR_UPDATED_JFV.xlsx'!
-
 
 #########################################
 ### preparatory steps common to all VARs
@@ -633,7 +628,7 @@ var8_irfs_results_epu <- create_irf_dataframe(
                                   'EPU')
 
 ########################################################################
-### PART 6: VAR8_Bloom_2009_HP with Macro Uncertainty Index
+### PART 5: VAR8_Bloom_2009_HP with Macro Uncertainty Index
 ###         following Jurado et al. (2015);
 ###         We specifically use the data for h=1 and h=12 to see how
 ###         they perform compared to each other

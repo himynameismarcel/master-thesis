@@ -36,11 +36,6 @@
 ### '12052018_thesis_master.R'; therefore this R-Script should be run 
 ### before running this one, to have all necessary objects available.
 
-### Note: Because each of the below parts uses a different uncertainty
-###       measure for the VARs, each part is self-contained in the sense
-###       that it starts again from scratch with the reading-in of the
-###       raw data 'VAR_UPDATED_JFV.xlsx'!
-
 
 #########################################
 ### preparatory steps common to all VARs

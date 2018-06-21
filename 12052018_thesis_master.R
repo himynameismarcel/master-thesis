@@ -181,6 +181,7 @@ options(stringsAsFactors = F)
 # install.packages("sweep")
 # install.packages("tseries")
 # install.packages("highfrequency")
+# install.packages("data.table")
 
 library(plyr)
 library(dplyr)
@@ -216,6 +217,7 @@ library(sweep)
 library(tseries)
 library(highfrequency)
 library(gtable)
+library(data.table)
 
 # clear workspace
 rm(list = ls())
