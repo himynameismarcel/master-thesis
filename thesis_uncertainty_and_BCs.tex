@@ -24,8 +24,13 @@
 \usepackage[right]{eurosym}
 % the below two lines of code are necessary to make sure that the numbering of figures starts at 1 and then proceeds in steps of 1 instead of floating point numbers etc.
 \usepackage{chngcntr}
+% the below package is useful to be able to properly write down the indicator function!
+\usepackage{bbm}
 % lscape is to be able to put a table in landscape mode
 \usepackage{lscape}
+% the below is ncessary to let the footnote numbering continue over pages and chapters
+\usepackage{chngcntr}
+\counterwithout{footnote}{chapter}
 % the below is necessary to be able to align a table by decimal points
 \usepackage{dcolumn,booktabs}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
@@ -112,6 +117,84 @@
                {\unskip\unskip\textquotedblright\endlist}
 
 %---------------------------------------------------------------------- Customizations ---------------------------------------------------------------------
+%--------------------------------
+%--------------------------------the entire below part is necessary to be able to have a 'Definition'-environment like in Math scripts.
+%--------------------------------
+\usepackage{amsthm}
+\usepackage{amsthm}
+\makeatletter
+\newtheoremstyle{mysatz} %<name>
+  {}% <Space above>
+  {}% <Space below>
+  {}% <Body font>
+  {}% <Indent amount>
+  {\bfseries}% <Theorem head font>
+  {.}% <Punctuation after theorem head>
+  {.5em}% <Space after theorem heading>
+  {\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }#2}%
+   \thmnote{ {\the\thm@notefont(#3)}}}% <Theorem head spec (can be left empty, meaning `normal')>
+\makeatother
+%\theoremstyle{definition} %damit der Text innerhalb der Definition 
+%nicht kursiv geschrieben wird
+\makeatletter
+\def\th@mysatz{%
+  \thm@notefont{\bfseries}% same as heading font
+}
+\makeatother
+
+\theoremstyle{mysatz}
+\newtheorem{satz}{Satz}[chapter]
+
+\newtheorem{lem}[satz]{Lemma}
+
+
+\makeatletter
+\newtheoremstyle{mydefinition} %<name>
+  {}% <Space above>
+  {}% <Space below>
+  {}% <Body font>
+  {}% <Indent amount>
+  {\bfseries}% <Theorem head font>
+  {.}% <Punctuation after theorem head>
+  {.5em}% <Space after theorem heading>
+  {\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }#2}%
+   \thmnote{ {\the\thm@notefont(#3)}}}% <Theorem head spec (can be left empty, meaning `normal')>
+\makeatother
+%\theoremstyle{definition} %damit der Text innerhalb der Definition 
+%nicht kursiv geschrieben wird
+\makeatletter
+\def\th@mydefinition{%
+  \thm@notefont{\bfseries}% same as heading font
+}
+\makeatother
+
+
+\theoremstyle{mydefinition}
+\newtheorem{defi}[satz]{Definition}
+
+%\theoremstyle{remark} %damit der Text innerhalb der Bemerkung nicht
+%kursiv geschrieben wird
+\makeatletter
+\newtheoremstyle{mybemerkung} %<name>
+  {}% <Space above>
+  {}% <Space below>
+  {}% <Body font>
+  {}% <Indent amount>
+  {\itshape}% <Theorem head font>
+  {.}% <Punctuation after theorem head>
+  {.5em}% <Space after theorem heading>
+  {\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }#2}%
+   \thmnote{ {\the\thm@notefont(#3)}}}% <Theorem head spec (can be left empty, meaning `normal')>
+\makeatother
+
+\theoremstyle{mybemerkung}
+\newtheorem{bem}[satz]{Bemerkung}
+
+
+\renewcommand{\labelitemi}{$\rhd$}
+
+
+
 %--------------------------------
 %--------------------------------the entire below part is necessary to be able to include an abstract with the books document class
 %--------------------------------
@@ -218,7 +301,7 @@
 %customizations für Vektoren (dass sie bold dargestellt werden anstatt mit einem Vektorpfeil)
 \let\oldhat\hat
 \renewcommand{\vec}[1]{\bm{#1}}
-\renewcommand{\hat}[1]{\oldhat{\bm{#1}}}
+%\renewcommand{\hat}[1]{\oldhat{\bm{#1}}}
 
 \newcommand{\vect}[1]{\boldsymbol{\mathbf{#1}}}
 \newcommand{\hatt}[1]{\oldhat{\boldsymbol{\mathbf{#1}}}}
@@ -1177,7 +1260,7 @@ Despite showing own variation, the rise of uncertainty in recessions as confirme
 \\
 \citet{ludvigsonetal:18} identify two issues in the empirical modeling of uncertainty and point at the following shortcomings: First, in a VAR context (results of which in the literature we have reported in Section~\ref{sec:selectedworkindetail} and whose underlying theory we will discuss in greater detail in Section~\ref{sec:IRFsVARversusLocalProj}), the deployed models primarily rely on recursive schemes as an identification strategy whose justification in terms of ordering due to contemporaneous movement of the variables seems sometimes arbitrary and not well grounded.\footnote{\citet{ludvigsonetal:18} also discuss other commonly used identification schemes: sign restrictions, long-run restrictions, IV estimations, etc. Because of ambiguous theoretical signs of the relationships between uncertainty and real activity, the authors conclude that sign restrictions are inappropriate. Similarly they reject IV analysis, stating that it is very difficult to find truly exogenous instruments.} Second, uncertainty stemming from financial markets might play a different role in business cycles than real economic uncertainty, referring to \citet{ngandwright:13} who find that all the post-1982 recessions have their origins in financial market disturbances and that these recessions come along with distinctly different features as recessions where financial uncertainty plays a subordinate role.
 
-To account for these identified issues, \citet{juradoetal:18} suggest a novel identification strategy within an SVAR framework which we will present in the context of our empirical analysis in Section~\ref{sec:EmpiricalAnalysis}.
+To account for these identified issues, \citet{ludvigsonetal:18} suggest a novel identification strategy within an SVAR framework which we will present in the context of our empirical analysis in Section~\ref{sec:EmpiricalAnalysis}.
 
 
 
@@ -1222,7 +1305,7 @@ In this last section we want to study the dynamic relationships between and resp
 Central to our study of the effects that the models suggest is the dynamic behavior, i.e., the recovery of impulse response functions. Because the approach deployed in a VAR setting differs from that of local projections (direct multistep forecasts), Section~\ref{sec:IRFsVARversusLocalProj} first starts with an outline of the two approaches and establishes under which circumstances impulse responses derived from a VAR are equivalent to impulse responses recovered from local projections.
 
 %\newpage
-\section{Impulse Responses in a VAR Setting Versus Local Projections}
+\section[Impulse Responses in a VAR Setting Versus Local Projections]{Impulse Responses in a VAR Setting Versus Local Projections\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
 \label{sec:IRFsVARversusLocalProj}
 \citet{jorda:05} popularized the idea of computing impulse responses for vector time series based on \textit{local projections} that go without the specification and estimation of the ``[...] unknown true multivariate dynamic system itself'' \citep[p. 1]{jorda:05}. \\
 As part of the advantages, \citet{jorda:05}, among others, shows that local projections provide appropriate inference that goes without asymptotic delta-method approximations or numerical techniques, are robust to misspecificaions of the DGP and more easily allow non-linear specifications (\textit{flexible local projection}). The key argument regards the original purpose of time-series models, i.e., forecasting: A (multiple) linear system (like a VAR) is optimally designed for one-period ahead forecasts and will still produce reasonable one-period ahead forecasts under a misspecified model.\footnote{Using the term 'linear projection' to describe a forecast formed from a linear function of past observations as it is the case in traditional time-series forecasting emphasizes the common goal of traditional time-series forecasting versus local projections.} In case of an acute misspecification, however, looking at more distant horizons, misspecification errors are worsened along with the forecast horizon and passed on to the more distant point forecasts. 
@@ -1232,7 +1315,7 @@ Technically, local projections are the result of sequential regressions of a dep
 To put Jordá's local projections properly in context with respect to VARs, in what follows we outline some theory regarding VARs which will allow us then to seamlessly introduce local projections into the picture.
 
 \paragraph{VARs and the Derivation of Impulse Responses}
-We consider a stable (this implies stationarity) bivariate dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors.} (i.e., a bivariate SVAR(2)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
+We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(2)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
 \begin{equation} \label{eq:svar1}
 \begin{split}
 	y_{1t} & = a_{01}y_{2t} + a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
@@ -1293,7 +1376,7 @@ with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemp
 \begin{equation}
 \begin{split}
 	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
-	\mathbb{E}(\vect{\epsilon_t}\vect{\epsilon_{\tau}^'})  & =     \begin{cases}
+	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}]  & =     \begin{cases}
       												\vect{\Sigma_\epsilon}, & \text{for}\ t = \tau \\
       												\vect{0}, & \text{otherwise.}
    								  \end{cases}
@@ -1307,7 +1390,7 @@ Hence the elements off the main diagonal are zero, i.e., structural shocks are a
 	\iff 						\vect{y_t} & = \vect{B_1}\vect{y_{t-1}} + \vect{u_t}
 \end{split}								
 \end{equation}
-and which eliminates the previous complication due to contemporaneous relationships with $\vect{B_1} = \vect{A_0^{-1}}\vect{A_1}$ and $\vect{A_0^{-1}}\vect{\epsilon_t} = \vect{u_t}$.\footnote{Note that here we are still deriving all results for a bivariate vector autoregression of order 1, i.e., a VAR($p$). For larger equations systems including several lags the number of parameters to be estimated grow very quickly. If we refer to the most general case of a VAR($p$) including a vector of constants $\vect{c}$, i.e., $\vect{y_t} = \vect{c} + \vect{B_1}\vect{y_{t-1}} + \vect{B_2}\vect{y_{t-2}} + \cdots + \vect{B_p}\vect{y_{t-p}} + \vect{u_t}$, then the number of parameters to be estimated is $n + p(n \times n) = n + pn^2 = n(1+pn)$.}\\
+and which eliminates the previous complication due to contemporaneous relationships with $\vect{B_1} = \vect{A_0^{-1}}\vect{A_1}$ and $\vect{A_0^{-1}}\vect{\epsilon_t} = \vect{u_t}$.\footnote{Note that here we are still deriving all results for a bivariate vector autoregression of order 1, i.e., a VAR($p$). For a multivariate system with $n>2$, accordingly we would write that the relationship between each coefficient matrix in reduced form $\vect{B}_j$ and structural form $\vect{A}_j$ is governed by $\vect{B}_j = \vect{A}_0^{-1}\vect{A}_j$.}\\
 The reduced form errors $\vect{u_t}$ are linear combinations of the structural errors $\vect{\epsilon_t}$ with the following reduced-form variance-covariance matrix\footnote{Note that in the bivariate case, $\vect{\Sigma_u}$ is a diagonal matrix only if $-a_{01} = -a_{02} = 0$, i.e., only if there is no contemporaneous correlation.}
 \begin{equation} \label{eq:svar6}
 \begin{split}
@@ -1317,11 +1400,11 @@ The reduced form errors $\vect{u_t}$ are linear combinations of the structural e
 								& = \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'
 \end{split}								
 \end{equation}
-The variance-covariance matrix of the reduced-form VAR consequently can have non-zero off-diagonal elements. This reduced form VAR (1) is covariance stationary \textit{if and only if} the eigenvalues of $\vect{A_1}$ have modulus less than 1. \\
+The variance-covariance matrix $\vect{\Sigma_u}$ of the reduced-form VAR is assumed to be a symmetric positive definite matrix which, however, may not be a diagonal matrix due to instantaneous correlations between the error-terms. As a consequence, isolated shocks in the components of $\vect{u}_t$ may not be likely. This reduced form VAR (1) is covariance stationary \textit{if and only if} the eigenvalues of $\vect{A_1}$ have modulus less than 1. \\
 \\
-If we assume contemporaneous relationships among the endogenous variables, the regressors in the SVAR representation are correlated with the error term and hence would result in biased OLS estimates.\footnote{If $\vect{A_0} = \vect{I_n}$ then this is not the case.} Therefore, in econometric applications the VAR in its reduced form representation is being estimated from the data. While the reduced-form VAR is the one being estimated, it is a purely econometric model without any theoretical component and does not say anything about the structure of the economy and hence the reduced-form error terms $\vect{u_t}$ cannot be interpreted as structural shocks.\footnote{Note that in the estimated covariance matrix for ${\hat{\Sigma}_u}$ the respective errors are usually correlated so that shocks to one variable are usually accompanied with a response to other variables.} Rather, the goal is to get back to the structural representation with orthogonal shocks and economic meaning.\footnote{In practice, the error series in reduced-form VARs are usually correlated while in a structural setting correlated reduced-form shocks are broken down into uncorrelated structural shocks that allow a clearer assessment of effects within a model.} Without imposing any further restrictions, however, the parameters in the SVAR, i.e., models with contemporaneous relationships,\footnote{In a model without contemporaneous relationship no identification issues would emerge.} are not identified, i.e., given values of the reduced form parameters $\vect{B_1}$ and $\vect{\Sigma_u}$ it is not possible to uniquely solve for the structural parameters $\vect{A_0}$, $\vect{A_1}$ and $\vect{\Sigma_\epsilon}$. In particular, the knowledge of $\vect{A_0^{-1}}$ would allow to recover $\vect{A_1}$ via $\vect{A_1} = \vect{A_0}\vect{B_1}$ and the structural errors via $\vect{\epsilon_t} = \vect{A_0}\vect{u_t}$ and subsequently the variance covariance matrix of the structural errors $\vect{\Sigma_\epsilon}$.\footnote{In the bivariate case we consider here, at least 1 restriction on the parameters of the SVAR is required to enable the identification of all structural parameters. }\\
+If we assume contemporaneous relationships among the endogenous variables, the regressors in the SVAR representation are correlated with the error term and hence would result in biased OLS estimates.\footnote{If $\vect{A_0} = \vect{I_n}$ then this is not the case.} Therefore, in econometric applications the VAR in its reduced form representation is being estimated from the data. While the reduced-form VAR is the one being estimated, it is a purely econometric model without any theoretical component and does not say anything about the structure of the economy and hence the reduced-form error terms $\vect{u_t}$ cannot be interpreted as structural shocks.\footnote{Note that in the estimated covariance matrix for ${\hat{\Sigma}_u}$ the respective errors are usually correlated so that shocks to one variable are usually accompanied with a response to other variables.} Rather, the goal is to get back to the structural representation with a diagonal covariance matrix and economic meaning.\footnote{In practice, the error series in reduced-form VARs are usually correlated while in a structural setting correlated reduced-form shocks are broken down into uncorrelated structural shocks that allow a clearer assessment of effects within a model.} Without imposing any further restrictions, however, the parameters in the SVAR, i.e., models with contemporaneous relationships,\footnote{In a model without contemporaneous relationship no identification issues would emerge.} are not identified, i.e., given values of the reduced form parameters $\vect{B_1}$ and $\vect{\Sigma_u}$ it is not possible to uniquely solve for the structural parameters $\vect{A_0}$, $\vect{A_1}$ and $\vect{\Sigma_\epsilon}$. In particular, the knowledge of $\vect{A_0^{-1}}$ would allow to recover $\vect{A_1}$ via $\vect{A_1} = \vect{A_0}\vect{B_1}$ and the structural errors via $\vect{\epsilon_t} = \vect{A_0}\vect{u_t}$ and subsequently the variance covariance matrix of the structural errors $\vect{\Sigma_\epsilon}$.\footnote{In the bivariate case we consider here, at least 1 restriction on the parameters of the SVAR is required to enable the identification of all structural parameters. }\\
 \\
-Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the moment, under the assumption of covariance stationarity (i.e., if neither the mean nor the autocovariance of the process depend on time $t$) of the vector process $\vect{y_t}$, \vect{y_t} (i.e., the reduced form VAR) can be transformed into its vector moving average (VMA($\infty$)) representation according to the Wold decomposition theorem\footnote{In words, the Wold Theorem states that any covariance stationary process has an infinite order, moving-average representation.} (i.e., there exists a unique mapping) where all past values of $\vect{y_t}$ are substituted out which translates Equation~\ref{eq:svar5} into a linear combination of all $\vect{u_t}$s (reduced-form innovations) over time (whereby the corresponding MA-weights do not depend on time $t$ but only on $j$, i.e., how long ago the shock $\vect{\epsilon}$ occurred):
+Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the moment, under the assumption of covariance stationarity (i.e., if neither the mean nor the autocovariance of the process depend on time $t$) of the vector process $\vect{y_t}$, \vect{y_t} (i.e., the reduced form VAR) can be transformed into its vector moving average (VMA($\infty$); also called Wold MA) representation according to the Wold decomposition theorem\footnote{In words, the Wold Theorem states that any covariance stationary process has an infinite order, moving-average representation.} (i.e., there exists a unique mapping) where all past values of $\vect{y_t}$ are substituted out which translates Equation~\ref{eq:svar5} into a linear combination of all $\vect{u_t}$s (reduced-form innovations) over time (whereby the corresponding MA-weights do not depend on time $t$ but only on $j$, i.e., how long ago the shock $\vect{\epsilon}$ occurred):
 \begin{equation} \label{eq:svar7}
 \begin{split}
  			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_2} + \vect{\Psi_{3}}\vect{u_3} + \cdots = \\
@@ -1332,7 +1415,8 @@ Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the m
 with $\vect{\Psi_0} =\vect{\mathbf{I_2}}$ and $\vect{\Psi_k}$ can be computed recursively via $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ for $s=1, 2, \dots$.\footnote{Note that we are still looking at the bivariate case. For the $n$-dimensional case, we would have $\vect{\Psi_0} =\vect{\mathbf{I_n}}$.}\footnote{Note that Equation~\ref{eq:svar7} below shows the general reduced-form VMA($\infty$) representation for a VAR($p$). In case of our bivariate example with one lag only (see Equation~\ref{eq:svar5}), the reduced-form VMA-representation would be $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{u_t} + \vect{{B}_1}\vect{u_{t-1}} + \vect{{B}_1^2}\vect{u_{t-2}} + \vect{{B}_1^3}\vect{u_{t-3}} + \cdots$. In other words, for a VAR(1) process, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ implies that $\vect{\Psi_0}=\vect{I_n}, \vect{\Psi}_1 = \vect{B}_1, \dots, \vect{\Psi_i} = {\vect{B}}_1^i$. For a VAR(2)-process, for example, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ results in $\vect{\Psi}_1 = \vect{B}_1, \vect{\Psi}_2 = \vect{\Psi}_1\vect{B}_1 + \vect{B}_2 = \vect{B}_1^2 + \vect{B}_2, \dots, \vect{\Psi}_i = \vect{\Psi}_{i-1}\vect{B}_1 + \vect{\Psi}_{i-2}\vect{B}_2, \dots$. The coefficient matrices $\vect{\Psi}_i$ approach zero for $i \to \infty$ which is a consequence of the stability of the respective VAR processes.\\
 Correspondingly, Equation~\ref{eq:svar8} becomes $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{{A}_0^{-1}}\vect{\epsilon_t} + \vect{{B}_1}\vect{{A}_0^{-1}}\vect{\epsilon_{t-1}} + \vect{{B}_1^2}\vect{{A}_0^{-1}}\vect{\epsilon_{t-2}} + \vect{{B}_1^3}\vect{{A}_0^{-1}}\vect{\epsilon_{t-3}} + \cdots$. So for the structural VAR(1) model, the impulse responses to the structural shocks from $n$ period are given by $\vect{{B}_1^n}\vect{{A}_0^{-1}}$.\\
 The MA representation of a stable (S)VAR($p$) process is not necessarily of infinite order since that coefficients may turn zero as of a certain lag.} \\
-The corresponding \textit{structural} moving average (SMA($\infty$)) representation of $\vect{y_t}$ is based on an infinite moving average of the \textit{structural} innovations $\vect{\epsilon_t}$ and is obtained by substituting the mapping between structural and reduced form shocks $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ for all $t$ into Equation~\ref{eq:svar7} so that
+\\
+The corresponding \textit{structural} moving average (SMA($\infty$); structural Wold MA) representation of $\vect{y_t}$ is based on an infinite moving average of the \textit{structural} innovations $\vect{\epsilon_t}$ and is obtained by substituting the mapping between structural and reduced form shocks $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ for all $t$ into Equation~\ref{eq:svar7} so that
 \begin{equation} \label{eq:svar8}
 \begin{split}
  			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{A_0^{-1}}\vect{\epsilon_t} + \vect{\Psi_1}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \vect{\Psi_{2}}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \vect{\Psi_{3}}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \cdots = \\
@@ -1373,7 +1457,7 @@ Looking at the SMA($\infty$) representation of our bivariate system
  	\end{bmatrix} + \cdots 
 \end{split}								
 \end{equation}
-we see that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, already are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
+we see that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
 \\
 Generalizing the above SMA($\infty$) representation to time $t+s$
 \begin{equation} \label{eq:svar10}
@@ -1497,7 +1581,7 @@ Writing down the Choleski factorization of the positive semi-definite matrix $\v
  							\end{bmatrix}
 \end{split}								
 \end{equation}
-with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$. A closely related variant of the this classical representation of the Cholesky decomposition is the L$\Lambda$L decomposition (triangular factorization) in the form of 
+with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$\footnote{The distinction between the application of a Choleski decomposition and the triangular factorization, which we will discuss in turn, in the context of VARs is very subtle and is related to whether a (reduced-form) VAR is estimated and the resulting $\vect{\Theta}_j$ impulse responses are simply mechanically orthogonalized which results in the orthogonalized impulses having unit variance or whether, in the context of an SVAR, a triangular factorization as described next is established and $\vect{A}_0$ is chosen in a way which implies a Wold causal ordering which, qualitatively, establishes the same orthogonalized impulse responses as well without, however, necessarily having unit variances for the $\vect{\epsilon}_t$s.}. A closely related variant of the this classical representation of the Cholesky decomposition is the L$\Lambda$L decomposition (triangular factorization) in the form of 
 \begin{equation} \label{eq:svar15}
 \begin{split}
  		\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L'}
@@ -1508,7 +1592,7 @@ where $\vect{L}$ is a lower triangular matrix with $1$s along the diagonal and $
 \begin{split}
 	\vect{L} =  \begin{bmatrix}
     				1 & 0 \\
-				l_{21} & 0 
+				l_{21} & 1 
  				\end{bmatrix}, 
 				\vect{\Lambda} = 
 					\begin{bmatrix}
@@ -1546,7 +1630,7 @@ which can be rewritten to
 \end{split}								
 \end{equation}
 with $\vect{A_0} = \vect{L^{-1}}$, $\vect{A_1} = \vect{L}^{-1}\vect{B_1}$, $\vect{\epsilon_t} = \vect{L}^{-1}\vect{u_t}$.\\
-Hence the pseudo structural errors $\vect{\epsilon_t}$ have a diagonal covariance matrix $\vect{\Lambda}$ resulting from 
+Hence, with a proper choice of $\vect{A}_0$, the pseudo structural errors $\vect{\epsilon_t}$ have a diagonal covariance matrix $\vect{\Lambda}$ resulting from 
 \begin{equation} \label{eq:svar22}
 \begin{split}
 	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_t}'] & = \vect{L}^{-1} \mathbb{E}[\vect{u_t}\vect{u_t}']\vect{L^{-1}}' = \\
@@ -1555,7 +1639,7 @@ Hence the pseudo structural errors $\vect{\epsilon_t}$ have a diagonal covarianc
 										& = \vect{\Lambda},
 \end{split}								
 \end{equation}
-meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm $\lambda$ and accounts for (eliminates) the correlation between the reduced-form errors. The $(i, j)$ element of $\vect{\Lambda}$ gives the variance of $u_{ji}$ Ultimately the structural $\vect{A_0}$ - matrix is
+meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm $\lambda$ and accounts for (eliminates) the correlation between the reduced-form errors. The $(i, j)$ element of $\vect{\Lambda}$ gives the variance of $u_{ji}$. Ultimately the structural $\vect{A_0}$ - matrix is
 \begin{equation} \label{eq:svar23}
 \begin{split}
 	\vect{A_0} = \begin{bmatrix}
@@ -1569,9 +1653,14 @@ meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm
  						\end{bmatrix}
 \end{split}								
 \end{equation}
+The above result can also be seen by the following:\\
+Knowing that one way to orthogonalize impulse-responses in a reduced-form VAR with possibly correlated errors in $\vect{\Sigma}_u$ is the Choleski decomposition (which gives rise to the Wold causal ordering), when the reduced-form variance-covariance matrix instead is decomposed in its triangular factorization as $\vect{\Sigma}_u = \vect{L}\vect{\Lambda}\vect{L}'$ and knowing that $\vect{\Sigma_u}  \equiv \mathbb{E}[\vect{u_t}\vect{u_t^'}]= \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'$ (which is equivalent to $\vect{\Sigma_\epsilon} = \vect{A_0}\vect{\Sigma_u}\vect{A_0}'$), establishes that $\vect{L} = \vect{A}_0^{-1}$ and $\vect{\Sigma_\epsilon} = \vect{\Lambda}$. 
+\\
+\\
+The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0^{-1}$ being a lower triangular matrix with $diag(\vect{A}_0^{-1}) = 1$ causes the system of equations $\vect{\Sigma}_\epsilon  = \vect{A_0^{-1}}\vect{\Sigma_u}\vect{A_0^{-1}}'$ having a unique solution (at least locally).
+
 
 \paragraph{Estimation of VARs}
-
 
 
 \paragraph{Defining Impulse Responses Under Unknown Wold Decomposition}
@@ -2186,48 +2275,350 @@ changes, as, inevitably, it weighs on weak demand.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%STRUCTURALVARS%%%&%%%%%%%%%%%%%%%%%%%%%%%
 \section{Alternative Estimations II: Structural VARs following \citet{ludvigsonetal:18}}
 \label{sec:ludvigsonetal18}
-As outlined in Section~\ref{sec:exoEndoJuradoetal} and complementing the specifications we have estimated so far, \citet[p. 2]{ludvigsonetal:18} ask, first, whether uncertainty is ``primarily a source of business cycle fluctuations or a consequence of them'' and, second, whether models of uncertainty should distinguish between financial and 'real' macroeconomic uncertainty. Their suggested model hence accounts for the distinction between both, types of uncertainty and introduces a novel identification strategy that ``allows for simultaneous feedback between uncertainty and real activity'' which the authors achieve by means of two types of \textit{shock-based} restrictions consisting of (as they call them) ``event constraints'' and ``correlation constraints''. We will discuss their econometric framework in turn.\\
+As outlined in Section~\ref{sec:exoEndoJuradoetal} and complementing the specifications we have estimated so far, \citet[p. 2]{ludvigsonetal:18} ask, first, whether uncertainty is ``primarily a source of business cycle fluctuations or a consequence of them'' and, second, whether models of uncertainty should distinguish between financial and 'real' macroeconomic uncertainty. Their suggested model hence accounts for the distinction between both, types of uncertainty and introduces a novel identification strategy that ``allows for simultaneous feedback between uncertainty and real activity'' which the authors achieve by means of two types of \textit{shock-based} restrictions consisting of (as they call them) ``event constraints'' and ``correlation constraints'' within the class of SVAR models.\\
 \\
-\citet{ludvigsonetal:18} consider a reduced-form finite-order autoregressive representation of their baseline system (which we will discuss shortly) in the form of\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
-	\begin{equation} \label{eq:svar_ludvig1}
-	\begin{split}
-		\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + \vect{u_t}
-	\end{split}								
-	\end{equation}	
-with 
+The paragraph below might have to move or ultimately be deleted:\\
+As outlined in \citet{lutkepohl:05}, in structural VAR analysis, the emphasis has generally shifted from specifying the relations between the observable variables (so-called $A$-models; which we have discussed in Section~\ref{sec:IRFsVARversusLocalProj}) to directly identifying the structural innovations $\vect{\epsilon}_t$ from the reduced form residuals $\vect{u}_t$ by directly applying the notion that reduced-form errors are linear functions of the structural ones. So in the style of \ref{eq:svar6} and the identity capturing the relationship between reduced-form and structural errors in $A$-models as $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$, the relationship is defined directly as $\vect{u}_t = \vect{B}_0\vect{\epsilon}_t$ with the resulting relationship of $\vect{\Sigma}_u = \vect{B}\vect{\Sigma}_\epsilon\vect{B}'$ between the reduced-form and structural variance-covariance matrix.\footnote{Note that in Section~\ref{sec:IRFsVARversusLocalProj} when discussing $A$-models we consequently had $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{\Sigma}_\epsilon\vect{A}_0^{-1'}$.} Additionally normalizing the variances of the structural innovations to one by assuming $\vect{\epsilon}_t  \thicksim (\vect{0}, \vect{I}_n)$ results in 
 	\begin{equation} \label{eq:svar_ludvig2}
 	\begin{split}
-		\mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] & =     \begin{cases}
-      												\vect{\Sigma_u}, & \text{for} \quad t = \tau \\
-      												\vect{0}, & \text{otherwise.}
-										\end{cases}
+		\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'
 	\end{split}
 	\end{equation}
-whereby $\vect{\Sigma_u} = \vect{P}\vect{P'}$ where $\vect{P}$ is the unique lower-triangular Cholesky factor with non-negative diagonal elements. By means of the $vec$-operator\footnote{}
 
-\textit{Event constraints} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 shock market crash and the 2007-09 financial crisis.
+\paragraph{Observational Equivalence}
+As formulated in \citet{rubioetal:10}, the identification of structural vector autoregressions (i.e., drawing inference from the reduced-form representation back to the underlying structural parameters in SVARs) is at the root of the 'identification problem' which forces researches to come up with additional '\textit{a priori} restrictions'\footnote{Author's italics.}, so-called ``identifying restrictions''\footnote{Author's quotes.}.\\
+In this setting due to the symmetry of the variance covariance matrix $\vect{\Sigma}_u$, only $\frac{n(n+1)}{2}$ different equations are specified and a necessary condition (as a standard criterion for identification) is that further $\frac{n(n-1)}{2}$ restrictions are needed to identify all $n^2$ elements of $\vect{B}_0$\footnote{Note to self: I might have to change the notation here from B0 to A0 depending on whether or not \citet{ludvigsonetal:18} actually consider an A or B-model.} with $n$ being the number of endogenoues variables (called the necessary ``order condition'' by \citealp{rothenberg:71}).\footnote{Similarly to the above $A$-models, if $\vect{B}_0$ is chosen according to a Choleski decomposition resulting in $\vect{B}_0$ being lower-triangular, enough restrictions make the system solvable.}\footnote{The case of $n=3$ illustrates the problem: $\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'$ results in $$		
+		\underbrace{%
+		\begin{bmatrix}
+    		\sigma_{11} & \sigma_{12} & \sigma_{13} \\
+		\sigma_{21} & \sigma_{22} & \sigma_{23} \\
+		\sigma_{31} & \sigma_{32} & \sigma_{33}
+ 		\end{bmatrix}
+		%
+}_{\text{6 values}} = \underbrace{%
+		\begin{bmatrix}
+    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
+		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
+		b_{31}^0 & b_{32}^0 & b_{33}^0
+ 		\end{bmatrix}^{-1}
+		%
+}_{\text{9 unknowns}}
+\begin{bmatrix}
+    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
+		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
+		b_{31}^0 & b_{32}^0 & b_{33}^0
+ 		\end{bmatrix}^{{-1}'}$$ 
+		where 6 equations are not sufficient to solve the system of linear equations consisting of 9 unknowns. ACHTUNG! ICH HAB' HIER DIE INVERSE DAZUGESCHRIEBEN IN ANLEHNUNG AN A_0; WENN ES DABEI BLEIBT; SOLLTE ICH ACUH A_0 ANSTATT B HINSCHREIBEN!}\\
+Referring to \citet{rothenberg:71} and the fact that the ``order condition'' is only a necessary condition, \citet{rubioetal:10} investigate under which conditions such models are globally identified and introduce a novel approach to global identification by exploiting the structure of orthogonal matrices. Central to their paper is the following: \\
+\\
+In line with our own notation, the class of SVARs that \citet{rubioetal:10} study have the general form
+\begin{equation} \label{eq:svar_1}
+\begin{split}
+	\vect{A}_0 \vect{y}_t = \sum\limits_{j=0}^\infty \vect{A}_j\vect{y}_{t-j} + \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+where they assume 
+\begin{equation}\label{eq:svar_2}
+\begin{split}
+	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
+	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}] & = \vect{\Sigma}_\epsilon = \vect{I}_n.
+\end{split}								
+\end{equation}
+Compactly writing $\vect{A}_{+}^' = [\vect{A}_1^', \vect{A}_2^', \dots, \vect{A}_p^']$ and $\vect{x}_{t}^' = [\vect{y}_{t-1}^', \vect{y}_{t-2}^', \dots, \vect{y}_{t-p}^']$, they rewrite their model as
+\begin{equation}\label{eq:svar_3}
+\begin{split}
+	\vect{A}_0 \vect{y}_t =  \vect{x}_t \vect{A}_+ + \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+with the reduced-form representation implied by the structural model being
+\begin{equation}\label{eq:svar_4}
+\begin{split}
+	 \vect{y}_t =  \vect{x}_t \vect{B} + \vect{u}_t
+\end{split}								
+\end{equation}
+with $\vect{B} = \vect{A}_0^{-1}\vect{A}_+$ and $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$ and
+	\begin{equation} \label{eq:svar_5}
+	\begin{split}
+		\mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] & = 
+      												\vect{\Sigma_u} = (\vect{A}_0^{-1}\vect{A}_0^{-1'})
+	\end{split}								
+	\end{equation}	
+The parameters of the structural model being $(\vect{A}_0, \vect{A}_+)$ and of the reduced-form model $(\vect{B}, \vect{\Sigma}_u)$, \citet{rubioetal:10} denote the set of all structural parameters by $\mathbb{P}^S$ and the set of all reduced-form parameters by $\mathbb{P}^R$ and define the function $g: \mathbb{P}^S \to \mathbb{P}^R: g(\vect{A}_0, \vect{A}_+) = (\vect{A}_0^{-1}\vect{A}_+, \vect{A}_0^{-1}\vect{A}_0^{-1'})$ for the relationship between structural and reduced-form parameters.\\
+\\
+Equipped with this notation, \citet{rubioetal:10} define the important concept of 'observational equivalence' as follows: \\
+Following \citet{rothenberg:71}, two parameter points, $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$, are considered \textit{observationally equivalent} $iff$ they both imply the same probability distribution of the data $\vect{y}_t$. For linear Gaussian models as studied by \citet{rubioetal:10}, this turns out to be equivalent to postulating that two parameter points are \textit{observationally equivalent} $iff$ they both have the same reduced-form representation $(\vect{B}, \vect{\Sigma}_u)$. Based on this, \citet{rubioetal:10} revert back to their function $g$ and conclude that it shows that two parameter points $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$ have the same reduced-form representation $iff$ ``there is an orthogonal matrix $\vect{Q}$ such that $\vect{A}_0 = \vect{\widetilde{\vect{A}_0}}\vect{Q}$ and $\vect{A}_+ = \widetilde{\vect{A}_+} \vect{Q}$''. In this context, \citet{rubioetal:10} write down two definitions:\\
+\begin{defi}
+A parameter point $(\vect{A}_0, \vect{A}_+)$ is globally identified if and only if there is no other parameter point that is observationally equivalent.
+\end{defi}
+\begin{defi}
+A parameter point $(\vect{A}_0, \vect{A}_+)$ is locally identified if and only if there is an open neighborhood about $(\vect{A}_0, \vect{A}_+)$ containing no other observationally equivalent parameter point.
+\end{defi}
+
+Observational equivalence is inherently linked to the identification problem in SVARs which, with respect to the definitions above and \citet{rubioetal:10}'s formulation are ``neither globally nor locally identified''. This situation calls for adequate restrictions on the part of the structural parameters to make a model identifiable. And because observational equivalence is identical to finding an orthogonal matrix $\vect{Q}$ as described above, the set of all $(n \times n)$ orthogonal matrices $\mathbb{Q}_n$ plays a central role both in their analysis and in the derivation of the econometric framework of \citet{ludvigsonetal:18} which will discuss in turn.
+
+\paragraph{Framework of \citet{ludvigsonetal:18}}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}
+\citet{ludvigsonetal:18} assume the following reduced-form VAR and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
+	\begin{equation} \label{eq:svar_ludvig1}
+	\begin{split}
+		\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + \vect{u_t}\\
+		\vect{y_t} & = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}},\\
+				\vect{u}_t & \thicksim (\vect{0}, \vect{\Sigma}_u), \vect{\Sigma_u} = \mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] = \vect{P}\vect{\Sigma}_\epsilon\vect{P'} = \vect{P}\vect{I}_n\vect{P'} = \vect{P}\vect{P'}
+	\end{split}								
+	\end{equation}	
+where $\vect{P}$ is the unique lower-triangular Cholesky factor with non-negative diagonal elements. \citet{ludvigsonetal:18} formulate the innovations $\vect{u}_t$ to be related to the structural-form SVAR shock $\vect{\epsilon}_t$ via an invertible $(n \times n)$ - matrix $\vect{H}$
+	\begin{equation} \label{eq:svar_ludvig2}
+	\begin{split}
+		\vect{u}_t & = \vect{H}\vect{\Omega}\vect{\epsilon}_t \equiv \vect{A}_0^{-1}\vect{\epsilon}_t
+	\end{split}								
+	\end{equation}	
+with
+	\begin{equation} \label{eq:svar_ludvig3}
+	\begin{split}
+		\vect{\epsilon}_t & \thicksim (\vect{0}, \vect{\Sigma}_\epsilon), \vect{\Sigma}_\epsilon = \mathbb{E}[\vect{\epsilon}_t\vect{\epsilon}_\tau^'] = \vect{I}_n
+	\end{split}								
+	\end{equation}	
+and the matrix $\vect{\Omega}$ being a diagonal matrix with the variance of the shocks in the diagonal entries and the unit effect normalization that $H_{jj} = 1$ for all $j$.
+	\begin{equation} \label{eq:svar_ludvi4}
+	\begin{split}
+		\text{diag}(\vect{H}) = 1, \vect{\Omega} = \begin{bmatrix}
+    		\sigma_{11} & 0 & \dots & 0 \\
+		0 & \sigma_{22} & 0 & 0 \\
+		0 & \vdots & \dots & 0\\
+		0 & 0 & \dots & \sigma_{kk}
+ 		\end{bmatrix}, 
+		\sigma_{kk} \geq 0 \forall j
+	\end{split}								
+	\end{equation}	
+Ultimately, the goal is to study the dynamic effects of the structural shocks (the impulse response functions) as given by
+\begin{equation} \label{eq:svar_ludvi5}
+\begin{split}
+ 			\sum\limits_{k=0}^\infty \vect{\Theta_k} = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}
+\end{split}								
+\end{equation}
+
+Central to the framework of \citet{ludvigsonetal:18} is then the following: \\
+By definition they have set $\vect{\Sigma}_u = \vect{P}\vect{P}^'$ with $\vect{P}$ being the unique lower-triangular Cholesky factor. By introducing a set $\mathbb{Q}_n$ of $(n \times n)$ orthonormal matrices,\footnote{Note that \citet{rubioetal:10} were referring only to \textit{orthogonal}, not \textit{orthonormal} matrices. Orthonormality implies orthogonality, i.e., orthonormality is stronger by demanding for each basis vector spanning the respective space to have length 1.} any $\vect{A}_0^{-1} = \vect{P}\vect{Q}$ is 'observationally equivalent', given $\vect{\Sigma}_u$ and hence consistent with the reduced form variance-covariance matrix $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{A}_0^{-1'}$ for any given $\vect{Q} = (q_1, q_2, \dots, q_n) \in \mathbb{Q}_n$. \citet{ludvigsonetal:18} define this set of observationally equivalent $\vect{A}_0^{-1}$ as 
+\begin{equation} \label{eq:svar_ludvi6}
+\begin{split}
+ 			\mathcal{A}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n\}
+\end{split}								
+\end{equation}
+whereby the only restriction that can be imposed at this stage follows from combining the unit effect normalization on $\vect{H}$ with $\sigma_{jj} \leq 0$ so that a unit change in the structural shock $j$ may be interpreated as a standard deviation increase in variable $j$. Taking this into account, $\mathcal{A}_0$ becomes
+\begin{equation} \label{eq:svar_ludvi7}
+\begin{split}
+ 			\vect{\mathcal{A}}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
+\end{split}								
+\end{equation}
+By collecting the reduced form innovations $\vect{u}_t$ into $\phi$ (by making use of the $vec$\footnote{The $vec$-operator takes an $(n \times n$) matrix and stacks the columns into a single vector of length $n^2$.} and $vech$\footnote{The $vech$ (vector half) - operator takes a symmetric $(n \times n)$ matrix and stacks the lower triangular half into a single vector of length $\frac{d(d+1)}{2}$.} operator) so that $\phi = \Big(vec(\vect{A}_1)', vec(\vect{A}_2)', \dots, vec(\vect{A}_p)', vech(\vect{\Sigma}_u)'\Big)$, \ref{eq:svar_ludvi7} can be written as 
+\begin{equation} \label{eq:svar_ludvi8}
+\begin{split}
+ 			\hatt{\mathcal{A}}_0(\phi) = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
+\end{split}								
+\end{equation}
+Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinitely many solutions. \citet{ludvigsonetal:18} hence introduce additional restrictions that go beyond classical sign restrictions, or more generally inequality restrictions (which tend to place these restrictions on the impulse response functions and/or $\vect{A}_0^{-1}$ itself) in an attempt to yield a smaller solution set denoted as $\overline{\mathcal{A}_0}(\phi)$.\\
+\\
+Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the restrictions that \citet{ludvigsonetal:18} define involve the identified structural shocks $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. We will outline these two set of constraints in turn.
+
+\paragraph{Shock-Based Constraints in \citet{ludvigsonetal:18}}
+\textbf{\textit{Event constraints}} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 stock market crash and the 2007-09 financial crisis. \citet{ludvigsonetal:18} decide for this constraint because ``a credible identifiation scheme should produce estimates of $\vect{\epsilon}_t$ with features that accord with our ex-post understanding of historical events, at least during episodes of special interest.'' \citep[p. 7]{ludvigsonetal:18}  In particular, event constraints put the bounds $\overline{k}$ on the sign and magnitude of $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ during particular episodes which are collected into $\tau^*$. \\
+\\
+The reason why such special events turn out to be helpful for identification is that, despite the fact that two observationally equivalent structural models $\vect{A}_0^{-1}$ and $\widetilde{\vect{A}}_0^{-1}$ will produce the corresponding shock-processes $\big\{\vect{\epsilon}_t\big\}_{t=1}^T$ and $\big\{\widetilde{\vect{\epsilon}}_t\big\}_{t=1}^T$ where the first and second moments are equivalent, the individual elements of $\vect{\epsilon}_t$ and $\widetilde{\vect{\epsilon}}_t$ are not necessarily equal at each point in time. This can be easily seen because for $\widetilde{\vect{Q}} \neq \vect{Q}$ we get 
+\begin{equation} \label{eq:svar_ludvi9}
+\begin{split}
+\vect{\epsilon}_t & = \vect{A}_0\hatt{\vect{u}}_t = \\
+[\vect{A}_0^{-1} & = \vect{P}\vect{Q} \iff \vect{A}_0 = \vect{Q}^{-1}\vect{P}^{-1} \iff \\
+\vect{A}_0 & = \vect{Q}^{'}\vect{P}^{-1}] = \\
+	& \vect{Q}^'\vect{P}^{-1}\hatt{\vect{u}}_t 
+\end{split}								
+\end{equation}
+and 
+\begin{equation} \label{eq:svar_ludvi10}
+\begin{split}
+\widetilde{\vect{\epsilon}}_t = \widetilde{\vect{A}}_0\hatt{\vect{u}}_t = \widetilde{\vect{Q}}'\vect{P}^{-1}\hatt{\vect{u}}_t = \widetilde{\vect{Q}}\vect{u}_t \neq \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+at any given $t$ which shows that event constraints could be used to reduce the number of solutions in $\hatt{\mathcal{A}}_0(\phi)$ to a smaller set $\overline{\vect{\mathcal{A}}}_0(\phi)$. \\
+\\
+To show this, \citet{ludvigsonetal:18} consider the bivariate case $n=2$:\\
+Writing down
+\begin{equation} \label{eq:svar_ludvi11}
+\begin{split}
+	\begin{bmatrix}
+    		u_{1t} \\
+		u_{2t}
+ 		\end{bmatrix} & = 
+		\begin{bmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{bmatrix}^{-1}
+			\begin{bmatrix}
+    				\epsilon_{1t} \\
+				\epsilon_{2t}
+ 				\end{bmatrix}  \iff \\
+	\begin{bmatrix}
+    		\epsilon_{1t} \\
+		\epsilon_{2t}
+ 		\end{bmatrix} & = 
+		\begin{bmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{bmatrix}
+			\begin{bmatrix}
+    				u_{1t} \\
+				u_{2t}
+ 				\end{bmatrix} \implies \\
+				\epsilon_{1t} & = a_{11}u_{1t} + a_{12}u_{2t}
+\end{split}								
+\end{equation}
+where the values of $u_{1t}$ and $u_{2t}$ are given since data is given for time $t$ in the span $[\tau_1, \tau_2]$. The above example shows that a restriction on the behavior of $\epsilon_{1t}$ at a specific time $t$ results in a non-linear restriction on $\vect{A}_0^{-1}$ and, equivalently, on $\vect{Q}$.
+\\
+\\
+With the stage set according to the above explanations, \citet{ludvigsonetal:18} require $\vect{\epsilon}_t$ to satisfy three event constraints which they parameterize by $\overline{\vect{k}} = (\overline{k}_1, \overline{k}_2, \overline{k}_3)'$\footnote{The bounds will be set below.}, $\overline{\vect{\tau}} = (\overline{\tau}_1, \overline{\tau}_2, \overline{\tau}_3)' = (1987:10, [2007:12, 2009:06], [2007:12, 2009:06])$ and $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty and collect the constraints into a system of inequalities
+\begin{equation} \label{eq:svar_ludvi12}
+\begin{split}
+	FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & = \begin{pmatrix}
+	FE_1(\overline{\tau}_1, \overline{k}_1)\\
+	 FE_2(\overline{\tau}_2, \overline{k}), \\
+	 FE_3(\overline{\tau}_3, \overline{k}_3)
+	\end{pmatrix} = \\
+	= \begin{pmatrix}
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_1= 1987:10} \dot \quad \epsilon_{F\overline{\tau}_1}  \\
+	 \sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in [2007:12, 2009:06]} \dot \quad \epsilon_{F\overline{\tau}_2}  \\
+	\overline{k}_3
+	\end{pmatrix} & - 
+	\begin{pmatrix}
+	\overline{k}_1\\
+	\overline{k}_2  \\
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_3 \forall \in [2007:12, 2009:06]} \dot \quad \epsilon_{IPM\overline{\tau}_3} 
+	\end{pmatrix} \geq \vect{0}
+\end{split}								
+\end{equation}
+Each $FE_i(\overline{\tau}_i, \overline{k}_i)$ represents a vector of constraints of magnitude $\overline{k}_i$ on $\epsilon_{it}$ for corresponding $t \in \overline{\tau}_i$. Together, $FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})$ defines inequality constraints based on timing, sign and magnitude that help identification of the underlying structural model. $FE_1$ requires that the financial uncertainty shock that occurred in October 1987 be a large one; $FE_2$ postulates that there must be at least one month during the financial crises 2007-2009 for which the financial uncertainty shock was large and positive and $FC_3$ requires that any real activity shocks found during the Great Recession (the NBER dates for the recession coincide with the financial crisis) do not take any unusually large positive values.\\
+The motivation for the above constraints is that if a potential $\vect{Q}$ implies a corresponding shock series that is difficult to hold on to during our key time episodes, it will be removed from the solution set $\hatt{\mathcal{A}}_0(\phi)$. Correspondingly, in the postulated inequality constraints the values for the $\overline{k}_i$s have to be meaningful and timing of events $\overline{\tau}_i$ accurate otherwise solutions that pass these constraints will be meaningless after all.
+\\
+\\
+With regard to the first two constraints on financial uncertainty for the stock market crash on Black Monday and the recent financial crisis, \citet{ludvigsonetal:18} declare that the established constraints want to make sure that ``\textit{at least some}\footnote{Author's italics.} of the forecast error variance of $U_F$ in these episodes of most extreme financial uncertainty is attributable to large shocks that originated in financial markets'' which ``is a maintained assumption [...] that we argue is grounded in a broad historical reading of the times'' \citep[p. 8]{ludvigsonetal:18} and here is captured by $\vect{\epsilon}_F$. To clarify, \citet{ludvigsonetal:18} point out that the constraints, however, do not require that all or most of the variability in these episodes should come from shock originating in financial markets because they do not rule out large adverse shocks in $\vect{\epsilon}_M$ and $\vect{\epsilon}_{IPM}$. 
 
 
 
 
+The second set of constraints considered by \citet{ludvigsonetal:18} are \textbf{\textit{correlation constraints}} which require that the identified uncertainty shocks recovered from $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ show a minimum absolute correlation with certain variables that are external to the VAR estimations which they encode with $\vect{S}_t$. In their baseline specification they use aggregate stock market return and impose restrictions on its correlation with uncertainty shocks. \\
+\\
+As a motivating example, \citet{ludvigsonetal:17} consider the following example of a bivariate model:
+\begin{equation} \label{eq:svar_ludvi12_a}
+\begin{split}
+	\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 
+		\begin{pmatrix}
+			u_{1t} \\
+			u_{2t}
+		\end{pmatrix} \iff \\
+\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 	
+					\begin{pmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{pmatrix}^{-1}
+		\begin{pmatrix}
+			\epsilon_{1t} \\
+			\epsilon_{2t}
+		\end{pmatrix},\\
+		\begin{pmatrix}
+			\epsilon_1 \\
+			\epsilon_2
+		\end{pmatrix} & \thicksim \mathcal{N}(\vect{0}, \vect{I}_n)
+\end{split}								
+\end{equation}
+\\
+EXAMPLE NOT FINISHED! (if time is left, I can add more explanations to this!)
+\\
+\\
+To formalize this and further letting $\hat{e}_{St}$ be the first order autoregressive residual for $S_t$, $\hat{e}_{St}$, being a reduced-form residual, results as a combination of primitive shocks from various sources including, among others, the three shocks modeled within the VAR system. In particular, letting ($c_M(\vect{A}_0)$, $c_{IMP}(\vect{A}_0)$, $c_{F}(\vect{A}_0)$) be the sample correlations between $\hat{e}_{St}$ and the structural shocks ($\epsilon_{Mt}(\vect{A}_0)$, $\epsilon_{IPMt}(\vect{A}_0)$, $\epsilon_{Ft}(\vect{A}_0)$) and $\overline{\vect{\lambda}} = (\overline{\lambda}_1, \overline{\lambda}_2, \overline{\lambda}_3)$, the system of inequalities for correlation constraints is
+\begin{equation} \label{eq:svar_ludvi13}
+\begin{split}
+	FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & = \begin{pmatrix}
+	FC_1(\overline{\lambda}_1 < 0, \vect{S})\\
+	 FC_2(\overline{\lambda}_2 \geq 1, \vect{S}), \\
+	 FC_3(\overline{\lambda}_3, \vect{S})
+	\end{pmatrix} = \\
+	& = \begin{pmatrix}
+	 		\begin{pmatrix}
+	 			\overline{\lambda}_1 - c_M(\vect{A}_0^{-1})\\
+				\overline{\lambda}_1 - c_F(\vect{A}_0^{-1})
+			\end{pmatrix} \geq \vect{0} \\
+			|c_F(\vect{A}_0^{-1})| - \overline{\lambda}_2|c_M(\vect{A}_0^{-1}| \geq 0 \\
+			c_{MF} - \overline{\lambda}_3 \geq 0; c_{MF}^2 = c_M(\vect{A}_0^{-1})^2 + c_F(\vect{A}_0^{-1})^2.
+	\end{pmatrix} 
+\end{split}								
+\end{equation}
+The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$.\\
+Together, the constraints in \ref{eq:svar_ludvi13} provide cross-equation restrictions on the parameters in a potential $\vect{A}_0^{-1}$, whereby the correlations are not invariant to orthonormal rotations (by $\vect{Q}$) so that the generated correlations in each draw will be different.
 
-\textit{Correlation constraints} on the other hand, require that the identified uncertainty shocks show a minimum absolute correlation with certain variables that are external to the VAR estimations. 
+\paragraph{Identified Solution Set}
+Combining default covariance structure restrictions with the introduced event and correlation constraints, \citet{ludvigsonetal:18} call the \textit{identifed}\footnote{Author's italics.} solution set 
+\begin{equation} \label{eq:svar_ludvi14}
+\begin{split}
+\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})  = \{\vect{A}_0^{-1} & = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad diag(\vect{A}_0^{-1}) \geq 0\}; \\
+			FZ(\vect{Q}; \phi) & = \vect{0}, \\
+			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & \geq \vect{0}, \\
+			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & \geq \vect{0}
+\end{split}								
+\end{equation}
+which only contains estimates of $\vect{A}_0^{-1}$ that satisfy all constraints. Thereby a particular solution can only be in both $\hatt{\mathcal{A}}_0$ (the unconstrained solution set) and $\overline{\vect{\mathcal{A}}}_0$ if all restrictions are satisfied. And while $\overline{\vect{\mathcal{A}}}_0$ will be a set as well it should be notably smaller than $\hatt{\mathcal{A}}_0$ (without any additional restrictions other than the usual covariance restrictions).
+\\
+Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.\\
+\\
+The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.
 
+\paragraph{Baseline SVAR(3)-6}
+\citet{ludvigsonetal:18} estimate several VAR systems to identify uncertainty shocks from the VAR residuals using the restrictions from above. Here we will reproduce their baseline estimation which we have already introduced above consisting of $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty. In contrast to \citet{ludvigsonetal:18} who use their own constructed measure of financial uncertainty we use the VXO. The VAR-System uses $p=6$ lags (and will report the results for $p=12$ in the Appendix).
 
+\paragraph{Solution Algorithm}
+As indicated above, a decisive part of the solution algorithm is the construction of the unconstrained solution set $\hatt{\mathcal{A}}_0$ and the derivation of the identified set $\overline{\vect{\mathcal{A}}}_0$. \\
+\\
+The unconstrained solution set $\hatt{\mathcal{A}}_0$ is obtained through the following steps:
+\begin{enumerate}[i]
+	\item estimation of the reduced-form model and initialization of $\vect{A}_0^{-1}$ as the unique lower-triangular Cholesky factor $\hatt{\vect{P}}$ of $\hatt{\vect{\Sigma}}_u$ with non-negative diagonal elements
+	\item rotation of $\hatt{\vect{P}}$ by K = 1.5 million random orthogonal matrices $\vect{Q}$;\\
+	 each rotation begins by drawing an $(n \times n)$ matrix $\vect{M}$ of normally and independently distributed values (i.e., drawn from a normal distribution with $\mu = 0$ and $\sigma = 1$); $\vect{Q}$ is then taken to be the orthonormal matrix resulting from a $\vect{Q}\vect{R}$ decomposition of $\vect{M}$
+	 \item because $\vect{A}_0^{-1} = \vect{P}\vect{Q}$, the covariance restrictions are imposed by construction 
+\end{enumerate}
 
-
-Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.
-
-
-
+Every generated $\vect{A}_0^{-1}$ resulting from one of the 1.5 million rotations is then confronted with the event and correlation-constraints for further processing. This step, however, needs a reasonable choice of the parameters $\overline{\vect{\lambda}}, \overline{\vect{\tau}}$ and $\overline{\vect{k}}$. Using a mix of theory, empirical analysis and economic reasoning, \citet{ludvigsonetal:18} set the parameters to  $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$ and the threshold for the collective correlation to $\overline{\lambda}_3 = 0.18$. The choices for $\overline{k}_1$ and $\overline{k}_2$, are, according to \citet{ludvigsonetal:18} partyl guided by \citet{bloom:09} who chooses to study the dynamic effects of four standard deviation shocks to uncertainty in his impulse response analyses. Accordingly, \citet{ludvigsonetal:18} set both $\overline{k}_1 = 4$ and $\overline{k}_2 = 4$.\footnote{This threshold is chosen considering that the shocks are shown to be non-Gaussian with exhibiting excess skewness and kurtosis.} Further, $\overline{k}_3$ is set to 2 to dismiss shocks in real activity that go beyond two standard deviations above their sample mean during 2007-2009.
+\\
+At each draw of $\vect{A}_0^{-1} = \hatt{\vect{P}}\vect{Q}$ and the subsequent generation of $\vect{\epsilon}_t = \vect{A}_0\hatt{\vect{u}}_t$, only those models will be stored that fulfill all constraints.
 
 A few sentences from other parts that actually belong here:\\
 -) Consequently, in an SVAR framework as suggested by \citet{ludvigsonetal:18}, the $\vect{P}$-matrix to orthogonalize the reduced-form disturbances is not mechanically constructed as the Cholesky decomposition of the error covariance matrix (zero short-run restrictions; recursive identification) but rather is obtained from contemporaneous and theor-based restrictions placed on the $\vect{P}$ - matrix.\\
 -) 
 
+\paragraph{Results}
+Note to self: \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre-crisis sample which yields less conclusive answers; therefore they write: ``A premise of this paper is that the 2007-2009 financial crisis was an important rare event that can help distinguish the transmission of financial versus real uncertainty shocks. This maintained assumption appears supported by the subsample analysis.''
+
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_maxG.pdf}}
+      \caption[Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The horizontal line corresponds to 3 standard deviations above/below the unconditional mean of each series. The shocks $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ for maxG solution are reported, where $\vect{u}_t$ holds the residuals from VAR(6) of ($U_{Macro}, IPM, U_{Fin}$). The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_shocks}
+\end{figure}
+
+\blindtext
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_largeShocks.pdf}}
+      \caption[Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The figure shows all shocks in the identified set that are at least 2 standard deviations above the unconditional mean for $\epsilon_{Macro}$ and $\epsilon_{Fin}$ and at least 2 standard deviations below the mean for $\epsilon_{ipm}$. For the middle pane ($\epsilon_{ipm}$) the sign of the shocks were flipped (so that negative shocks exceeding 2 standard deviations also point upwards). The horizontal line corresponds to 3 standard deviations. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_largeshocks}
+\end{figure}
+
 %\newpage
 \chapter{Conclusion}
 \label{Conclusion}
+
+
 
 
 In the article ``Held Back by Uncertainty'' Bloom and his Colleagues write: '' Policymakers can help.'' --> I should build the conclusion up along these lines! \\

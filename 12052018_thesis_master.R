@@ -182,6 +182,7 @@ options(stringsAsFactors = F)
 # install.packages("tseries")
 # install.packages("highfrequency")
 # install.packages("data.table")
+# install.packages("matlib")
 
 library(plyr)
 library(dplyr)
@@ -218,6 +219,7 @@ library(tseries)
 library(highfrequency)
 library(gtable)
 library(data.table)
+library(matlib)
 
 # clear workspace
 rm(list = ls())

@@ -166,6 +166,9 @@ var8_bloom_JFV_1.var.irfs.68 <- var8_bloom_JFV_1 %>% VAR(p=12, type="const") %>%
                         irf(response = c("IPM", "EMPM", "bloom_shock"), 
                         impulse = "bloom_shock", n.ahead = 59, 
                         boot = TRUE, ortho = TRUE, runs=100, ci=0.68)
+# for 
+
+
 var8_bloom_JFV_1.var.irfs.95 <- var8_bloom_JFV_1 %>% VAR(p=12, type="const") %>%
                         irf(response = c("IPM", "EMPM", "bloom_shock"), 
                         impulse = "bloom_shock", n.ahead = 59, 

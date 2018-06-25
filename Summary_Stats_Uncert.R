@@ -99,7 +99,8 @@ uncert_measures.stats <- identify_shocks
                                               # and add a column that holds
                                               # the changes of the respective
                                               # uncertainty measures:
-                                              dplyr::mutate(change = value - lag(value))
+                                              dplyr::mutate(change = 
+                                                              value - lag(value))
                       
                       
                       # calculate mean and standard deviation across measures
@@ -222,7 +223,8 @@ uncert_measures.stats <- identify_shocks
                                                   as.numeric(as.character(x)))
                       # we reduce the number of decimals
                       is.num <- sapply(summary_stats2, is.numeric)
-                      summary_stats2[is.num] <- lapply(summary_stats2[is.num], round, 2)
+                      summary_stats2[is.num] <- lapply(summary_stats2[is.num], 
+                                                       round, 2)
                       
                       # and reorder the columns
                       summary_stats2 <- summary_stats2 %>%
