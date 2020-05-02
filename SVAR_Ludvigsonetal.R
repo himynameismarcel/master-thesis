@@ -88,7 +88,7 @@ SVAR.data <- as.tibble(right_join(x = financialUncertainty_index[,
 # SVAR.data.sub <- SVAR.data  %>%
 #   filter(Date <="2018-06-01" & Date >= "1962-07-01")  
 SVAR.data.sub <- SVAR.data %>%
-              dplyr::select(financial_h1, ip, macro_h1)
+              dplyr::select(macro_h1, ip, financial_h1)
 
 
 
@@ -155,8 +155,9 @@ SVAR.data.sub <- SVAR.data %>%
     A_0_valid <- list()
     
     ## the below has to run 1.5 million times:
-    for(k in 1:150000){
-          #k <- 1
+    for(k in 1:500000){
+          # k <- 3
+          print(k)
       
           ##########
           ## STEP 2:
@@ -294,7 +295,7 @@ SVAR.data.sub <- SVAR.data %>%
               
               if(any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
                                       yearmon <= "Jun 2009") %>%
-                 select(financial_h1) >= k2) > 0){
+                 dplyr::select(financial_h1) >= k2) > 0){
                  print("Passed second test! Continue!")
                  
                  
@@ -309,7 +310,7 @@ SVAR.data.sub <- SVAR.data %>%
                  # its sample mean during the Great Recession!
                  if(any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
                                             yearmon <= "Jun 2009") %>%
-                       select(lip) >= k3) > 0){
+                       dplyr::select(lip) >= k3) > 0){
                   print("Did not pass third test! New Draw!")                 
                  } else {
                    print("Passed third test! Continue!")
@@ -336,14 +337,15 @@ SVAR.data.sub <- SVAR.data %>%
                          # the max-G-solutions:
                          
                          k1.maxG <-  as.vector(epsilon_t %>% 
-                                                 filter(yearmon == "Oct 1987") %>%
-                                                  dplyr::select(financial_h1) - k1)
+                                            filter(yearmon == "Oct 1987") %>%
+                                            dplyr::select(financial_h1) - k1)
                          
                          # for k2.maxG we subset epsilon_t with the expression
                          # that we used for the if-statement above:
-                         helper <- as.matrix(epsilon_t %>% filter(yearmon >= "Dec 2007" &
-                                                          yearmon <= "Jun 2009") %>%
-                                      select(financial_h1) - k2)
+                         helper <- as.matrix(epsilon_t %>% filter(
+                                            yearmon >= "Dec 2007" &
+                                            yearmon <= "Jun 2009") %>%
+                                      dplyr::select(financial_h1) - k2)
                          k2.maxG <- as.vector(helper[which(helper > 0)])
                          
                          # lastly, we check for industrial production
@@ -352,16 +354,18 @@ SVAR.data.sub <- SVAR.data %>%
                          k3.maxG <- as.vector(k3 -epsilon_t %>% filter(
                                                       yearmon >= "Dec 2007" &
                                                       yearmon <= "Jun 2009") %>%
-                                               select(lip))                   
+                                               dplyr::select(lip))                   
         
                          
                          # we bind together all values associated with maxG:
-                         maxG.all <- as.vector(unlist(c(k1.maxG, k2.maxG, k3.maxG)))
+                         maxG.all <- as.vector(unlist(c(k1.maxG, 
+                                                        k2.maxG, k3.maxG)))
                          # next, we calculate the associated value for 
                          # maxG:
                          # the below is a numeric which holds the calculated
                          # maxG-value
-                         maxG.value <- as.numeric(sqrt(t(maxG.all) %*% maxG.all))
+                         maxG.value <- as.numeric(sqrt(t(maxG.all) %*% 
+                                                         maxG.all))
                          
                          # then we check whether the currently stored value
                          # is smaller or larger than the new maxG-value:
@@ -404,8 +408,567 @@ SVAR.data.sub <- SVAR.data %>%
           }
           
     }      
+
+    
+#######################
+### Figure 4 (Replication of Ludvigson et al (2018));
+### Calculation of Impulse Response-Functions
+#######################
+
+    # To be able to calculate the impulse-response functions by hand
+    # and to be able to make use of the impact matrices stored in 
+    # 'A_0_valid', we first have to construct the Bi-matrices of the
+    # reduced-form VAR out of the coefficients that are stored in my.var 
+    # which we have created above!
+    
+    
+    ## STEP 1: extracting reduced-form matrices from
+    ## VAR-estimation from above
+    #----------------------------------------------
+    # because our model consists of 6 lags, we need 6 reduced-form
+    # matrices B filled with the coefficients from the model
+    # estimation;
+    # further, because it is a three-variable VAR (i.e., a VAR(6)-3),
+    # we know that each of the matrices has dimension 3x3!
+    
+    # the most efficient approach would be to loop through 
+    # 'my.var$varresult' which, in our case, is a list item with 
+    # 3 components (for the three estimated equations), and further
+    # holds the coefficients in the nested list-item '$coefficients';
+    
+    l <- 3 # number of equations
+    p <- 6 # number of lags
+    
+    # for(i in 1:l){
+    #   print(sapply(my.var$varresult, `[[`, 1))
+    # }
+    
+    # the below command extracts, in our case, a 3x19-matrix (3x18) + 1 
+    # columns vector of constants;
+    B_block <- t(sapply(my.var$varresult, `[[`, 1))
+    
+    # to efficiently create the reduced-form VAR-coefficients (the
+    # B'i's out of this block-matrix), we run the following:
+    
+    
+    # to do this we use a function; 'matsplitter()'
+    matsplitter<-function(M, r, c) {
+      rg <- (row(M)-1)%/%r+1
+      cg <- (col(M)-1)%/%c+1
+      rci <- (rg-1)*max(cg) + cg
+      N <- prod(dim(M))/r/c
+      cv <- unlist(lapply(1:N, function(x) M[rci==x]))
+      dim(cv)<-c(r,c,N)
+      cv
+    }       
+    
+    # another option would be (slightly modified output,
+    # padded with NAs)
+    # mat_split <- function(M, r, c){
+    #   nr <- ceiling(nrow(M)/r)
+    #   nc <- ceiling(ncol(M)/c)
+    #   newM <- matrix(NA, nr*r, nc*c)
+    #   newM[1:nrow(M), 1:ncol(M)] <- M
+    #   
+    #   div_k <- kronecker(matrix(seq_len(nr*nc), nr, byrow = TRUE), matrix(1, r, c))
+    #   matlist <- split(newM, div_k)
+    #   N <- length(matlist)
+    #   mats <- unlist(matlist)
+    #   dim(mats)<-c(r, c, N)
+    #   return(mats)
+    # }
+    
+    # finally we store the B_i's to an array
+    B_array <- matsplitter(B_block, 3, 3)
+    # and convert the output to a list
+    B_list <- lapply(seq(dim(B_array)[3]), function(x) B_array[ , , x])
+    # and the vector of constants is stored in the matrix (a column vector)
+    # 'constant'
+    constant <- as.matrix(B_block[, ncol(B_block)])
+    
+    ## STEP 2: recursively calculate corresponding
+    ## matrices of the reduced-form MA(infinity) - representation
+    ## (note: because we only look 60 steps ahead in our
+    ## impulse-response-functions, we also consequently
+    ## only calculate 60 phi-matrices!)
+    #----------------------------------------------
+    calculate_MA_matrices <- function(list, n, k){
+      if(n == 0){
+        return(diag(k))
+      }else if(n == 1){
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]]
+        )
+      }else if(n == 2){
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
+          calculate_MA_matrices(list, n-2, k)%*%list[[2]]
+        )
+      }else if(n == 3){
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
+          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
+          calculate_MA_matrices(list, n-3, k)%*%list[[3]]
+        )
+      }else if (n == 4){
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
+          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
+          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
+          calculate_MA_matrices(list, n-4, k)%*%list[[4]]
+        )
+      }else if(n == 5){
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
+          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
+          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
+          calculate_MA_matrices(list, n-4, k)%*%list[[4]] + 
+          calculate_MA_matrices(list, n-5, k)%*%list[[5]]
+        )
+      }else if(n >=6){
+ 
+        return(
+          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
+          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
+          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
+          calculate_MA_matrices(list, n-4, k)%*%list[[4]] + 
+          calculate_MA_matrices(list, n-5, k)%*%list[[5]] + 
+          calculate_MA_matrices(list, n-6, k)%*%list[[6]]
+        )
+      }
+    }
+    
+    # we let the recursion run and store the calculated
+    # Phi in a list:
+    # initialize list:
+
+    # because the recursion does not manage more than 20 at once,
+    # we split the calculation of all 60 phi-matrices
+    # into three chunks
+    # (note higher i the more involved the recursion!)
+    # note that the below calculates the phi-matrices
+    # only until lag 25!
+    # for i = 0 we shuold get back the Identity-Matrix!
+    phi_list <- list()
+    
+    for(i in 0:25){
+      phi_list[[length(phi_list)+1]] <- calculate_MA_matrices(B_list, i, 3)
+      # and we rename the entry to know to which
+      # iteration it belongs
+      names(phi_list)[length(phi_list)] <- 
+        paste0(c("phi_"), i)    
+    }  
+    
+    
+    ## STEP 3: having the list 'phi_list' at our
+    ## disposal, we can finally calculate the Thetas
+    ## (which are the coefficients of the structural 
+    ## MA-representation and which will then finally hold
+    ## the coefficients for the impulse-response-functions
+    ## that we want/need for plotting below!)
+    #----------------------------------------------
+    ## remember: A_0_valid holds all matrices that passed
+    ## our restrictions!
+    
+    ## this last step will now loop through all matrices stored
+    ## in 'A_0_valid' and for each of them, multiply the respective
+    ## A_0_valid with the sequence of phi's in 'phi_list';
+    ## ultimately, the result will be stored in a list again;
+    ## be aware that we have to multiply by the inverse of 
+    ## the stored A_0_valid!
+    
+    # we initialize a list that will hold all Thetas
+    # for each A_0_valid - matrix!
+    # This means that for each valid A_0 - matrix, 
+    # we will get as many Theta-entries as many phi
+    # coefficient matrices we have at our disposal!
+    Thetas <- list()
+    
+    for(z in 0:(length(A_0_valid)-1)){
+      
+        Thetas[[z+1]] <- 
+              lapply(phi_list, function(x){
+              x %*% inv(A_0_valid[[z+1]])
+              })
+              names(Thetas)[length(Thetas)] <- paste0(c("A_0_"), z)
+
+    }
+    
+    #-------------------------------------------------------------------
+    # extract coefficients to create impulse-responses:
+    # now all that is left is to efficiently extract the respective
+    # coefficients;
+    # what complicates this proceure is that coefficients that blong
+    # together have to be extracted from the exact same position from
+    # the respective matrices;
+    
+    # we want to create 1 df with 763 columns and
+    # 25 rows (the length of the list holding the
+    # 'Theta' - coefficients) for each of the
+    # combinations; we start with Fin_Macro:
+    
+    # the length of the list Thetas tells us how
+    # often we have to execute the below code;
+
+    # the below function extracts all relevant
+    # coefficients for ONE POSITION!
+    # this means that we need to run the below
+    # function for each position in the matrix;
+    # in our case 9 times!
+    extract.coefs.irf <- function(impulse, response, row, col){
+    
+        # we initialize a data-frame:
+        coefs.df <- data.frame(matrix(ncol = length(Thetas), 
+                                      nrow = length(phi_list)))
+        
+        # # and change its name
+        # name_df <- coefs.df
+    
+        for(m in 1:length(Thetas)){
+        # loop to fill columns (through all ~700 elements of the 
+        # list 'Theta' that holds for each of the admissable
+        # A_0_valid - matrices the respective Thetas in 
+        # dedicated coefficient matrices!) 
           
-    #-----------Figure 3
+          for(b in 1:26){
+          # loop to fill rows (in our case 26); to fill the 
+          # coefficients at EACH STEP (hopefully in the future 
+          # we'll have more steps!)
+            
+            coefs.df[b, m] <-  sapply(lapply(Thetas, "[[", b), 
+                                      function(x) x[row, col])[m]
+            colnames(coefs.df)[m] <- paste0(impulse, "_", response, "_", m)
+          
+          }
+        }
+        
+        return(as.tibble(coefs.df))
+    }
+    
+    # below we execute the above function 9 times to retrieve
+    # the coefficients for each of the series of impulse-
+    # response functions
+    Fin_Macro.coefs <- extract.coefs.irf("Fin", "Macro", 1, 3)
+    Fin_Ipm.coefs <- extract.coefs.irf("Fin", "Ipm", 2, 3)
+    Fin_Fin.coefs <- extract.coefs.irf("Fin", "Fin", 3, 3)
+    Macro_Macro.coefs <- extract.coefs.irf("Macro", "Macro", 1, 1)
+    Macro_Ipm.coefs <- extract.coefs.irf("Macro", "Ipm", 2, 1)
+    Macro_Fin.coefs <- extract.coefs.irf("Macro", "Fin", 3, 1)
+    Ipm_Macro.coefs <- extract.coefs.irf("Ipm", "Macro", 1, 2)
+    Ipm_Ipm.coefs <- extract.coefs.irf("Ipm", "Ipm", 2, 2)
+    Ipm_Fin.coefs <- extract.coefs.irf("Ipm", "Fin", 3, 2)
+    
+    # we add a step-counter to each of the separate data-frames:
+    Fin_Macro.coefs$step <- seq.int(nrow(Fin_Macro.coefs))
+    Fin_Ipm.coefs$step <- seq.int(nrow(Fin_Ipm.coefs))
+    Fin_Fin.coefs$step <- seq.int(nrow(Fin_Fin.coefs))
+    Macro_Macro.coefs$step <- seq.int(nrow(Macro_Macro.coefs))
+    Macro_Ipm.coefs$step <- seq.int(nrow(Macro_Ipm.coefs))
+    Macro_Fin.coefs$step <- seq.int(nrow(Macro_Fin.coefs))
+    Ipm_Macro.coefs$step <- seq.int(nrow(Ipm_Macro.coefs))
+    Ipm_Ipm.coefs$step <- seq.int(nrow(Ipm_Ipm.coefs))
+    Ipm_Fin.coefs$step <- seq.int(nrow(Ipm_Fin.coefs))
+    
+    # the below command transforms all of the above data-frames
+    # into a tidy format for plotting and at the same time
+    # binds them together
+    plot_SVAR.irfs.all <- bind_rows(
+          Macro_Macro.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Macro Uncertainty",
+                          response = "Macro Uncertainty"),
+          Macro_Ipm.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Macro Uncertainty",
+                          response = "Ind. Production"),
+          Macro_Fin.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Macro Uncertainty",
+                          response = "Fin. Uncertainty"), 
+          Ipm_Macro.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Ind. Production",
+                          response = "Macro Uncertainty"), 
+          Ipm_Ipm.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Ind. Production",
+                          response = "Ind. Production"),
+          Ipm_Fin.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Ind. Production",
+                          response = "Fin. Uncertainty"), 
+          Fin_Macro.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+              dplyr::mutate(impulse = "Fin. Uncertainty",
+                            response = "Macro Uncertainty"),
+          Fin_Fin.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Fin. Uncertainty",
+                          response = "Fin. Uncertainty"),
+          Fin_Ipm.coefs %>%
+            gather(
+              key = series_name,
+              value = series_value,
+              -c(step)) %>%
+            # at the same time we add the names for impulse and response
+            dplyr::mutate(impulse = "Fin. Uncertainty",
+                          response = "Ind. Production")
+    )
+    
+    
+    
+    # we need to create ordered factors, otherwise 'facet_wrap' combines the plots
+    # in alphabetical order:
+    plot_SVAR.irfs.all <- plot_SVAR.irfs.all %>%
+      ungroup %>%
+      mutate(series_name = factor(series_name, 
+                                 ordered = TRUE,
+                                 levels=unique(series_name)),
+             response = factor(response,
+                               ordered = TRUE,
+                               levels=unique(response)),
+             impulse = factor(impulse,
+                               ordered = TRUE,
+                               levels=unique(impulse)))
+
+    
+    
+    #-------------maxG-solutions----------------------
+    # the below takes care of the maxG-solutions:    
+    # to automate this process, we extract the name of the maxG-solution
+    # from maxG.df
+    name.iteration.maxG <- maxG.df$iteration
+    
+    # and then extract from epsilon_t_valid using this value:
+    A_0_maxG <- A_0_valid[[name.iteration.maxG]]
+
+    # we write the maxG-solution to the collection of Thetas
+    Thetas[[length(Thetas)+1]] <- 
+      lapply(phi_list, function(x){
+        x %*% inv(A_0_maxG)
+      })
+    names(Thetas)[length(Thetas)] <- paste0(c("A_0_maxG"))
+    
+    
+    
+    extract.coefs.irf_maxG <- function(impulse, response, row, col){
+      
+      # we initialize a data-frame:
+      coefs.df <- data.frame(matrix(ncol = 1, 
+                                    nrow = length(phi_list)))
+      
+      # # and change its name
+      # name_df <- coefs.df
+      
+      # we are only interested in the maxG-solution
+      m <- length(Thetas)
+        # loop to fill columns (through all ~700 elements of the 
+        # list 'Theta' that holds for each of the admissable
+        # A_0_valid - matrices the respective Thetas in 
+        # dedicated coefficient matrices!) 
+        
+        for(b in 1:26){
+          # loop to fill rows (in our case 26); to fill the 
+          # coefficients at EACH STEP (hopefully in the future 
+          # we'll have more steps!)
+          
+          coefs.df[b, 1] <-  sapply(lapply(Thetas, "[[", b), 
+                                    function(x) x[row, col])[m]
+          colnames(coefs.df)[1] <- paste0(impulse, "_", response, "_", "maxG")
+          
+        }
+      
+      return(as.tibble(coefs.df))
+    }
+    
+    
+    # below we execute the above function 9 times to retrieve
+    # the coefficients for each of the maxG - series of impulse-
+    # response functions
+    Fin_Macro.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Macro", 1, 3)
+    Fin_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Ipm", 2, 3)
+    Fin_Fin.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Fin", 3, 3)
+    Macro_Macro.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Macro", 1, 1)
+    Macro_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Ipm", 2, 1)
+    Macro_Fin.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Fin", 3, 1)
+    Ipm_Macro.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Macro", 1, 2)
+    Ipm_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Ipm", 2, 2)
+    Ipm_Fin.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Fin", 3, 2)
+    
+    # we add a step-counter to each of the separate data-frames:
+    Fin_Macro.coefs_maxG$step <- seq.int(nrow(Fin_Macro.coefs_maxG))
+    Fin_Ipm.coefs_maxG$step <- seq.int(nrow(Fin_Ipm.coefs_maxG))
+    Fin_Fin.coefs_maxG$step <- seq.int(nrow(Fin_Fin.coefs_maxG))
+    Macro_Macro.coefs_maxG$step <- seq.int(nrow(Macro_Macro.coefs_maxG))
+    Macro_Ipm.coefs_maxG$step <- seq.int(nrow(Macro_Ipm.coefs_maxG))
+    Macro_Fin.coefs_maxG$step <- seq.int(nrow(Macro_Fin.coefs_maxG))
+    Ipm_Macro.coefs_maxG$step <- seq.int(nrow(Ipm_Macro.coefs_maxG))
+    Ipm_Ipm.coefs_maxG$step <- seq.int(nrow(Ipm_Ipm.coefs_maxG))
+    Ipm_Fin.coefs_maxG$step <- seq.int(nrow(Ipm_Fin.coefs_maxG))
+    
+    
+    # we do not add the maxG-solutions to the big data-frame
+    # because want to plot the maxG-solutions separately
+    # with another data.frame as source;
+    # rather, we make a separate data.frame
+    plot_SVAR.irfs.maxG <- bind_rows(
+      Macro_Macro.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Macro Uncertainty",
+                      response = "Macro Uncertainty"),
+      Macro_Ipm.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Macro Uncertainty",
+                      response = "Ind. Production"),
+      Macro_Fin.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Macro Uncertainty",
+                      response = "Fin. Uncertainty"), 
+      Ipm_Macro.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Ind. Production",
+                      response = "Macro Uncertainty"), 
+      Ipm_Ipm.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Ind. Production",
+                      response = "Ind. Production"),
+      Ipm_Fin.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Ind. Production",
+                      response = "Fin. Uncertainty"), 
+      Fin_Macro.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Fin. Uncertainty",
+                      response = "Macro Uncertainty"),
+      Fin_Fin.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Fin. Uncertainty",
+                      response = "Fin. Uncertainty"),
+      Fin_Ipm.coefs_maxG %>%
+        gather(
+          key = series_name,
+          value = series_value,
+          -c(step)) %>%
+        # at the same time we add the names for impulse and response
+        dplyr::mutate(impulse = "Fin. Uncertainty",
+                      response = "Ind. Production")
+    )
+    
+    # we need to create ordered factors, otherwise 'facet_wrap' combines the plots
+    # in alphabetical order:
+    plot_SVAR.irfs.maxG <- plot_SVAR.irfs.maxG %>%
+      ungroup %>%
+      mutate(series_name = factor(series_name, 
+                                  ordered = TRUE,
+                                  levels=unique(series_name)),
+             response = factor(response,
+                               ordered = TRUE,
+                               levels=unique(response)),
+             impulse = factor(impulse,
+                              ordered = TRUE,
+                              levels=unique(impulse)))
+    
+
+    # finally we plot the impulse responses:
+    impulse.responses_all.SVAR <- 
+      ggplot(data=plot_SVAR.irfs.all, aes(x=step, y=series_value)) + 
+      geom_line(aes(colour=series_name), alpha=0.6, size=1.5) +
+      geom_line(data=plot_SVAR.irfs.maxG, aes(x=step, y=series_value),
+                colour="black", size=2, linetype="dashed") +
+      labs(color=NULL) + 
+      geom_hline(yintercept=0, color = "#514e4e", 
+                 size=1) +
+      scale_x_continuous(name = NULL) + 
+      scale_y_continuous(name = NULL) +
+      theme(axis.text=element_text(size=10),
+            plot.title = element_text(size=10, face="bold", hjust = 0.5),
+            axis.title=element_text(size=10),
+            legend.position="none",
+            #legend.text=element_text(size=14),
+            #axis.text.x=element_blank(),
+            plot.margin = unit(c(1,1,1,1), "mm"),
+            #panel.grid.major = element_blank(), 
+            panel.grid.minor = element_blank(),
+            strip.background = element_rect(colour="black", 
+                                            fill="white", 
+                                            size=1.5, 
+                                            linetype="solid")) + 
+      facet_wrap(impulse ~ response,
+                 scales="free", strip.position = "top")
+      # coord_cartesian(ylim = c(-0.5, 0.5))
+
+    
+      impulse.responses_all.SVAR
+       
+      ggsave(file="impulse_responses_all_SVAR.pdf")
+       
+#######################
+### Figure 3 (Replication of Ludvigson et al (2018))
+#######################
     # epsilon_t_valid holds all residuals of the 
     # structural models that passed all tests;
     # A_0_valid holds all impact matrices
@@ -419,7 +982,7 @@ SVAR.data.sub <- SVAR.data %>%
     
     # to get to the desired Figure, we have to loop through all 
     # data.frames stored in 'epsilon_t_valid' and
-    #       * standardize the series financial_ha, lip, macro_h1
+    #       * standardize the series financial_h1, lip, macro_h1
     #       * make tidy data-frames out of the data-frames
     #       * and finally create indicator-variables with respect
     #         to the thresholds mentioned above!
@@ -436,8 +999,7 @@ SVAR.data.sub <- SVAR.data %>%
                             na.rm=TRUE))/
                             sd(macro_h1, na.rm=TRUE),
                           # and we transform the variable 'yearmon'
-                          my =
-                            as.numeric(epsilon_t_maxG$yearmon)+1/12,
+                          my = as.numeric(yearmon)+1/12,
                           # To make the calculations easier, we flip the sign of all
                           # entries for lip
                           lip = lip*(-1))
@@ -450,9 +1012,9 @@ SVAR.data.sub <- SVAR.data %>%
                                       -c(day, yearmon)) %>%
                           # first we rename the variables
                           dplyr::rename(
-                            e_fin = financial_h1,
+                            e_macro = macro_h1,
                             e_ipm = lip,
-                            e_macro = macro_h1
+                            e_fin = financial_h1 
                           ) %>%
                           gather(
                             key = series_name,
@@ -525,7 +1087,9 @@ SVAR.data.sub <- SVAR.data %>%
       ggsave(file="time_series_epsilon_t_largeShocks.pdf")
     
     
-    #-----------Figure 2
+#######################
+### Figure 2 (Replication of Ludvigson et al (2018))
+#######################
     # Replication of Figure 2 from Ludvigson et al (2018)
     # We want to get the data into a format so that we can easily
     # plot the maxG-solution with ggplot and facets for the three

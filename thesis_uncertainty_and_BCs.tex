@@ -1315,7 +1315,7 @@ Technically, local projections are the result of sequential regressions of a dep
 To put Jordá's local projections properly in context with respect to VARs, in what follows we outline some theory regarding VARs which will allow us then to seamlessly introduce local projections into the picture.
 
 \paragraph{VARs and the Derivation of Impulse Responses}
-We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(2)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
+We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time pathaå of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
 \begin{equation} \label{eq:svar1}
 \begin{split}
 	y_{1t} & = a_{01}y_{2t} + a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
@@ -1407,12 +1407,12 @@ If we assume contemporaneous relationships among the endogenous variables, the r
 Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the moment, under the assumption of covariance stationarity (i.e., if neither the mean nor the autocovariance of the process depend on time $t$) of the vector process $\vect{y_t}$, \vect{y_t} (i.e., the reduced form VAR) can be transformed into its vector moving average (VMA($\infty$); also called Wold MA) representation according to the Wold decomposition theorem\footnote{In words, the Wold Theorem states that any covariance stationary process has an infinite order, moving-average representation.} (i.e., there exists a unique mapping) where all past values of $\vect{y_t}$ are substituted out which translates Equation~\ref{eq:svar5} into a linear combination of all $\vect{u_t}$s (reduced-form innovations) over time (whereby the corresponding MA-weights do not depend on time $t$ but only on $j$, i.e., how long ago the shock $\vect{\epsilon}$ occurred):
 \begin{equation} \label{eq:svar7}
 \begin{split}
- 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_2} + \vect{\Psi_{3}}\vect{u_3} + \cdots = \\
+ 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_{t-2}} + \vect{\Psi_{3}}\vect{u_{t-3}} + \cdots = \\
 			& = \textit{(or more compactly written)} = \\
 			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}}
 \end{split}								
 \end{equation}
-with $\vect{\Psi_0} =\vect{\mathbf{I_2}}$ and $\vect{\Psi_k}$ can be computed recursively via $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ for $s=1, 2, \dots$.\footnote{Note that we are still looking at the bivariate case. For the $n$-dimensional case, we would have $\vect{\Psi_0} =\vect{\mathbf{I_n}}$.}\footnote{Note that Equation~\ref{eq:svar7} below shows the general reduced-form VMA($\infty$) representation for a VAR($p$). In case of our bivariate example with one lag only (see Equation~\ref{eq:svar5}), the reduced-form VMA-representation would be $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{u_t} + \vect{{B}_1}\vect{u_{t-1}} + \vect{{B}_1^2}\vect{u_{t-2}} + \vect{{B}_1^3}\vect{u_{t-3}} + \cdots$. In other words, for a VAR(1) process, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ implies that $\vect{\Psi_0}=\vect{I_n}, \vect{\Psi}_1 = \vect{B}_1, \dots, \vect{\Psi_i} = {\vect{B}}_1^i$. For a VAR(2)-process, for example, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ results in $\vect{\Psi}_1 = \vect{B}_1, \vect{\Psi}_2 = \vect{\Psi}_1\vect{B}_1 + \vect{B}_2 = \vect{B}_1^2 + \vect{B}_2, \dots, \vect{\Psi}_i = \vect{\Psi}_{i-1}\vect{B}_1 + \vect{\Psi}_{i-2}\vect{B}_2, \dots$. The coefficient matrices $\vect{\Psi}_i$ approach zero for $i \to \infty$ which is a consequence of the stability of the respective VAR processes.\\
+with $\vect{\Psi_0} =\vect{\mathbf{I_2}}$ and $\vect{\Psi_k}$ can be computed recursively via $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ for $s=1, 2, \dots$.\footnote{Note that we are still looking at the bivariate case. For the $n$-dimensional case, we would have $\vect{\Psi_0} =\vect{\mathbf{I_n}}$.}\footnote{Note that Equation~\ref{eq:svar7} shows the general reduced-form VMA($\infty$) representation for a VAR($p$). In case of our bivariate example with one lag only (see Equation~\ref{eq:svar5}), the reduced-form VMA-representation would be $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{u_t} + \vect{{B}_1}\vect{u_{t-1}} + \vect{{B}_1^2}\vect{u_{t-2}} + \vect{{B}_1^3}\vect{u_{t-3}} + \cdots$. In other words, for a VAR(1) process, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ implies that $\vect{\Psi_0}=\vect{I_n}, \vect{\Psi}_1 = \vect{B}_1, \dots, \vect{\Psi_i} = {\vect{B}}_1^i$. For a VAR(2)-process, for example, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ results in $\vect{\Psi}_1 = \vect{B}_1, \vect{\Psi}_2 = \vect{\Psi}_1\vect{B}_1 + \vect{B}_2 = \vect{B}_1^2 + \vect{B}_2, \dots, \vect{\Psi}_i = \vect{\Psi}_{i-1}\vect{B}_1 + \vect{\Psi}_{i-2}\vect{B}_2, \dots$. The coefficient matrices $\vect{\Psi}_i$ approach zero for $i \to \infty$ which is a consequence of the stability of the respective VAR processes.\\
 Correspondingly, Equation~\ref{eq:svar8} becomes $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{{A}_0^{-1}}\vect{\epsilon_t} + \vect{{B}_1}\vect{{A}_0^{-1}}\vect{\epsilon_{t-1}} + \vect{{B}_1^2}\vect{{A}_0^{-1}}\vect{\epsilon_{t-2}} + \vect{{B}_1^3}\vect{{A}_0^{-1}}\vect{\epsilon_{t-3}} + \cdots$. So for the structural VAR(1) model, the impulse responses to the structural shocks from $n$ period are given by $\vect{{B}_1^n}\vect{{A}_0^{-1}}$.\\
 The MA representation of a stable (S)VAR($p$) process is not necessarily of infinite order since that coefficients may turn zero as of a certain lag.} \\
 \\
@@ -2552,7 +2552,7 @@ To formalize this and further letting $\hat{e}_{St}$ be the first order autoregr
 The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$.\\
 Together, the constraints in \ref{eq:svar_ludvi13} provide cross-equation restrictions on the parameters in a potential $\vect{A}_0^{-1}$, whereby the correlations are not invariant to orthonormal rotations (by $\vect{Q}$) so that the generated correlations in each draw will be different.
 
-\paragraph{Identified Solution Set}
+\paragraph{Identified Solution Set and maxG - Solution}
 Combining default covariance structure restrictions with the introduced event and correlation constraints, \citet{ludvigsonetal:18} call the \textit{identifed}\footnote{Author's italics.} solution set 
 \begin{equation} \label{eq:svar_ludvi14}
 \begin{split}
@@ -2566,7 +2566,18 @@ which only contains estimates of $\vect{A}_0^{-1}$ that satisfy all constraints.
 \\
 Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.\\
 \\
-The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.
+The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.\\
+And while there is no single solution in $\overline{\vect{\mathcal{A}}}_0$ that is more likely than another one, as a reference point (and following \citet{ludvigsonetal:18}), we will also refer to the so-called 'maxG' - solution when discussing the results. In particular, the 'maxG' - solution serves as a reference point at which the value of the introduced constraints (inequalities) are jointly maximized. Formally, as the maxG-solution the quadratic norm is chosen so that
+\begin{equation} \label{eq:svar_ludvi16}
+\begin{split}
+\vect{A}_0^{maxG} \equiv \operatorname*{argmax}_{\vect{A}_0 \in \overline{\vect{\mathcal{A}}}_0} \sqrt{\overline{f}(\vect{A}_0)^'\overline{f}(\vect{A}_0)} \quad \text{where} \quad \overline{f}(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S}) = \begin{pmatrix}
+			FZ(\vect{Q}; \phi)' \\
+			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})' \\
+			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})'	
+		\end{pmatrix}^'
+\end{split}								
+\end{equation}
+With respect to the introduced constraints, the inequalities will be large for the most extremely positive financial uncertainty shocks in 1987 and during the Great Recession, for the most negative real activity shocks during the Great Recession and when uncertainty shocks have the highest absolute correlation with the variable external to the VAR( in the baseline case: aggregate stock market returns), both jointly and collectively. With these features, the 'maxG' - solution can, economically, be regarded as the ``worst-case'' - scenario.
 
 \paragraph{Baseline SVAR(3)-6}
 \citet{ludvigsonetal:18} estimate several VAR systems to identify uncertainty shocks from the VAR residuals using the restrictions from above. Here we will reproduce their baseline estimation which we have already introduced above consisting of $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty. In contrast to \citet{ludvigsonetal:18} who use their own constructed measure of financial uncertainty we use the VXO. The VAR-System uses $p=6$ lags (and will report the results for $p=12$ in the Appendix).
@@ -2590,8 +2601,18 @@ A few sentences from other parts that actually belong here:\\
 -) Consequently, in an SVAR framework as suggested by \citet{ludvigsonetal:18}, the $\vect{P}$-matrix to orthogonalize the reduced-form disturbances is not mechanically constructed as the Cholesky decomposition of the error covariance matrix (zero short-run restrictions; recursive identification) but rather is obtained from contemporaneous and theor-based restrictions placed on the $\vect{P}$ - matrix.\\
 -) 
 
-\paragraph{Results}
-Note to self: \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre-crisis sample which yields less conclusive answers; therefore they write: ``A premise of this paper is that the 2007-2009 financial crisis was an important rare event that can help distinguish the transmission of financial versus real uncertainty shocks. This maintained assumption appears supported by the subsample analysis.''
+\paragraph{Baseline Results}
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre-crisis sample which yields less conclusive answers; therefore they write: ``A premise of this paper is that the 2007-2009 financial crisis was an important rare event that can help distinguish the transmission of financial versus real uncertainty shocks. This maintained assumption appears supported by the subsample analysis.''
+\end{itemize}
+\endgroup
+
+Before jumping to the resulting impulse responses of the baseline system $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ in Figure~\ref{fig:impulse.responses_all.SVAR}, we first want to briefly discuss the recovered uncertainty shocks which exhibit a few noteworthy features. \\
+\\
 
 
 \begin{figure}[!h]
@@ -2603,7 +2624,7 @@ Note to self: \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre
       \textit{Note:}  The horizontal line corresponds to 3 standard deviations above/below the unconditional mean of each series. The shocks $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ for maxG solution are reported, where $\vect{u}_t$ holds the residuals from VAR(6) of ($U_{Macro}, IPM, U_{Fin}$). The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_shocks}
 \end{figure}
 
-\blindtext
+
 
 \begin{figure}[!h]
    \centering
@@ -2613,6 +2634,19 @@ Note to self: \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre
       \caption[Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
       \textit{Note:}  The figure shows all shocks in the identified set that are at least 2 standard deviations above the unconditional mean for $\epsilon_{Macro}$ and $\epsilon_{Fin}$ and at least 2 standard deviations below the mean for $\epsilon_{ipm}$. For the middle pane ($\epsilon_{ipm}$) the sign of the shocks were flipped (so that negative shocks exceeding 2 standard deviations also point upwards). The horizontal line corresponds to 3 standard deviations. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_largeshocks}
 \end{figure}
+
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.5cm -1cm, width=1\textwidth]{impulse_responses_all_SVAR.pdf}}
+      \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:impulse.responses_all.SVAR}
+\end{figure}
+
+
+
 
 %\newpage
 \chapter{Conclusion}
