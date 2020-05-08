@@ -11,109 +11,95 @@
 ### and U_F for a measure of financial uncertainty;
 
 #######################
-### Preliminary Steps
+### Installing Packages
 #######################
-## The preliminary steps involve getting the data into the right format;
+library(readxl)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(vars)
+library(matlib)
+library(forecast)
+library(Hmisc)
+
+###-------------------------------
+### Preliminary Explanations
+###-------------------------------
+## The preliminary steps involve getting the data into our R-session
 ## In particular, we need   * U_M,
 ##                          * IPM, and
-##                          * U_F (VXO in our case)
+##                          * U_F
 #set.seed(7)
 
-## Reading in the measure for financial uncertainty as constructed
-## by Ludvigson et al (2018):
-## Note: Also the measure for financial uncertainty by Ludvigson et al. (2018)
-## comes along with three forecast horizon: h=1, h=3 and h=12;
-## For our replication-exercise, we solely onsider h=1!
-financialUncertainty_index <- read_excel("FinancialUncertaintyToCirculate.xlsx", 
-                                     sheet = "Financial Uncertainty")
+## Because we have reached a stage where we want to improve our algorithm 
+## and be sure that it is computationally correct, as a first stept, we 
+## decided to use the replication-data from Ludvigson et al (2018) together 
+## with our algorithm, to rule out, that the result of not getting a single 
+## successful run in our simulation is due to the wrong data!
 
-## and rename three columns
-financialUncertainty_index <- rename(financialUncertainty_index, 
-                                 h1 = "h=1",
-                                 h3 = "h=3",
-                                 h12 = "h=12")
-
-## make 'Date' - variable a 'Date' - type 
-## (instead of POSIXct)
-financialUncertainty_index$Date <- as.Date(financialUncertainty_index$Date)
-
-# next, we create the three variable 'month', 'year' and 'day' using
-# the 'separate()' - function from the 'tidyr' - package
-financialUncertainty_index <- separate(financialUncertainty_index, "Date", 
-                                   c("year", "month", "day"), sep = "-", 
-                                   remove=FALSE, convert=TRUE)
-
-# next we create the variable 'my' which is a numerical representation
-# of yearmon:
-financialUncertainty_index <- as.data.frame(financialUncertainty_index %>%
-                                          mutate(my = year + month/12))
+## Both, the macro uncertainty as well as the financial uncertainty measure 
+## of Ludvigson et al (2018) come along with three forecast horizon: 
+## h=1, h=3 and h=12;
+## For our replication-exercise, we always consider h=1 (this is also the 
+## series which Mr. Sia has provided us with in the excel-file
+## "Replication_data_Ludvigson.xlsx"
 
 
-## The measure for macro uncertainty is stored in the data.frame
-## called 'macroUncertainty_index';
-## The measure for industrial production in manufacturing is stored
-## in the data.frame 'additional_vars';
-## To join all three series of U_M, IPM and I_F, we perform the below:
-SVAR.data <- data.frame("macroUncert_h1" = macroUncertainty_index$h1,
-                              "my" = macroUncertainty_index$my,
-                              "year" = macroUncertainty_index$year,
-                              "month" = macroUncertainty_index$month,
-                              "Date" = macroUncertainty_index$Date)
+###-------------------------------
+### Reading in Data
+###-------------------------------
+SVAR.data <- read_excel("Replication_data_Ludvigson.xlsx", 
+                        sheet = "Data")
 
-SVAR.data <- as.tibble(right_join(x = financialUncertainty_index[, 
-                                      c("h1","my")],
-                                        y = SVAR.data,
-                                        by = "my") %>%
-                               right_join(x = additional_vars[, 
-                                      c("ip","my")],
-                                          y = .,
-                                          by = "my") %>%
-                               # further, we rename a few variables,
-                               # select the ones we want to keep
-                               dplyr::rename(financial_h1  = h1, 
-                                             macro_h1 = macroUncert_h1) %>%
-                               # we further reorder the variables
-                               dplyr::select(Date, year, month, 
-                                             macro_h1, ip, financial_h1)) %>%
-                               # and transform ip to the log of ip (lip)
-                               dplyr::mutate(lip = log(ip))
+# a quick check shows us that the columns are already correctly
+# named, but the type for the 'Date'-column is set to num;
+# the Date-column consists of a numeric holding 'yearmonth',
+# hence we have to proceed as follows to change that:
+SVAR.data$yearmon <- as.yearmon(as.character(SVAR.data$Date), "%Y%m")
 
-# filter data to belong to a certain 
-# time-range (in our baseline case this
-# is the 'Bloom-window' 
-# (i.e., July 1962 - June 2008))
-# SVAR.data.sub <- SVAR.data  %>%
-#                       filter(Date <="2008-06-01" & Date >= "1962-07-01")
-# alternative range: (i.e., July 1962 - June 2018))
-# SVAR.data.sub <- SVAR.data  %>%
-#   filter(Date <="2018-06-01" & Date >= "1962-07-01")  
+# the data in SVAR.data runs from 07/1960 until 04/2015;
+# without further ado, we subset SVAR.data into SVAR.data.sub
+# which then only includes the two uncertainty measures (Um, Uf)
+# and the time-series for industrial production:
 SVAR.data.sub <- SVAR.data %>%
-              dplyr::select(macro_h1, ip, financial_h1)
+                        dplyr::select(Um, ip, Uf)
+
+# the returns-data is also already available in the Excel-file
+# "Replication_data_Ludvigson.xlsx", which is why, in our 
+# case, it is also already available in the data.frame SVAR.data;
+# for now, we want to store the time-series in a dedicated
+# data.frame, but might change this procedure later!
+# at the same time, we divide the values by 100 because the original
+# series comes in %!
+return.data <- SVAR.data %>% 
+                     dplyr::select(S, yearmon) %>%
+                     dplyr::mutate(S = S/100)
 
 
-
-# # Preparation and Calculation of returns-data from SP500:
-# sp500 <- as.data.frame(additional_vars$sp500)
-# colnames(sp500) <- c("sp500_prices")
-# 
-# sp500_returns <- sp500 %>%
-#         dplyr::mutate(sp500_ret = diff(log(sp500_prices)))
-                
-
-#######################
+###-------------------------------
 ### Algorithm
-#######################
+###-------------------------------
 
-    ##########
+    set.seed(1)
+    ##----------------------------
     ## STEP 1:
     ## Estimation of the reduced-form model and initialization of A_0^{-1} as the
     ## unique lower-triangular Cholesky factor P of Sigma_u with non-negative
     ## diagonal elements!
-    ##########
+    ##----------------------------
     # estimation of model
     my.var <- VAR(SVAR.data.sub, type = "const", p = 6)
     # storing the variance-covariance matrix in Sigma_u
     Sigma_u <- summary(my.var)$covres
+    # alternative plot of Sigma_u without scientific notation:
+    # format(summary(my.var)$covres, scientific=FALSE)
+    
+    # Marcel (06.05.2020): Note that in my opinion Ludvigson et al (2018)
+    # have at this stage mistakenly only divided the sum of squares
+    # (i.e. u_t' * u_t) of the residuals by 652 (=658-6) degrees of freedom
+    # intsead of 633 (=658-(19+6))! --> Mention to Scharler when I send him
+    # my thesis!
     
     # and storing the residuals for each variable in the matrix
     u_t <- residuals(my.var)
@@ -124,7 +110,87 @@ SVAR.data.sub <- SVAR.data %>%
     # matrix by default, we have to transpose the result;
     P <- t(chol(Sigma_u))
     
+    
+    # -----------------------------------------------
+    # CORRELATION CONSTRAINTS: PRELIMINARIES
+    # -----------------------------------------------
+    
+    # Marcel, 03.05.2020, I hadn't yet implemented
+    # the correlation constraints; so here we go:
+    # Ludvigson et al (2018) declare S_t be a measure of the aggregate
+    # stock market return; u_St is the first order
+    # autoregressive residual for S_t; in their baseline specification
+    # the authors impose restrictions on the correlation of 
+    # u_St with uncertainty shocks;
+    
+    # for our analysis here we get the stock market return from 
+    # the data.frame 'return.data' which we have prepared above
+    # and which contains the variable 'S' 
+    # on which we have to run an AR(1)-estimation
+    # and store the corresponding residuals!
+    # at the same time we have to make sure that the time-series
+    # has the same length as the time-series which we have
+    # used in the analysis of the VAR(6)-system above 
+    # (ore more precisely, the the residual outputs of the 
+    # AR(1)-process and the structural errors of our main
+    # var-model from above have the same length!)
+    
+    # we fit a normal regression to mimic the AR-estimation
+    # as follows:
+    
+    # first, we have to prepare the dataset accordingly:
+          # note:
+          # for HMisc we needed latticeExtra in an older version for 
+          # it to work with our current version of R; hence we had to
+          # perform the following:
+              # install.packages("devtools")
+              # library(devtools)
+              # devtools::install_version("latticeExtra", version="0.6-28")
+    
+      
+          # we add the lagged series as a regressor
+          return.data$S_minus_1 <- Hmisc::Lag(return.data$S, -1)
+          # and then we drop the very last observation in return.data$S:
+          return.data <- head(return.data, -1)
+
+      
+    # next, we estimate the linear model
+    ar.1 <- lm(S_minus_1 ~ S, return.data)
+      
+    # we store the AR(1)-models residuals (reduced-form residuals):
+    u_St <- residuals(ar.1)
+    
+    # Marcel (06.05.2020):
+    # note that we get a slightly different result as compared
+    # to when we would estimate an arima(1,0,0)-model;
+    # --> I haven't yet really figured out why this is the case!
+    
+    # similar to the VAR-data itself, the returns-data started
+    # in 1960-07; with the VAR-data we lost 6 entries due to the
+    # 6 lags we had estimated, 
+    
+    # with the returns-data we only
+    # estimated an AR(1)-process, hence, the residuals start in 
+    # 1960-08 (i.e. have 657 entries, exactly as the 
+    # residuals in the Ludvigson-paper (object U);
+    
+    # the entry corresponding to 'Black Monday' in October 1987
+    # is at position 327, while in our residuals it also  at position 
+    # 327; and because Ludvigson et al (2018) only remove the first
+    # five entries for the calculation of the correlation, we accordingly
+    # have to remove the first five entires as wel!
+    # the rationale for the above, comes from the observation,
+    # that in epsilon_t, October 1987 is on position 322, and
+    # we need it to be on position 322 also in u_St!
+    # (hence, we have to remove the first 5 entries!)
+    
+    # u_St is currently too long, hence we remove the
+    # first six entries:
+    u_St <- as.ts(tail(as.zoo(u_St), -5))
+    
     # we initialize A_0^{-1} as the lower triangular matrix P
+    # (note: we have already created P above via
+    # P <- t(chol(Sigma_u)))
     A_0_inv <- P
 
     # we further initialize the necessary parameters:
@@ -141,11 +207,16 @@ SVAR.data.sub <- SVAR.data %>%
     colnames(maxG.df) <- x
     # and we write the values 0 into the data.frame
     maxG.df[1, 1] <- 0
-                
     
-    # to check how many draws actually pass the second test so
-    # far, we create the object x
+    # date-column for the structural errors
+    dates = seq(from = as.Date("1961-01-01"), 
+                to = as.Date("2015-04-01"), by = 'month')
+                
+    # to check how many draws actually pass all the tests,
+    # we create the object x
     x <- 0
+    
+    n <- 3 # stands for the number of variables!
     
     # we further initialize a list for the matrices epsilon_t
     # that pass all constraints
@@ -155,11 +226,12 @@ SVAR.data.sub <- SVAR.data %>%
     A_0_valid <- list()
     
     ## the below has to run 1.5 million times:
-    for(k in 1:500000){
+    for(k in 1:50000){
           # k <- 3
-          print(k)
+          # print(k)
+          # print(x)
       
-          ##########
+          ##----------------------------
           ## STEP 2:
           ## rotation of P by Q (i.e., right-multiplication of P with Q;
           ## To get a Q,
@@ -167,34 +239,60 @@ SVAR.data.sub <- SVAR.data %>%
           ## note: NID stands for normally and independently distributed
           ## Q is then taken to be the
           ## orthonormal matrix resulting from the QR-decomposition of M
-          ##########
+          ##----------------------------
       
           # random draw of matrix M
           # in our case n = 3:
-          n <- 3
-          M <- matrix(rnorm(n*n,mean=0,sd=1), n, n)
-      
-          # QR-decomposition of M:
-          # note: the QR factorization is based on the result that any full rank
-          # matrix can be decomposed into a orthogonal and upper triangular matrix;
-          QR <- qr(M)
-          Q <- qr.Q(QR)    
+          # set.seed(1)
+                # n <- 3
+                M <- matrix(rnorm(n*n,mean=0,sd=1), n, n)
+            
+                # QR-decomposition of M:
+                # note: the QR factorization is based on the result that a
+                # any full rank matrix can be decomposed into a orthogonal 
+                # and upper triangular matrix;
+                # note that we only need the Q-part (out of the QR-factorization)
+                # to continue with the below part!
+                QR <- qr(M)
+                Q <- qr.Q(QR)    
+                
+                # Marcel, 06.05.2020: In their own code in the script
+                # rand_orthomat.m, Ludvigson et al. (2018) perform an operation
+                # which, in my opinion, is simply a matrix-multiplication with
+                # the identity-matrix; hence, I have not applied the same
+                # procedure here!
+
       
           ##########
           ## STEP 3:
-          ## calculation of A_0^{-1} = P*Q:
+          ## calculation of a possible impact matrix A_0^{-1} = P*Q:
           ##########       
           # matrix multiplication to retrieve
           # A_0_inv = P*Q
+          # Note: A_0_inv = P (and P is the unique
+          # lower-triangular Cholesky factor)
           A_0_inv <- A_0_inv %*% Q
-          A_0_inv
+          # A_0_inv
+          
+          # note that A_0_inv is a candidate for a 
+          # possible impact matrix!
+          
           # for our below computations we also need A_0
           A_0 <- inv(A_0_inv)
+          
+          # Marcel, 06.05.2020:
+          # up until here our code and the code of Ludvigson et al (2018)
+          # is exactly the same; 
+          # in their code, Ludvigson et al. (2018) perform a step called 
+          # 'Step 3: give possible impact matrix positive diagonal elements';
+          # in my opinion, this step simply involves the multiplication of
+          # A_0_inv with the identity-matrix --> hence, I have skipped this
+          # step!
     
           ##########
           ## STEP 4:
           ## before actually being able to expose the structural
-          ## errors (residuals) \epsilon to the constraints, 
+          ## errors (residuals)\epsilon to the constraints, 
           ## we need to create a matrix with the structural 
           ## residuals implied by the respective A_0_inv which
           ## we have randomly generated above;
@@ -204,23 +302,44 @@ SVAR.data.sub <- SVAR.data %>%
           ## the respective row with A_0_inv
           ##########   
           
+          # Marcel (06.06.2020): since we have made the below generation 
+          # of the possible structural errors more efficient, we do not 
+          # need to manually create epsilon_t and/or set its dimensions
+          # anymore! hence the below code is commented out!
           # we take the no. of rows and columns from u_t
-          n.rows <- dim(u_t)[1]
-          n.cols <- dim(u_t)[2]
+              # n.rows <- dim(u_t)[1]
+              # n.cols <- dim(u_t)[2]
           
-          # we initialize the matrix epsilon_t to have the
-          # same size like u_t (for this we pre-allocate the
-          # matrix and then fill it)
-          epsilon_t <- matrix(nrow = n.rows, ncol = n.cols)
+              # we initialize the matrix epsilon_t to have the
+              # same size like u_t (for this we pre-allocate the
+              # matrix and then fill it)
+              # epsilon_t <- matrix(nrow = n.rows, ncol = n.cols)
 
           # and then we loop through the rows of u_t,
           # and multiply each row with A_0,
           # and write it to epsilon_t:
-          for(i in 1:n.rows){
-            epsilon_t[i, ] <- A_0 %*% u_t[i, ]
-          }
+          # print(class(u_t))
+          # for(i in 1:n.rows){
+            # epsilon_t[i, ] <- A_0 %*% u_t[i, ]
+          # }
           
-          #---------EVENT CONSTRAINTS
+          # The above method, however, is very inefficient!
+          # Therefore we want to try out a slightly smarter
+          # procedure:
+          epsilon_t <- t(apply(t(u_t), 2, function(row) A_0%*%row))
+          
+          # Marcel, 06.06.2020: Note that we have performed a test
+          # to see whether the method for generating epsilon_t in the 
+          # code of Ludvigson et al (2018) is the same as here
+          # and indeed our test has shown that it is identical!
+          # (as a test we have overwritte A_0 with Eposs from the 
+          # code of Ludvigson et al (2018) to see if we get the 
+          # exact same values!)
+          
+          
+          # -------------------------------------------
+          # EVENT CONSTRAINTS
+          # -------------------------------------------
           # having epsilon_t at our disposal, we are in a position
           # to impose the EVENT CONSTRAINTS on the 
           # structural residuals epsilon_t:
@@ -232,183 +351,212 @@ SVAR.data.sub <- SVAR.data %>%
           #     * the 2007-2009 financial crisis
           
           
-          #---------PRELIMINARIES: EVENT CONSTRAINTS
-          # all data in SVAR.data starts in 1960-07-01; the data.frame
-          # has 690 rows;
+          # -------------------------------------------
+          # PRELIMINARIES: EVENT CONSTRAINTS
+          # -------------------------------------------
+          # all data in SVAR.data starts in 1960-07 and runs until 
+          # xx; the data.frame has 690 rows;
+          
           # the residuals in epsilon_t have 684 rows; we lose 6
           # data points due to the 6 lags in the VAR-model;
           # hence, the residuals in epsilon_t start in 1961-01-01!
           # (6 months later!)
           
+          # Marcel (02.05.2020): The above seems to have been the case
+          # when we created this script in June 2018;
+          # When trying to re-run this script, we saw that because we 
+          # were using the replication-data from Ludvigson et al (2018),
+          # which only runs until April 2015,
+          # contrary to the above, also when re-running this script,
+          # the residuals in epsilon_t have 652 rows;
+          # and because we lose 6 data points due to the 6 lags in the VAR-model,
+          # the residuals in epsilon_t start only in 1961-01-01!
+          # accordingly, we have updated the below code!
+          
           # with this info, we first make a data.frame out of
           # epsilon_t
           epsilon_t <- as.data.frame(epsilon_t)
-          # add a date-column
-          dates = seq(from = as.Date("1960-12-01"), 
-                       to = as.Date("2017-11-01"), by = 'month')
-          epsilon_t$date <- dates
+          
+          # add a date-column which we have created outside of the loop
+          epsilon_t$date <- dates # which has exactly length 652!
           # and we assign sensible col-names
-          epsilon_t <- as.tibble(epsilon_t %>%
-                dplyr::rename(financial_h1 = V1,
-                              lip  =V2,
-                              macro_h1 = V3))
+          epsilon_t <- as_tibble(epsilon_t %>%
+                # Marcel (06.05.2020): Attention - at this position 
+                # I have accidently flipped the position of financial_h1 and 
+                # macro_h1; this also explains why my output was
+                # upside down!
+                dplyr::rename(macro_h1 = V1,
+                              lip  = V2,
+                              financial_h1 = V3))
           # we further split the 'Date' - variable into three pieces:
           epsilon_t <- separate(epsilon_t, "date", c("year", "month", "day"), 
                               sep = "-", 
                               remove=FALSE, convert=TRUE)
-          # and we create a column 'yearmon'
+          # and we create the column 'yearmon'
           
           epsilon_t$yearmon <- as.yearmon(paste0(epsilon_t$year, epsilon_t$month), 
                                           "%Y %m")
           # and drop the other columns which we don't need anymore
           epsilon_t <- epsilon_t %>%
-            dplyr::select(-c(date, year, month))
+                      dplyr::select(-c(date, year, month, day))
           
           
-          #---------CHECKS: EVENT CONSTRAINTS        
-          # Note: Because the constraints must all be fulfilled (which
-          # translates into an 'AND' - condition), they can be tested
-          # sequentially!
-        
-          # test <- as.ts(epsilon_t[, 1])
-          # p <- autoplot(test)
-          # ggplotly(p)
+          # -------------------------------------------
+          # CORRELATION CONSTRAINTS: PRELIMINARIES
+          # -------------------------------------------
+          
+          # u_t contains the reduced-form errors of the 
+          # original VAR;
+          u_t <- as_tibble(u_t)
           
           
-          # EVENT CONSTRAINT: FE_1:
-          # the financial uncertainty shock that occurred in 
-          # October 1987 must be a large one: in particular, it must be
-          # beyond four standard deviations:
-          if(epsilon_t %>% filter(yearmon == "Oct 1987") %>%
-             dplyr::select(financial_h1) >= k1){
+          # Marcel (04.04.2020):
+          # next, we calculate the three sample correlations c_M, c_Y and c_F
+          # between the AR(1)-model-residuals u_St and the strucutral shocks
+          # epsilon_Mt, epsilon_Yt and epsilon_Ft of the structural VAR, 
+          # respectively;
+          
+          # also, from the detailed explanations above it should be clear that
+          # the respective series (from which we now calculate the correlation)
+          # have the same length.
+          
+          # For some reason, Ludvigson et al (2018) seem to be using
+          # the strucural errors for the calculation of the correlation;
+          # I have to figure out why, but continue for the 
+          # moment like this!
+          # --> investigate later!
+          
+          # sample correlation between reduced-form residual
+          # u_St and the strucural error epsilon_t$macro_h1:
+          c_M <- cor(u_St, epsilon_t$macro_h1)
+          
+          # sample correlation between reduced-form residual
+          # u_St aand the reduced-form error u_Yt:
+          # --> Marcel (06.06.2020): not needed for the 
+          # following calculations!
+          # c_Y <- cor(u_St, epsilon_t$lip)
+          
+          # sample correlation between reduced-form residual
+          # u_St and the structural error epsilon_t$financial_h1::
+          c_F <- cor(u_St, (epsilon_t$financial_h1))
+          # Marcel (06.06.2020): After examining the code of 
+          # Ludvigson et al (2018) step by step, I can confirm 
+          # that there is no problem with the signs for
+          # epsilon_t$financial_h1; hence I have removed the 
+          # *(-1) which I had previously implemented!
+          
+          # for FC_3 we have to calculate c_MF which is (according to the
+          # paper) defined as: c_MF^2 = c_M^2 + c_F^2
+          # hence:
+          c_MF <- sqrt(c_M * c_M + c_F * c_F)
+          
+          # after setting u_t to be a data.frame, we have
+          # to convert it to a matrix again for the 
+          # above calculations:
+          u_t <- as.matrix(u_t)
+
+          # Marcel (06.06.2020): Note to self and also something I should
+          # mention in the thesis: in the paper of Ludvigson et al (2018),
+          # the authors write >= or <= for all the contraints; in the code 
+          # itself they have implemented everything without an = 
+          # in the contraint-statements!  
+          
+          # checking all conditions at once:
+          if(
+              # FE_1
+              (epsilon_t %>% dplyr::filter(yearmon == "Oct 1987") %>%
+                                dplyr::select(financial_h1) > k1) & 
+              # FE_2
+              (any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
+                                yearmon <= "Jun 2009") %>%
+                                dplyr::select(financial_h1) > k2)) &
+              # FE_3
+              (sum(epsilon_t %>% filter(yearmon >= "Dec 2007" &
+                                yearmon <= "Jun 2009") %>%
+                                dplyr::select(lip) < k3) == 19) &
+              # FC_1
+              ((lambda1 - c_M) >= 0 & (lambda1 - c_F) > 0) &
+              # FC_2
+              ((abs(c_F) - lambda2*abs(c_M)) > 0) &
+              # FC_3
+              (c_MF - lambda3 > 0)
+          ){
+            # once all tests are successfully passed, we add 
+            # +1 to our counter-variable x!
             
-              print("Passed first test! Continue!")
+            x <- x + 1
+            print(x)
             
-              # EVENT CONSTRAINT: FE_2:
-              # postulated that there must be at least one month
-              # during the financial crises 2007-2009 for which the financial 
-              # uncertainty shock was large and positive!
+            # Note: out of the pool of A_0's and epsilon_t's that
+            # 'survived' (i.e., passed all tests),
+            # we want to compute the maxG-solution;
+            # To make this procedure computationally efficient,
+            # we have decided for the following procedure:
             
-              # note: the function 'any' checks:
-              # given a set of logical vectors, is at least one of the 
-              # values true?
-              
-              if(any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
-                                      yearmon <= "Jun 2009") %>%
-                 dplyr::select(financial_h1) >= k2) > 0){
-                 print("Passed second test! Continue!")
-                 
-                 
-                 # EVENT CONSTRAINT: FE_3:
-                 # the third and final EVENT CONSTRAINT demands that
-                 # any real activity shocks found during the
-                 # Great Recession do not take any unusually large
-                 # positive values!
-                 # In particular, none of the lip-shocks is allowed to
-                 # be larger k_3 = 2 to dismiss real activity shocks
-                 # that are greater than two standard deviations above
-                 # its sample mean during the Great Recession!
-                 if(any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
-                                            yearmon <= "Jun 2009") %>%
-                       dplyr::select(lip) >= k3) > 0){
-                  print("Did not pass third test! New Draw!")                 
-                 } else {
-                   print("Passed third test! Continue!")
-                   x <- x + 1
-                   
-                   
-                   # CORRELATION CONSTRAINT: FC_1:
-                   # As our 'external' financial variable
-                   # we use the SP500 data which we have
-                   # prepared above!
-                   
-                   
-                   
-                         # Note: out of the pool of A_0's and epsilon_t's that
-                         # 'survived' (i.e., passed all tests),
-                         # we want to compute the maxG-solution;
-                         # To make this procedure computationally efficient,
-                         # we have decided for the following procedure:
-                         
-                         # For the first A_0 that ends up in the solution 
-                         # set, we calculate maxG
-                         
-                         # we need the below to calculate and store 
-                         # the max-G-solutions:
-                         
-                         k1.maxG <-  as.vector(epsilon_t %>% 
-                                            filter(yearmon == "Oct 1987") %>%
-                                            dplyr::select(financial_h1) - k1)
-                         
-                         # for k2.maxG we subset epsilon_t with the expression
-                         # that we used for the if-statement above:
-                         helper <- as.matrix(epsilon_t %>% filter(
-                                            yearmon >= "Dec 2007" &
-                                            yearmon <= "Jun 2009") %>%
-                                      dplyr::select(financial_h1) - k2)
-                         k2.maxG <- as.vector(helper[which(helper > 0)])
-                         
-                         # lastly, we check for industrial production
-                         # for k2.maxG we subset epsilon_t with the expression
-                         # that we used for the if-statement above:
-                         k3.maxG <- as.vector(k3 -epsilon_t %>% filter(
-                                                      yearmon >= "Dec 2007" &
-                                                      yearmon <= "Jun 2009") %>%
-                                               dplyr::select(lip))                   
-        
-                         
-                         # we bind together all values associated with maxG:
-                         maxG.all <- as.vector(unlist(c(k1.maxG, 
-                                                        k2.maxG, k3.maxG)))
-                         # next, we calculate the associated value for 
-                         # maxG:
-                         # the below is a numeric which holds the calculated
-                         # maxG-value
-                         maxG.value <- as.numeric(sqrt(t(maxG.all) %*% 
-                                                         maxG.all))
-                         
-                         # then we check whether the currently stored value
-                         # is smaller or larger than the new maxG-value:
-                         if(maxG.value > maxG.df[1, 1]){
-                           # if yes, we replace the entry
-                           maxG.df[1, 1] <- maxG.value
-                           # and store the iteration number next to it
-                           maxG.df[1, 2] <- paste0(c("iteration_"), k)
-                         }
-                         
-      
-                         # for draws that passed all tests, we want to store
-                         # the respective residuals and the matrix A_0
-                         epsilon_t_valid[[length(epsilon_t_valid)+1]] <- epsilon_t
-                         # and we rename the entry to know to which
-                         # iteration it belongs
-                         names(epsilon_t_valid)[length(epsilon_t_valid)] <- 
-                           paste0(c("iteration_"), k)
-                        
-                         A_0_valid[[length(A_0_valid)+1]] <- A_0
-                         # and we rename the entry to know to which
-                         # iteration it belongs
-                         names(A_0_valid)[length(A_0_valid)] <- 
-                           paste0(c("iteration_"), k)
-      
-                         #break
-                   
-                 }
-       
-                
-              }else{
-                print("Did not pass second test! New Draw!")
-                k <- k + 1
-              }
+            # For the first A_0 that ends up in the solution 
+            # set, we calculate maxG
+            
+            # we need the below to calculate and store 
+            # the max-G-solutions:
+            
+            k1.maxG <-  as.vector(epsilon_t %>% 
+                                    filter(yearmon == "Oct 1987") %>%
+                                    dplyr::select(financial_h1) - k1)
+            
+            # for k2.maxG we subset epsilon_t with the expression
+            # that we used for the if-statement above:
+            helper <- as.matrix(epsilon_t %>% filter(
+              yearmon >= "Dec 2007" &
+                yearmon <= "Jun 2009") %>%
+                dplyr::select(financial_h1) - k2)
+            k2.maxG <- as.vector(helper[which(helper > 0)])
+            
+            # lastly, we check for industrial production
+            # for k2.maxG we subset epsilon_t with the expression
+            # that we used for the if-statement above:
+            k3.maxG <- as.vector(k3 -epsilon_t %>% filter(
+              yearmon >= "Dec 2007" &
+                yearmon <= "Jun 2009") %>%
+                dplyr::select(lip))                   
             
             
-          }else{
-            print("Did not pass first test! New Draw!")
-            k <- k + 1
+            # we bind together all values associated with maxG:
+            maxG.all <- as.vector(unlist(c(k1.maxG, 
+                                           k2.maxG, k3.maxG)))
+            # next, we calculate the associated value for 
+            # maxG:
+            # the below is a numeric which holds the calculated
+            # maxG-value
+            maxG.value <- as.numeric(sqrt(t(maxG.all) %*% 
+                                            maxG.all))
+            
+            # then we check whether the currently stored value
+            # is smaller or larger than the new maxG-value:
+            if(maxG.value > maxG.df[1, 1]){
+              # if yes, we replace the entry
+              maxG.df[1, 1] <- maxG.value
+              # and store the iteration number next to it
+              maxG.df[1, 2] <- paste0(c("iteration_"), k)
+            }
+            
+            
+            # for draws that passed all tests, we want to store
+            # the respective residuals and the matrix A_0
+            epsilon_t_valid[[length(epsilon_t_valid)+1]] <- epsilon_t
+            # and we rename the entry to know to which
+            # iteration it belongs
+            names(epsilon_t_valid)[length(epsilon_t_valid)] <- 
+              paste0(c("iteration_"), k)
+            
+            A_0_valid[[length(A_0_valid)+1]] <- A_0
+            # and we rename the entry to know to which
+            # iteration it belongs
+            names(A_0_valid)[length(A_0_valid)] <- 
+              paste0(c("iteration_"), k)
+            
           }
           
-    }      
-
+    }
     
 #######################
 ### Figure 4 (Replication of Ludvigson et al (2018));
@@ -490,77 +638,93 @@ SVAR.data.sub <- SVAR.data %>%
     ## matrices of the reduced-form MA(infinity) - representation
     ## (note: because we only look 60 steps ahead in our
     ## impulse-response-functions, we also consequently
-    ## only calculate 60 phi-matrices!)
+    ## only need to calculate 60 psi-matrices!)
     #----------------------------------------------
-    calculate_MA_matrices <- function(list, n, k){
-      if(n == 0){
-        return(diag(k))
-      }else if(n == 1){
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]]
-        )
-      }else if(n == 2){
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
-          calculate_MA_matrices(list, n-2, k)%*%list[[2]]
-        )
-      }else if(n == 3){
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
-          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
-          calculate_MA_matrices(list, n-3, k)%*%list[[3]]
-        )
-      }else if (n == 4){
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
-          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
-          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
-          calculate_MA_matrices(list, n-4, k)%*%list[[4]]
-        )
-      }else if(n == 5){
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
-          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
-          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
-          calculate_MA_matrices(list, n-4, k)%*%list[[4]] + 
-          calculate_MA_matrices(list, n-5, k)%*%list[[5]]
-        )
-      }else if(n >=6){
- 
-        return(
-          calculate_MA_matrices(list, n-1, k)%*%list[[1]] + 
-          calculate_MA_matrices(list, n-2, k)%*%list[[2]] + 
-          calculate_MA_matrices(list, n-3, k)%*%list[[3]] + 
-          calculate_MA_matrices(list, n-4, k)%*%list[[4]] + 
-          calculate_MA_matrices(list, n-5, k)%*%list[[5]] + 
-          calculate_MA_matrices(list, n-6, k)%*%list[[6]]
-        )
+    
+    # in the below function,
+    # "list" is the list of B-matrices that we have available!
+        # in our case (since we have estimated a VAR(6)), we have
+        # extracted 6 B-matrices with the coefficients from the
+        # VAR-estimation!
+    # k is the position of the psi-matrix we are calculating
+        # (i.e. k = 10 means that we are calculating the 10th Psi-matrix!)
+    # n is the number of variables in the VAR-system (in our case n = 3)
+    calculate_psi_matrices <- function(B_list, k, n){
+        if(k == 0){
+           return(diag(n))       
+        }
+        if(k == 1){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]]
+          )        
+        }
+        if(k == 2){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]] + 
+            calculate_psi_matrices(B_list, k-2, n)%*%B_list[[2]]
+          )        
+        }
+        if(k == 3){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]] + 
+            calculate_psi_matrices(B_list, k-2, n)%*%B_list[[2]] + 
+            calculate_psi_matrices(B_list, k-3, n)%*%B_list[[3]]
+          )        
+        }
+        if (k == 4){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]] + 
+            calculate_psi_matrices(B_list, k-2, n)%*%B_list[[2]] + 
+            calculate_psi_matrices(B_list, k-3, n)%*%B_list[[3]] + 
+            calculate_psi_matrices(B_list, k-4, n)%*%B_list[[4]]
+          )        
+        }
+        if(k == 5){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]] + 
+            calculate_psi_matrices(B_list, k-2, n)%*%B_list[[2]] + 
+            calculate_psi_matrices(B_list, k-3, n)%*%B_list[[3]] + 
+            calculate_psi_matrices(B_list, k-4, n)%*%B_list[[4]] + 
+            calculate_psi_matrices(B_list, k-5, n)%*%B_list[[5]]
+          )        
+        }
+        if(k >=6){
+          return(
+            calculate_psi_matrices(B_list, k-1, n)%*%B_list[[1]] + 
+            calculate_psi_matrices(B_list, k-2, n)%*%B_list[[2]] + 
+            calculate_psi_matrices(B_list, k-3, n)%*%B_list[[3]] + 
+            calculate_psi_matrices(B_list, k-4, n)%*%B_list[[4]] + 
+            calculate_psi_matrices(B_list, k-5, n)%*%B_list[[5]] + 
+            calculate_psi_matrices(B_list, k-6, n)%*%B_list[[6]]
+          )        
+        }
       }
-    }
+      
     
     # we let the recursion run and store the calculated
-    # Phi in a list:
+    # Psi in a list:
     # initialize list:
 
     # because the recursion does not manage more than 20 at once,
-    # we split the calculation of all 60 phi-matrices
+    # we split the calculation of all 60 psi-matrices
     # into three chunks
     # (note higher i the more involved the recursion!)
-    # note that the below calculates the phi-matrices
+    # note that the below calculates the psi-matrices
     # only until lag 25!
-    # for i = 0 we shuold get back the Identity-Matrix!
-    phi_list <- list()
+    # for i = 0 we should get back the Identity-Matrix!
+    psi_list <- list()
     
-    for(i in 0:25){
-      phi_list[[length(phi_list)+1]] <- calculate_MA_matrices(B_list, i, 3)
+    for(i in 0:26){
+      #i <- 26
+      psi_list[[length(psi_list)+1]] <- calculate_psi_matrices(B_list, i, 3)
       # and we rename the entry to know to which
       # iteration it belongs
-      names(phi_list)[length(phi_list)] <- 
-        paste0(c("phi_"), i)    
+      names(psi_list)[length(psi_list)] <- 
+        paste0(c("psi_"), i)    
     }  
     
     
-    ## STEP 3: having the list 'phi_list' at our
+    ## STEP 3: having the list 'psi_list' at our
     ## disposal, we can finally calculate the Thetas
     ## (which are the coefficients of the structural 
     ## MA-representation and which will then finally hold
@@ -572,7 +736,7 @@ SVAR.data.sub <- SVAR.data %>%
     
     ## this last step will now loop through all matrices stored
     ## in 'A_0_valid' and for each of them, multiply the respective
-    ## A_0_valid with the sequence of phi's in 'phi_list';
+    ## A_0_valid with the sequence of psi's in 'psi_list';
     ## ultimately, the result will be stored in a list again;
     ## be aware that we have to multiply by the inverse of 
     ## the stored A_0_valid!
@@ -580,14 +744,14 @@ SVAR.data.sub <- SVAR.data %>%
     # we initialize a list that will hold all Thetas
     # for each A_0_valid - matrix!
     # This means that for each valid A_0 - matrix, 
-    # we will get as many Theta-entries as many phi
+    # we will get as many Theta-entries as many psi
     # coefficient matrices we have at our disposal!
     Thetas <- list()
     
     for(z in 0:(length(A_0_valid)-1)){
       
         Thetas[[z+1]] <- 
-              lapply(phi_list, function(x){
+              lapply(psi_list, function(x){
               x %*% inv(A_0_valid[[z+1]])
               })
               names(Thetas)[length(Thetas)] <- paste0(c("A_0_"), z)
@@ -619,7 +783,7 @@ SVAR.data.sub <- SVAR.data %>%
     
         # we initialize a data-frame:
         coefs.df <- data.frame(matrix(ncol = length(Thetas), 
-                                      nrow = length(phi_list)))
+                                      nrow = length(psi_list)))
         
         # # and change its name
         # name_df <- coefs.df
@@ -642,21 +806,21 @@ SVAR.data.sub <- SVAR.data %>%
           }
         }
         
-        return(as.tibble(coefs.df))
+        return(as_tibble(coefs.df))
     }
     
     # below we execute the above function 9 times to retrieve
     # the coefficients for each of the series of impulse-
     # response functions
-    Fin_Macro.coefs <- extract.coefs.irf("Fin", "Macro", 1, 3)
-    Fin_Ipm.coefs <- extract.coefs.irf("Fin", "Ipm", 2, 3)
-    Fin_Fin.coefs <- extract.coefs.irf("Fin", "Fin", 3, 3)
-    Macro_Macro.coefs <- extract.coefs.irf("Macro", "Macro", 1, 1)
-    Macro_Ipm.coefs <- extract.coefs.irf("Macro", "Ipm", 2, 1)
-    Macro_Fin.coefs <- extract.coefs.irf("Macro", "Fin", 3, 1)
-    Ipm_Macro.coefs <- extract.coefs.irf("Ipm", "Macro", 1, 2)
-    Ipm_Ipm.coefs <- extract.coefs.irf("Ipm", "Ipm", 2, 2)
-    Ipm_Fin.coefs <- extract.coefs.irf("Ipm", "Fin", 3, 2)
+    Fin_Macro.coefs <- 100*extract.coefs.irf("Fin", "Macro", 1, 3)
+    Fin_Ipm.coefs <- 100*extract.coefs.irf("Fin", "Ipm", 2, 3)
+    Fin_Fin.coefs <- 100*extract.coefs.irf("Fin", "Fin", 3, 3)
+    Macro_Macro.coefs <- 100*extract.coefs.irf("Macro", "Macro", 1, 1)
+    Macro_Ipm.coefs <- 100*extract.coefs.irf("Macro", "Ipm", 2, 1)
+    Macro_Fin.coefs <- 100*extract.coefs.irf("Macro", "Fin", 3, 1)
+    Ipm_Macro.coefs <- 100*extract.coefs.irf("Ipm", "Macro", 1, 2)
+    Ipm_Ipm.coefs <- 100*extract.coefs.irf("Ipm", "Ipm", 2, 2)
+    Ipm_Fin.coefs <- 100*extract.coefs.irf("Ipm", "Fin", 3, 2)
     
     # we add a step-counter to each of the separate data-frames:
     Fin_Macro.coefs$step <- seq.int(nrow(Fin_Macro.coefs))
@@ -776,7 +940,7 @@ SVAR.data.sub <- SVAR.data %>%
 
     # we write the maxG-solution to the collection of Thetas
     Thetas[[length(Thetas)+1]] <- 
-      lapply(phi_list, function(x){
+      lapply(psi_list, function(x){
         x %*% inv(A_0_maxG)
       })
     names(Thetas)[length(Thetas)] <- paste0(c("A_0_maxG"))
@@ -787,7 +951,7 @@ SVAR.data.sub <- SVAR.data %>%
       
       # we initialize a data-frame:
       coefs.df <- data.frame(matrix(ncol = 1, 
-                                    nrow = length(phi_list)))
+                                    nrow = length(psi_list)))
       
       # # and change its name
       # name_df <- coefs.df
@@ -817,15 +981,15 @@ SVAR.data.sub <- SVAR.data %>%
     # below we execute the above function 9 times to retrieve
     # the coefficients for each of the maxG - series of impulse-
     # response functions
-    Fin_Macro.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Macro", 1, 3)
-    Fin_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Ipm", 2, 3)
-    Fin_Fin.coefs_maxG <- extract.coefs.irf_maxG("Fin", "Fin", 3, 3)
-    Macro_Macro.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Macro", 1, 1)
-    Macro_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Ipm", 2, 1)
-    Macro_Fin.coefs_maxG <- extract.coefs.irf_maxG("Macro", "Fin", 3, 1)
-    Ipm_Macro.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Macro", 1, 2)
-    Ipm_Ipm.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Ipm", 2, 2)
-    Ipm_Fin.coefs_maxG <- extract.coefs.irf_maxG("Ipm", "Fin", 3, 2)
+    Fin_Macro.coefs_maxG <- 100*extract.coefs.irf_maxG("Fin", "Macro", 1, 3)
+    Fin_Ipm.coefs_maxG <- 100*extract.coefs.irf_maxG("Fin", "Ipm", 2, 3)
+    Fin_Fin.coefs_maxG <- 100*extract.coefs.irf_maxG("Fin", "Fin", 3, 3)
+    Macro_Macro.coefs_maxG <- 100*extract.coefs.irf_maxG("Macro", "Macro", 1, 1)
+    Macro_Ipm.coefs_maxG <- 100*extract.coefs.irf_maxG("Macro", "Ipm", 2, 1)
+    Macro_Fin.coefs_maxG <- 100*extract.coefs.irf_maxG("Macro", "Fin", 3, 1)
+    Ipm_Macro.coefs_maxG <- 100*extract.coefs.irf_maxG("Ipm", "Macro", 1, 2)
+    Ipm_Ipm.coefs_maxG <- 100*extract.coefs.irf_maxG("Ipm", "Ipm", 2, 2)
+    Ipm_Fin.coefs_maxG <- 100*extract.coefs.irf_maxG("Ipm", "Fin", 3, 2)
     
     # we add a step-counter to each of the separate data-frames:
     Fin_Macro.coefs_maxG$step <- seq.int(nrow(Fin_Macro.coefs_maxG))
@@ -958,13 +1122,14 @@ SVAR.data.sub <- SVAR.data %>%
                                             size=1.5, 
                                             linetype="solid")) + 
       facet_wrap(impulse ~ response,
-                 scales="free", strip.position = "top")
-      # coord_cartesian(ylim = c(-0.5, 0.5))
+                 scales="free", strip.position = "top") 
+      # + 
+      # coord_cartesian(ylim = c(-2, 5))
 
     
       impulse.responses_all.SVAR
        
-      ggsave(file="impulse_responses_all_SVAR.pdf")
+      # ggsave(file="impulse_responses_all_SVAR_test.pdf")
        
 #######################
 ### Figure 3 (Replication of Ludvigson et al (2018))

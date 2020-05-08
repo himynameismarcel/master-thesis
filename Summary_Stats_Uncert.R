@@ -253,6 +253,8 @@ uncert_measures.stats <- identify_shocks
                       # data.frame 'additional_vars' which, among others
                       # also contains the variable 'industrial production'
                       # which we need for the below:
+                      # small correction: additional_vars is dealt with in the
+                      # script 21042018_thesis_master.R!
                       
                       # We want to calculate the following:
                       #     * IP-corr(0)

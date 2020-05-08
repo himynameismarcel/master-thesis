@@ -128,9 +128,10 @@ library(dynlm)
 library(sandwich)
 library(lmtest)
 library(xlsx)
+library(readxl)
 
 # clear workspace
-rm(list = ls())
+# rm(list = ls())
 
 ###############################
 ## (1.1) s&p500 historical data
@@ -172,7 +173,7 @@ class(sp500)
 # been transformed to a date)
 
 # we convert the data frame to a tibble
-sp500 <- as_data_frame(sp500)
+sp500 <- as_tibble(sp500)
 
 # next, we calculate the standard deviation for all 'ri' (daily returns of the index in %)
 # for each year-month (i.e., BY the variable 'ym'!);
@@ -197,7 +198,7 @@ sp500 <- ddply(sp500, ~ym, mutate, sdri = sd(ri, na.rm=T))
 # (which in our case is a peculiar variable but which fulfills the same purpose
 # like the actual 'date' - variable 'caldt')
 
-sp500 <- as_data_frame(sp500[with(sp500, order(date)), ])
+sp500 <- as_tibble(sp500[with(sp500, order(date)), ])
 
 ###############################
 ## (1.2) VXO - data from CBOE
@@ -643,7 +644,7 @@ volatility <- ggplot(sp500_merge_vxo,
 volatility
 
 # and we save the plot to be used in our latex-document
-ggsave("volatility.pdf")
+# ggsave("volatility.pdf")
 
 
 
@@ -689,7 +690,7 @@ volatility_trend <- ggplot() +
 volatility_trend 
 
 # and we save the plot to be used in our latex-document
-ggsave("volatility_trend.pdf")
+# ggsave("volatility_trend.pdf")
 
 
 volatility_cycle <- ggplot(sp500_merge_vxo, 
@@ -712,7 +713,7 @@ volatility_cycle <- ggplot(sp500_merge_vxo,
 
 volatility_cycle
 
-ggsave("volatility_cycle.pdf")
+# ggsave("volatility_cycle.pdf")
 
 
 # According to Bloom (2009): The shocks are chosen as those events with stock-market
@@ -750,7 +751,7 @@ volatility_cycle_shocks <- ggplot(sp500_merge_vxo,
 
 volatility_cycle_shocks
 
-ggsave("volatility_cycle_shocks.pdf")
+# ggsave("volatility_cycle_shocks.pdf")
 
 # the red dotted line in our plot above marks the following threshold:
 # yintercept=mean_mvol_cycle+sd_mvol_cycle*1.65, i.e., it is exactly what
@@ -946,7 +947,7 @@ volatility_cycle_shocks2 <- ggplot(sp500_merge_vxo,
 
 volatility_cycle_shocks2
 
-ggsave("volatility_cycle_shocks2.pdf")
+# ggsave("volatility_cycle_shocks2.pdf")
 
 
 # having created the data-frame shocks_start_end, we can now also
@@ -1022,7 +1023,12 @@ additional_vars <- as.data.frame(additional_vars %>%
 # the variable EMPM has to be retrieved from a separate dataset
 # which we downloaded from the homepage of the BLS;
 # we have to manipulate the data to bring it into our desired format:
-EMPM <- read.xlsx("BLS_EMPM.xlsx", header = TRUE, sheetIndex = 1)
+
+# old version when still using the xlsx-package:
+# EMPM <- read.xlsx("BLS_EMPM.xlsx", header = TRUE, sheetIndex = 1)
+
+# after switching to the readxl-package:
+EMPM <- read_excel("BLS_EMPM.xlsx")
 # to transform our above data-frame into one column called 'empm', we
 # use the 'gather()' - function
 # (see https://uc-r.github.io/tidyr for details about how it works):
@@ -1203,7 +1209,7 @@ irf1 <- ggplot() +
 irf1
 
 # and we save the plot to be used in our latex-document
-ggsave("irf1.pdf")
+# ggsave("irf1.pdf")
 
 
 ## we generate another irf (this time for employment in manufacturing)
@@ -1280,7 +1286,7 @@ irf2 <- ggplot() +
 irf2
 
 # and we save the plot to be used in our latex-document
-ggsave("irf2.pdf")
+# ggsave("irf2.pdf")
 
 
 
