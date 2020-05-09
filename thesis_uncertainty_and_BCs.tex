@@ -1292,208 +1292,7 @@ To put Jordá's local projections properly in context with respect to VARs, in w
 
 
 
-\paragraph{VARs and the Derivation of Impulse Responses}
-We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
-\begin{equation} \label{eq:svar1}
-\begin{split}
-	y_{1t} & = a_{01}y_{2t} + a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
-	y_{2t} & = a_{02}y_{1t} + a_{21}y_{1t-1} + a_{22}y_{2t-1} + \epsilon_{2t}
-\end{split}								
-\end{equation}
-with 
-\begin{equation}
-\begin{split}
-	\vect{\epsilon_t} \thicksim i.i.d \left (  \begin{bmatrix}
-    							0 \\
-    							0
- 							 \end{bmatrix}, \begin{bmatrix}
-    							\sigma_{1}^2 & 0  \\
-    							0 & \sigma_{2}^2
- 							 \end{bmatrix} \right ),
-\end{split}								
-\end{equation}
-meaning that the error terms $\vect{\epsilon_t}$ are exogenous and independent and identically distributed  for $t = 1, \dots, T$, i.e., white noise.\footnote{Note that for the moment we do not yet impose normality of the errors.} A slight rearrangement of Equation~\ref{eq:svar1} gives 
-\begin{equation} \label{eq:svar2}
-\begin{split}
-	y_{1t} - a_{01}y_{2t} + & = a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
-	y_{2t} - a_{02}y_{1t} +  & = a_{21}y_{1t-1} + a_{22}y_{2t-1} + \epsilon_{2t}
-\end{split}								
-\end{equation}
-or 
-\begin{equation} \label{eq:svar3}
-\begin{split}
-	\begin{bmatrix}
-    	1 & -a_{01} \\
-    	-a_{02} & 1
- 	\end{bmatrix}
-	\begin{bmatrix}
-    	y_{1t} \\
-    	y_{2t}
- 	\end{bmatrix} = 
-	\begin{bmatrix}
-    	a_{11} & a_{12} \\
-    	a_{21} & a_{22}
- 	\end{bmatrix} 
-	\begin{bmatrix}
-    	y_{1t-1} \\
-    	y_{2t-1}
- 	\end{bmatrix} +
-	\begin{bmatrix}
-    	\epsilon_{1t} \\
-    	\epsilon_{2t}
- 	\end{bmatrix} 
-\end{split}								
-\end{equation}
-which, in matrix notation, compactly reduces to 
-\begin{equation} \label{eq:svar4}
-\begin{split}
-	\vect{A_0 y_t} = \vect{A_1}\vect{y_{t-1}} + \vect{\epsilon_t}
-\end{split}								
-\end{equation}
-with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemporaneous effects of an increase of each endogenous variable on the other variable, respectively and $\vect{\epsilon_t}$ is a white noise process with
-\begin{equation}
-\begin{split}
-	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
-	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}]  & =     \begin{cases}
-      												\vect{\Sigma_\epsilon}, & \text{for}\ t = \tau \\
-      												\vect{0}, & \text{otherwise.}
-   								  \end{cases}
-\end{split}								
-\end{equation}
 
-Hence the elements off the main diagonal are zero, i.e., structural shocks are assumed to be uncorrelated. A VAR in such a structural representation can be translated into its \textit{reduced form} representation, i.e., a standard VAR model (in this case a VAR(1) because we are considering only one lag at the moment), by premultiplying \ref{eq:svar4} with the inverse of the impact matrix $\vect{A_0}$ (assuming that it exists) which gives
-\begin{equation} \label{eq:svar5}
-\begin{split}
-	          \vect{A_0^{-1}}\vect{A_0}\vect{y_t} & = \vect{A_0^{-1}}\vect{A_1}\vect{y_{t-1}} + \vect{A_0^{-1}}\vect{\epsilon_t}     \iff \\
-	\iff 						\vect{y_t} & = \vect{B_1}\vect{y_{t-1}} + \vect{u_t}
-\end{split}								
-\end{equation}
-and which eliminates the previous complication due to contemporaneous relationships with $\vect{B_1} = \vect{A_0^{-1}}\vect{A_1} \iff \vect{A_1} = \vect{A_0}\vect{B_1}$ and $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t} \iff \vect{\epsilon_t} = \vect{A_0}\vect{u_t}$.\footnote{Note that here we are still deriving all results for a bivariate vector autoregression of order 1, i.e., a VAR($p$). For a multivariate system with $n>2$, accordingly we would write that the relationship between each coefficient matrix in reduced form $\vect{B}_j$ and structural form $\vect{A}_j$ is governed by $\vect{B}_j = \vect{A}_0^{-1}\vect{A}_j$.}\\
-The reduced form errors $\vect{u_t}$ are linear combinations of the structural errors $\vect{\epsilon_t}$ with the following reduced-form variance-covariance matrix\footnote{Note that in the bivariate case, $\vect{\Sigma_u}$ is a diagonal matrix only if $-a_{01} = -a_{02} = 0$, i.e., only if there is no contemporaneous correlation.}
-\begin{equation} \label{eq:svar6}
-\begin{split}
- 		\vect{\Sigma_u} \equiv \mathbb{E}[\vect{u_t}\vect{u_t^'}] & = \mathbb{E}[(\vect{A_0^{-1}}\vect{\epsilon_t}) (\vect{A_0^{-1}}\vect{\epsilon_t})' ] = \\
-								& = \mathbb{E}[\vect{A_0^{-1}}\vect{\epsilon_t} \vect{\epsilon_t}'\vect{A_0^{-1}}'] = \\
-								& = \vect{A_0^{-1}}\mathbb{E}[\vect{\epsilon_t} \vect{\epsilon_t}']\vect{A_0^{-1}}' = \\
-								& = \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'
-\end{split}								
-\end{equation}
-The variance-covariance matrix $\vect{\Sigma_u}$ of the reduced-form VAR is assumed to be a symmetric positive definite matrix which, however, may not be a diagonal matrix due to instantaneous correlations between the error-terms. As a consequence, isolated shocks in the components of $\vect{u}_t$ may not be likely. This reduced form VAR (1) is covariance stationary \textit{if and only if} the eigenvalues of $\vect{A_1}$ have modulus less than 1. \\
-\\
-If we assume contemporaneous relationships among the endogenous variables, the regressors in the SVAR representation are correlated with the error term and hence would result in biased OLS estimates.\footnote{If $\vect{A_0} = \vect{I_n}$ then this is not the case.} Therefore, in econometric applications the VAR in its reduced form representation is being estimated from the data. While the reduced-form VAR is the one being estimated, it is a purely econometric model without any theoretical component and does not say anything about the structure of the economy and hence the reduced-form error terms $\vect{u_t}$ cannot be interpreted as structural shocks.\footnote{Note that in the estimated covariance matrix for ${\hat{\Sigma}_u}$ the respective errors are usually correlated so that shocks to one variable are usually accompanied with a response to other variables.} Rather, the goal is to get back to the structural representation with a diagonal covariance matrix and economic meaning.\footnote{In practice, the error series in reduced-form VARs are usually correlated while in a structural setting correlated reduced-form shocks are broken down into uncorrelated structural shocks that allow a clearer assessment of effects within a model.} Without imposing any further restrictions, however, the parameters in the SVAR, i.e., models with contemporaneous relationships,\footnote{In a model without contemporaneous relationship no identification issues would emerge.} are not identified, i.e., given values of the reduced form parameters $\vect{B_1}$ and $\vect{\Sigma_u}$, it is not possible to uniquely solve for the structural parameters $\vect{A_0}$, $\vect{A_1}$ and $\vect{\Sigma_\epsilon}$. In particular, the knowledge of the impact matrix $\vect{A_0^{-1}}$ would allow to recover $\vect{A_1}$ via $\vect{A_1} = \vect{A_0}\vect{B_1}$ and the structural errors via $\vect{\epsilon_t} = \vect{A_0}\vect{u_t}$ and subsequently the variance covariance matrix of the structural errors $\vect{\Sigma_\epsilon}$.\footnote{In the bivariate case we consider here, at least 1 restriction on the parameters of the SVAR is required to enable the identification of all structural parameters. }\\
-\\
-Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the moment, under the assumption of covariance stationarity (i.e., if neither the mean nor the autocovariance of the process depend on time $t$) of the vector process $\vect{y_t}$, \vect{y_t} (i.e., the reduced form VAR) can be transformed into its vector moving average (VMA($\infty$); also called Wold MA) representation according to the Wold decomposition theorem\footnote{In words, the Wold Theorem states that any covariance stationary process has an infinite order, moving-average representation.} (i.e., there exists a unique mapping) whereby all past values of $\vect{y_t}$ are substituted out which translates Equation~\ref{eq:svar5} into a linear combination of all $\vect{u_t}$s (reduced-form innovations) over time (whereby the corresponding MA-weights do not depend on time $t$ but only on $j$, i.e., how long ago the shock $\vect{u}$ occurred):
-\begin{equation} \label{eq:svar7}
-\begin{split}
- 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_{t-2}} + \vect{\Psi_{3}}\vect{u_{t-3}} + \cdots = \\
-			& = \textit{(or more compactly written)} = \\
-			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}}
-\end{split}								
-\end{equation}
-with $\vect{\Psi_0} =\vect{\mathbf{I_2}}$ and $\vect{\Psi_k}$ can be computed recursively via $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ for $k=1, 2, \dots$.\footnote{Note that we are still looking at the bivariate case. For the $n$-dimensional case, we would have $\vect{\Psi_0} =\vect{\mathbf{I_n}}$.}\footnote{Note that Equation~\ref{eq:svar7} shows the general reduced-form VMA($\infty$) representation for a VAR($p$). In case of our bivariate example with one lag only (see Equation~\ref{eq:svar5}), the reduced-form VMA-representation would be $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{u_t} + \vect{{B}_1}\vect{u_{t-1}} + \vect{{B}_1^2}\vect{u_{t-2}} + \vect{{B}_1^3}\vect{u_{t-3}} + \cdots$. In other words, for a VAR(1)-process, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ implies that $\vect{\Psi_0}=\vect{I_n}, \vect{\Psi}_1 = \vect{B}_1, \dots, \vect{\Psi_i} = {\vect{B}}_1^i$. For a VAR(2)-process, for example, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ results in $\vect{\Psi}_1 = \vect{B}_1, \vect{\Psi}_2 = \vect{\Psi}_1\vect{B}_1 + \vect{B}_2 = \vect{B}_1^2 + \vect{B}_2, \dots, \vect{\Psi}_i = \vect{\Psi}_{i-1}\vect{B}_1 + \vect{\Psi}_{i-2}\vect{B}_2, \dots$. The coefficient matrices $\vect{\Psi}_i$ approach zero for $i \to \infty$ which is a consequence of the stability of the respective VAR processes.\\
-Correspondingly, Equation~\ref{eq:svar8} becomes $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{{A}_0^{-1}}\vect{\epsilon_t} + \vect{{B}_1}\vect{{A}_0^{-1}}\vect{\epsilon_{t-1}} + \vect{{B}_1^2}\vect{{A}_0^{-1}}\vect{\epsilon_{t-2}} + \vect{{B}_1^3}\vect{{A}_0^{-1}}\vect{\epsilon_{t-3}} + \cdots$. So for the structural VAR(1) model, the impulse responses to the structural shocks from $n$ period are given by $\vect{{B}_1^n}\vect{{A}_0^{-1}}$.\\
-The MA representation of a stable (S)VAR($p$) process is not necessarily of infinite order since that coefficients may turn zero as of a certain lag.} \\
-\\
-The corresponding \textit{structural} moving average (SMA($\infty$); structural Wold MA) representation of $\vect{y_t}$ is based on an infinite moving average of the \textit{structural} innovations $\vect{\epsilon_t}$ and is obtained by substituting the mapping between structural and reduced form shocks $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ for all $t$ into Equation~\ref{eq:svar7} so that
-\begin{equation} \label{eq:svar8}
-\begin{split}
- 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{A_0^{-1}}\vect{\epsilon_t} + \vect{\Psi_1}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \vect{\Psi_{2}}\vect{A_0^{-2}}\vect{\epsilon_{t-2}} + \vect{\Psi_{3}}\vect{A_0^{-1}}\vect{\epsilon_{t-3}} + \cdots = \\
-			& = \textit{(or more compactly written)} = \\
-			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}\vect{\epsilon_{t-k}} \\
-			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Theta_k}\vect{\epsilon_{t-k}}
-\end{split}								
-\end{equation}
-which means that $\vect{\Theta_k} = \vect{\Psi_k}\vect{A_0^{-1}}$ for $k = 0, 1, \dots$. In particular, it holds that $\vect{\Theta_0}=\vect{A_0^{-1}} \neq \vect{I_2}$ (in contrast to the VAR-coefficient $\vect{\Psi_0}$ shown above). \\
-\\
-Looking at the SMA($\infty$) representation of our bivariate system 
-\begin{equation} \label{eq:svar9}
-\begin{split}
-	\begin{bmatrix}
-    	y_{1t} \\
-    	y_{2t}
- 	\end{bmatrix} 
-	=
-	\begin{bmatrix}
-    	\mu_1 \\
-    	\mu_2
- 	\end{bmatrix} + 
-	\begin{bmatrix}
-    	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
-    	\theta_{21}^{(0)} & \theta_{22}^{(0)}
- 	\end{bmatrix} 
-	\begin{bmatrix}
-    	\epsilon_{1t} \\
-	\epsilon_{2t}
- 	\end{bmatrix} + 
-	\begin{bmatrix}
-    	\theta_{11}^{(1)} & \theta_{12}^{(1)}\\
-    	\theta_{21}^{(1)} & \theta_{22}^{(1)}
- 	\end{bmatrix} 
-	\begin{bmatrix}
-    	\epsilon_{1t-1} \\
-	\epsilon_{2t-1}
- 	\end{bmatrix} + \cdots 
-\end{split}								
-\end{equation}
-we see that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
-\\
-Generalizing the above SMA($\infty$) representation to time $t+s$
-\begin{equation} \label{eq:svar10}
-\begin{split}
-	\begin{bmatrix}
-    	y_{1t+s} \\
-    	y_{2t+s}
- 	\end{bmatrix} 
-	=
-	\begin{bmatrix}
-    	\mu_1 \\
-    	\mu_2
- 	\end{bmatrix} + 
-	\begin{bmatrix}
-    	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
-    	\theta_{21}^{(0)} & \theta_{22}^{(0)}
- 	\end{bmatrix} 
-	\begin{bmatrix}
-    	\epsilon_{1t + s} \\
-	\epsilon_{2t+s}
- 	\end{bmatrix} + \cdots +
-	\begin{bmatrix}
-    	\theta_{11}^{(s)} & \theta_{12}^{(s)}\\
-    	\theta_{21}^{(s)} & \theta_{22}^{(s)}
- 	\end{bmatrix} 
-	\begin{bmatrix}
-    	\epsilon_{1t} \\
-	\epsilon_{2t}
- 	\end{bmatrix} + \cdots 
-\end{split}								
-\end{equation}
-or more compactly to 
-\begin{equation} \label{eq:svar8_1}
-\begin{split}
- 		\vect{y_{t+s}} = \vect{\mu} + \vect{\Theta_0}\vect{\epsilon_{t+s}} + \cdots + \vect{\Theta_s}\vect{\epsilon_{t}} + \cdots
-\end{split}								
-\end{equation}
-shows that the $\vect{\Theta}$ - matrices consisting of the MA-coefficients hold the structural dynamic multipliers (the impulse responses). In our bivariate example, these impulse responses are
-\begin{equation} \label{eq:svar9}
-\begin{split}
- 		\frac{\partial y_{1t+s}}{\partial \epsilon_{1t}} = \theta_{11}^{(s)}, \frac{\partial y_{1t+s}}{\partial \epsilon_{2t}} = \theta_{12}^{(s)} \\
-		\frac{\partial y_{2t+s}}{\partial \epsilon_{1t}} = \theta_{21}^{(s)}, \frac{\partial y_{2t+s}}{\partial \epsilon_{2t}} = \theta_{22}^{(s)}
-\end{split}								
-\end{equation}
-or more compactly 
-\begin{equation} \label{eq:svar10}
-\begin{split}
- 		\frac{\partial \vect{y_{t+s}}}{\partial \vect{\epsilon_{t}}} =  \vect{\Theta_s}
-\end{split}								
-\end{equation}
-meaning that in matrix $\vect{\Theta_s}$ the entry $(i, j)$ shows the impact of a one-unit increase in the $j$th variable's innovation at date $t$ ($\epsilon_{jt}$) on the value of the $i$th variable at time $t+s$ $(y_{i, t + s})$.\\
-Subsequently, a plot of the elements $(i, j)$ of the respective structural MA matrices $\{\vect{\Theta_s}\}_{i, j}$ as a function of $s$, i.e., 
-\begin{equation} \label{eq:svar10}
-\begin{split}
- 		\frac{\partial y_{t+s}}{\partial \epsilon_{t}}
-\end{split}								
-\end{equation}
-is the \textit{impulse-response function} that describes the response of $y_{i, t+s}$ to a one-time one-unit impulse in $y_{jt}$ with all other variables dated $t$ or earlier held constant.
 
 \paragraph{Identification of Structural VARs}
 The above derivations have not yet explained the identification of $\vect{A_0^{-1}}$ that is needed to seamlessly connect the estimated reduced-form VAR with the structural VAR that is of actual interest. \\
@@ -2627,11 +2426,228 @@ Before jumping to the resulting impulse responses of the baseline system $\vect{
 \chapter{Econometric Model}
 \label{sec:EconometricModel}
 
+\section[Theoretical Background on (S)VARs]{Theoretical Background on VARs\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
+\label{sec:TheoreticalBackgroundSVARs}
+
+\subsection{VARs and the Derivation of Impulse Responses}
+We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
+\begin{equation} \label{eq:svar1}
+\begin{split}
+	y_{1t} & = a_{01}y_{2t} + a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
+	y_{2t} & = a_{02}y_{1t} + a_{21}y_{1t-1} + a_{22}y_{2t-1} + \epsilon_{2t}
+\end{split}								
+\end{equation}
+with 
+\begin{equation}
+\begin{split}
+	\vect{\epsilon_t} \thicksim i.i.d \left (  \begin{bmatrix}
+    							0 \\
+    							0
+ 							 \end{bmatrix}, \begin{bmatrix}
+    							\sigma_{1}^2 & 0  \\
+    							0 & \sigma_{2}^2
+ 							 \end{bmatrix} \right ),
+\end{split}								
+\end{equation}
+meaning that the error terms $\vect{\epsilon_t}$ are exogenous and independent and identically distributed  for $t = 1, \dots, T$, i.e., white noise.\footnote{Note that for the moment we do not yet impose normality of the errors.} A slight rearrangement of Equation~\ref{eq:svar1} gives 
+\begin{equation} \label{eq:svar2}
+\begin{split}
+	y_{1t} - a_{01}y_{2t} + & = a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
+	y_{2t} - a_{02}y_{1t} +  & = a_{21}y_{1t-1} + a_{22}y_{2t-1} + \epsilon_{2t}
+\end{split}								
+\end{equation}
+or 
+\begin{equation} \label{eq:svar3}
+\begin{split}
+	\begin{bmatrix}
+    	1 & -a_{01} \\
+    	-a_{02} & 1
+ 	\end{bmatrix}
+	\begin{bmatrix}
+    	y_{1t} \\
+    	y_{2t}
+ 	\end{bmatrix} = 
+	\begin{bmatrix}
+    	a_{11} & a_{12} \\
+    	a_{21} & a_{22}
+ 	\end{bmatrix} 
+	\begin{bmatrix}
+    	y_{1t-1} \\
+    	y_{2t-1}
+ 	\end{bmatrix} +
+	\begin{bmatrix}
+    	\epsilon_{1t} \\
+    	\epsilon_{2t}
+ 	\end{bmatrix} 
+\end{split}								
+\end{equation}
+which, in matrix notation, compactly reduces to 
+\begin{equation} \label{eq:svar4}
+\begin{split}
+	\vect{A_0 y_t} = \vect{A_1}\vect{y_{t-1}} + \vect{\epsilon_t}
+\end{split}								
+\end{equation}
+with $\vect{A_0}$ being called the \textit{impact matrix} containing the contemporaneous effects of an increase of each endogenous variable on the other variable, respectively and $\vect{\epsilon_t}$ is a white noise process with
+\begin{equation}
+\begin{split}
+	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
+	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}]  & =     \begin{cases}
+      												\vect{\Sigma_\epsilon}, & \text{for}\ t = \tau \\
+      												\vect{0}, & \text{otherwise.}
+   								  \end{cases}
+\end{split}								
+\end{equation}
+
+Hence the elements off the main diagonal are zero, i.e., structural shocks are assumed to be uncorrelated. A VAR in such a structural representation can be translated into its \textit{reduced form} representation, i.e., a standard VAR model (in this case a VAR(1) because we are considering only one lag at the moment), by premultiplying \ref{eq:svar4} with the inverse of the impact matrix $\vect{A_0}$ (assuming that it exists) which gives
+\begin{equation} \label{eq:svar5}
+\begin{split}
+	          \vect{A_0^{-1}}\vect{A_0}\vect{y_t} & = \vect{A_0^{-1}}\vect{A_1}\vect{y_{t-1}} + \vect{A_0^{-1}}\vect{\epsilon_t}     \iff \\
+	\iff 						\vect{y_t} & = \vect{B_1}\vect{y_{t-1}} + \vect{u_t}
+\end{split}								
+\end{equation}
+and which eliminates the previous complication due to contemporaneous relationships with $\vect{B_1} = \vect{A_0^{-1}}\vect{A_1} \iff \vect{A_1} = \vect{A_0}\vect{B_1}$ and $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t} \iff \vect{\epsilon_t} = \vect{A_0}\vect{u_t}$.\footnote{Note that here we are still deriving all results for a bivariate vector autoregression of order 1, i.e., a VAR($p$). For a multivariate system with $n>2$, accordingly we would write that the relationship between each coefficient matrix in reduced form $\vect{B}_j$ and structural form $\vect{A}_j$ is governed by $\vect{B}_j = \vect{A}_0^{-1}\vect{A}_j$.}\\
+The reduced form errors $\vect{u_t}$ are linear combinations of the structural errors $\vect{\epsilon_t}$ with the following reduced-form variance-covariance matrix\footnote{Note that in the bivariate case, $\vect{\Sigma_u}$ is a diagonal matrix only if $-a_{01} = -a_{02} = 0$, i.e., only if there is no contemporaneous correlation.}
+\begin{equation} \label{eq:svar6}
+\begin{split}
+ 		\vect{\Sigma_u} \equiv \mathbb{E}[\vect{u_t}\vect{u_t^'}] & = \mathbb{E}[(\vect{A_0^{-1}}\vect{\epsilon_t}) (\vect{A_0^{-1}}\vect{\epsilon_t})' ] = \\
+								& = \mathbb{E}[\vect{A_0^{-1}}\vect{\epsilon_t} \vect{\epsilon_t}'\vect{A_0^{-1}}'] = \\
+								& = \vect{A_0^{-1}}\mathbb{E}[\vect{\epsilon_t} \vect{\epsilon_t}']\vect{A_0^{-1}}' = \\
+								& = \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'
+\end{split}								
+\end{equation}
+The variance-covariance matrix $\vect{\Sigma_u}$ of the reduced-form VAR is assumed to be a symmetric positive definite matrix which, however, may not be a diagonal matrix due to instantaneous correlations between the error-terms. As a consequence, isolated shocks in the components of $\vect{u}_t$ may not be likely. This reduced form VAR (1) is covariance stationary \textit{if and only if} the eigenvalues of $\vect{A_1}$ have modulus less than 1. \\
+\\
+If we assume contemporaneous relationships among the endogenous variables, the regressors in the SVAR representation are correlated with the error term and hence would result in biased OLS estimates.\footnote{If $\vect{A_0} = \vect{I_n}$ then this is not the case.} Therefore, in econometric applications the VAR in its reduced form representation is being estimated from the data. While the reduced-form VAR is the one being estimated, it is a purely econometric model without any theoretical component and does not say anything about the structure of the economy and hence the reduced-form error terms $\vect{u_t}$ cannot be interpreted as structural shocks.\footnote{Note that in the estimated covariance matrix for ${\hat{\Sigma}_u}$ the respective errors are usually correlated so that shocks to one variable are usually accompanied with a response to other variables.} Rather, the goal is to get back to the structural representation with a diagonal covariance matrix and economic meaning.\footnote{In practice, the error series in reduced-form VARs are usually correlated while in a structural setting correlated reduced-form shocks are broken down into uncorrelated structural shocks that allow a clearer assessment of effects within a model.} Without imposing any further restrictions, however, the parameters in the SVAR, i.e., models with contemporaneous relationships,\footnote{In a model without contemporaneous relationship no identification issues would emerge.} are not identified, i.e., given values of the reduced form parameters $\vect{B_1}$ and $\vect{\Sigma_u}$, it is not possible to uniquely solve for the structural parameters $\vect{A_0}$, $\vect{A_1}$ and $\vect{\Sigma_\epsilon}$. In particular, the knowledge of the impact matrix $\vect{A_0^{-1}}$ would allow to recover $\vect{A_1}$ via $\vect{A_1} = \vect{A_0}\vect{B_1}$ and the structural errors via $\vect{\epsilon_t} = \vect{A_0}\vect{u_t}$ and subsequently the variance covariance matrix of the structural errors $\vect{\Sigma_\epsilon}$.\footnote{In the bivariate case we consider here, at least 1 restriction on the parameters of the SVAR is required to enable the identification of all structural parameters. }\\
+\\
+Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the moment, under the assumption of covariance stationarity (i.e., if neither the mean nor the autocovariance of the process depend on time $t$) of the vector process $\vect{y_t}$, \vect{y_t} (i.e., the reduced form VAR) can be transformed into its vector moving average (VMA($\infty$); also called Wold MA) representation according to the Wold decomposition theorem\footnote{In words, the Wold Theorem states that any covariance stationary process has an infinite order, moving-average representation.} (i.e., there exists a unique mapping) whereby all past values of $\vect{y_t}$ are substituted out which translates Equation~\ref{eq:svar5} into a linear combination of all $\vect{u_t}$s (reduced-form innovations) over time (whereby the corresponding MA-weights do not depend on time $t$ but only on $j$, i.e., how long ago the shock $\vect{u}$ occurred):
+\begin{equation} \label{eq:svar7}
+\begin{split}
+ 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_{t-2}} + \vect{\Psi_{3}}\vect{u_{t-3}} + \cdots = \\
+			& = \textit{(or more compactly written)} = \\
+			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}}
+\end{split}								
+\end{equation}
+with $\vect{\Psi_0} =\vect{\mathbf{I_2}}$ and $\vect{\Psi_k}$ can be computed recursively via $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ for $k=1, 2, \dots$.\footnote{Note that we are still looking at the bivariate case. For the $n$-dimensional case, we would have $\vect{\Psi_0} =\vect{\mathbf{I_n}}$.}\footnote{Note that Equation~\ref{eq:svar7} shows the general reduced-form VMA($\infty$) representation for a VAR($p$). In case of our bivariate example with one lag only (see Equation~\ref{eq:svar5}), the reduced-form VMA-representation would be $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{u_t} + \vect{{B}_1}\vect{u_{t-1}} + \vect{{B}_1^2}\vect{u_{t-2}} + \vect{{B}_1^3}\vect{u_{t-3}} + \cdots$. In other words, for a VAR(1)-process, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ implies that $\vect{\Psi_0}=\vect{I_n}, \vect{\Psi}_1 = \vect{B}_1, \dots, \vect{\Psi_i} = {\vect{B}}_1^i$. For a VAR(2)-process, for example, the recursion $\vect{\Psi_k} = \sum\limits_{j=1}^k \vect{\Psi_{k-j}\vect{B_j}}$ results in $\vect{\Psi}_1 = \vect{B}_1, \vect{\Psi}_2 = \vect{\Psi}_1\vect{B}_1 + \vect{B}_2 = \vect{B}_1^2 + \vect{B}_2, \dots, \vect{\Psi}_i = \vect{\Psi}_{i-1}\vect{B}_1 + \vect{\Psi}_{i-2}\vect{B}_2, \dots$. The coefficient matrices $\vect{\Psi}_i$ approach zero for $i \to \infty$ which is a consequence of the stability of the respective VAR processes.\\
+Correspondingly, Equation~\ref{eq:svar8} becomes $\vect{y_t} = \vect{\mu} + \vect{I_2}\vect{{A}_0^{-1}}\vect{\epsilon_t} + \vect{{B}_1}\vect{{A}_0^{-1}}\vect{\epsilon_{t-1}} + \vect{{B}_1^2}\vect{{A}_0^{-1}}\vect{\epsilon_{t-2}} + \vect{{B}_1^3}\vect{{A}_0^{-1}}\vect{\epsilon_{t-3}} + \cdots$. So for the structural VAR(1) model, the impulse responses to the structural shocks from $n$ period are given by $\vect{{B}_1^n}\vect{{A}_0^{-1}}$.\\
+The MA representation of a stable (S)VAR($p$) process is not necessarily of infinite order since that coefficients may turn zero as of a certain lag.} \\
+\\
+The corresponding \textit{structural} moving average (SMA($\infty$); structural Wold MA) representation of $\vect{y_t}$ is based on an infinite moving average of the \textit{structural} innovations $\vect{\epsilon_t}$ and is obtained by substituting the mapping between structural and reduced form shocks $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ for all $t$ into Equation~\ref{eq:svar7} so that
+\begin{equation} \label{eq:svar8}
+\begin{split}
+ 			\vect{y_t} & = \vect{\mu} + \vect{\Psi_0}\vect{A_0^{-1}}\vect{\epsilon_t} + \vect{\Psi_1}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \vect{\Psi_{2}}\vect{A_0^{-2}}\vect{\epsilon_{t-2}} + \vect{\Psi_{3}}\vect{A_0^{-1}}\vect{\epsilon_{t-3}} + \cdots = \\
+			& = \textit{(or more compactly written)} = \\
+			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}\vect{\epsilon_{t-k}} \\
+			& = \vect{\mu} + \sum\limits_{k=0}^\infty \vect{\Theta_k}\vect{\epsilon_{t-k}}
+\end{split}								
+\end{equation}
+which means that $\vect{\Theta_k} = \vect{\Psi_k}\vect{A_0^{-1}}$ for $k = 0, 1, \dots$. In particular, it holds that $\vect{\Theta_0}=\vect{A_0^{-1}} \neq \vect{I_2}$ (in contrast to the VAR-coefficient $\vect{\Psi_0}$ shown above). \\
+\\
+Looking at the SMA($\infty$) representation of our bivariate system 
+\begin{equation} \label{eq:svar9}
+\begin{split}
+	\begin{bmatrix}
+    	y_{1t} \\
+    	y_{2t}
+ 	\end{bmatrix} 
+	=
+	\begin{bmatrix}
+    	\mu_1 \\
+    	\mu_2
+ 	\end{bmatrix} + 
+	\begin{bmatrix}
+    	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
+    	\theta_{21}^{(0)} & \theta_{22}^{(0)}
+ 	\end{bmatrix} 
+	\begin{bmatrix}
+    	\epsilon_{1t} \\
+	\epsilon_{2t}
+ 	\end{bmatrix} + 
+	\begin{bmatrix}
+    	\theta_{11}^{(1)} & \theta_{12}^{(1)}\\
+    	\theta_{21}^{(1)} & \theta_{22}^{(1)}
+ 	\end{bmatrix} 
+	\begin{bmatrix}
+    	\epsilon_{1t-1} \\
+	\epsilon_{2t-1}
+ 	\end{bmatrix} + \cdots 
+\end{split}								
+\end{equation}
+we see that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
+\\
+Generalizing the above SMA($\infty$) representation to time $t+s$
+\begin{equation} \label{eq:svar10}
+\begin{split}
+	\begin{bmatrix}
+    	y_{1t+s} \\
+    	y_{2t+s}
+ 	\end{bmatrix} 
+	=
+	\begin{bmatrix}
+    	\mu_1 \\
+    	\mu_2
+ 	\end{bmatrix} + 
+	\begin{bmatrix}
+    	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
+    	\theta_{21}^{(0)} & \theta_{22}^{(0)}
+ 	\end{bmatrix} 
+	\begin{bmatrix}
+    	\epsilon_{1t + s} \\
+	\epsilon_{2t+s}
+ 	\end{bmatrix} + \cdots +
+	\begin{bmatrix}
+    	\theta_{11}^{(s)} & \theta_{12}^{(s)}\\
+    	\theta_{21}^{(s)} & \theta_{22}^{(s)}
+ 	\end{bmatrix} 
+	\begin{bmatrix}
+    	\epsilon_{1t} \\
+	\epsilon_{2t}
+ 	\end{bmatrix} + \cdots 
+\end{split}								
+\end{equation}
+or more compactly to 
+\begin{equation} \label{eq:svar8_1}
+\begin{split}
+ 		\vect{y_{t+s}} = \vect{\mu} + \vect{\Theta_0}\vect{\epsilon_{t+s}} + \cdots + \vect{\Theta_s}\vect{\epsilon_{t}} + \cdots
+\end{split}								
+\end{equation}
+shows that the $\vect{\Theta}$ - matrices consisting of the MA-coefficients hold the structural dynamic multipliers (the impulse responses). In our bivariate example, these impulse responses are
+\begin{equation} \label{eq:svar9}
+\begin{split}
+ 		\frac{\partial y_{1t+s}}{\partial \epsilon_{1t}} = \theta_{11}^{(s)}, \frac{\partial y_{1t+s}}{\partial \epsilon_{2t}} = \theta_{12}^{(s)} \\
+		\frac{\partial y_{2t+s}}{\partial \epsilon_{1t}} = \theta_{21}^{(s)}, \frac{\partial y_{2t+s}}{\partial \epsilon_{2t}} = \theta_{22}^{(s)}
+\end{split}								
+\end{equation}
+or more compactly 
+\begin{equation} \label{eq:svar10}
+\begin{split}
+ 		\frac{\partial \vect{y_{t+s}}}{\partial \vect{\epsilon_{t}}} =  \vect{\Theta_s}
+\end{split}								
+\end{equation}
+meaning that in matrix $\vect{\Theta_s}$ the entry $(i, j)$ shows the impact of a one-unit increase in the $j$th variable's innovation at date $t$ ($\epsilon_{jt}$) on the value of the $i$th variable at time $t+s$ $(y_{i, t + s})$.\\
+Subsequently, a plot of the elements $(i, j)$ of the respective structural MA matrices $\{\vect{\Theta_s}\}_{i, j}$ as a function of $s$, i.e., 
+\begin{equation} \label{eq:svar10}
+\begin{split}
+ 		\frac{\partial y_{t+s}}{\partial \epsilon_{t}}
+\end{split}								
+\end{equation}
+is the \textit{impulse-response function} that describes the response of $y_{i, t+s}$ to a one-time one-unit impulse in $y_{jt}$ with all other variables dated $t$ or earlier held constant.
+
+
 \chapter{Data}
 \label{sec:Data}
 
 \chapter{Results}
 \label{sec:Results}
+
+\section[Impulse Response Analysis]{Impulse Response Analysis}
+\label{sec:ImpulseResponseAnalysis}
+
+\section[Variance Decomposition]{Variance Decomposition}
+\label{sec:VarianceDecomposition}
+
+
+\chapter{Model Extension}
+\label{sec:ModelExtension}
 
 %\newpage
 \chapter{Conclusion}
