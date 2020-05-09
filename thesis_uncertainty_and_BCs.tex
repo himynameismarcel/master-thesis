@@ -802,38 +802,7 @@ Within the range of finance-based measures stock market volatility is a widely u
 %\label{tab:bloom_shocks}
 %\end{table}
 
-
-
-\subsection{A Survey-Based Measure: Michigan Survey of Consumers}
-\label{sec:michigansurvey}
-
-The Michigan Survey was founded in 1946 and then conducted quarterly by means of interviews of minimum 500 households throughout the US from 1952 - 1977. Beginning with January 1978 the survey switched to a monthly frequency which is the year that \citet{leducandliu:16} start looking at the survey's data off of which they construct their uncertainty measure. Overall, the survey contains approximately 50 core questions that target various aspects of consumer sentiment and expectations which cover the three broad areas of personal finance, business conditions and buying conditions. Because of its forward-looking nature, the Michigan Survey is regarded as a helpful indicator of the future business cycle.\footnote{For a more detailed survey description see \url{https://data.sca.isr.umich.edu/fetchdoc.php?docid=24774}.}\\
-\\
-Indices that are derived from survey questions are the 'Index of Consumer Expectations' (ICE),\footnote{The 'Index of Consumer Expectations' is included in the Composite Index of Leading Indicators published by the U.S. Department of Commerce, Bureau of Economic Analysis and focuses on three areas: how consumers view prospects for their own financial situation, how they view prospects for the general economy over the near term, and their view of prospects for the economy over the long term. The survey data that feeds into the construction of the index, however, represents only a small part of the entire survey data. For more detailed information see the survey's dedicated homepage at \url{https://data.sca.isr.umich.edu/}. In particular, the 'Time Series Codebook' is available at \url{https://data.sca.isr.umich.edu/subset/codebook.php} and the data can, among others, be conveniently downloaded from \url{https://data.sca.isr.umich.edu/subset/subset.php}.} the 'Index of Consumer Sentiment' (ICS) and the 'Index of Current Economic Conditions' (ICC).\\
-\\
-For their uncertainty measure, \citet{leducandliu:16} look at the answers to the question \textit{Speaking now of the automobile market - do you think the next 12 months or so will be a good time or a bad time to buy a vehicle, such as a car, pickup, van or sport utility vehicle?'} which, for persons that answer anything other than 'Don't know' to that question, is followed by \textit{Why do you say so?}. The percentage of respondents that report an ``uncertain future'' as the reason for why they consider it to be a bad time to buy a car or other durable goods serve's as \citet{leducandliu:16}'s uncertainty benchmark which we have plotted in Figure~\ref{fig:michigan_plot}.
-
-\begin{figure}[!h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.5cm -1.5cm 0.8cm -0.5cm, width=0.95\textwidth]{michigan_plot.pdf}}
-      \caption[Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty.]{Thomson Reuters/University of Michigan Survey of Consumers, Consumer Uncertainty. Shaded areas denote NBER recession dates in the U.S. Three-month moving averages are plotted}   \label{fig:michigan_plot}
-\end{figure}
-
-\begingroup
-    \fontsize{8pt}{12pt}\selectfont
-    Note to self:
-\begin{itemize}
-	\item \citet{orlikandveldkamp:14} go on and write: ``Another commonly cited measure of uncertainty is business or consumer confidence. The confidence survey asks respondents whether their outlook on future business or employment conditions is 'positive', negative or neutral.' These questions are about the direction of future changes and not about any variance or uncertainty. They may be correlated with uncertainty because uncertainty is counter-cyclical.
-	\item Here I should also refer to \citet{bachmannetal:13}.
-	\item We should make use of the uncertainty measure used in \citet{bachmannetal:13} and also create a similar plot compared to their Figure 22. Although the data for the IFO index is only available as of 1980, we could still make use of this and, e.g., compare the volatility indicator that \citet{bloom:09} uses with the uncertainty indicator used by \citet{bachmannetal:13}. Interestingly, \citet{bachmannetal:13} even write in their footnote 16: ``We follow here Bloom's (209) timing convention for stock market volatility.''
-	\item another approach is mentioned in \citet{bachmannetal:13} where they write on p. 27: `We also run an analogous SVAR with the 30 year corporate bond spread as the uncertainty measure. It is clear that negative long-run innovations have significant impact on uncertainty.''
-\end{itemize}
-\endgroup
-
-
-
+git commit -a -m "removed survey-based measure: michigan Survey of Consumers from thesis"
 
 \subsection{A News-Based Measure: \citet{bakeretal:15}}
 \label{sec:epuindex}
