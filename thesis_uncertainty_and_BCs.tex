@@ -1912,86 +1912,8 @@ changes, as, inevitably, it weighs on weak demand.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%STRUCTURALVARS%%%&%%%%%%%%%%%%%%%%%%%%%%%
 \section{Alternative Estimations II: Structural VARs following \citet{ludvigsonetal:18}}
 \label{sec:ludvigsonetal18}
-As outlined in Section~\ref{sec:exoEndoJuradoetal} and complementing the specifications we have estimated so far, \citet[p. 2]{ludvigsonetal:18} ask, first, whether uncertainty is ``primarily a source of business cycle fluctuations or a consequence of them'' and, second, whether models of uncertainty should distinguish between financial and 'real' macroeconomic uncertainty. Their suggested model hence accounts for the distinction between both, types of uncertainty and introduces a novel identification strategy that ``allows for simultaneous feedback between uncertainty and real activity'' which the authors achieve by means of two types of \textit{shock-based} restrictions consisting of (as they call them) ``event constraints'' and ``correlation constraints'' within the class of SVAR models.\\
-\\
-The paragraph below might have to move or ultimately be deleted:\\
-As outlined in \citet{lutkepohl:05}, in structural VAR analysis, the emphasis has generally shifted from specifying the relations between the observable variables (so-called $A$-models; which we have discussed in Section~\ref{sec:IRFsVARversusLocalProj}) to directly identifying the structural innovations $\vect{\epsilon}_t$ from the reduced form residuals $\vect{u}_t$ by directly applying the notion that reduced-form errors are linear functions of the structural ones. So in the style of \ref{eq:svar6} and the identity capturing the relationship between reduced-form and structural errors in $A$-models as $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$, the relationship is defined directly as $\vect{u}_t = \vect{B}_0\vect{\epsilon}_t$ with the resulting relationship of $\vect{\Sigma}_u = \vect{B}\vect{\Sigma}_\epsilon\vect{B}'$ between the reduced-form and structural variance-covariance matrix.\footnote{Note that in Section~\ref{sec:IRFsVARversusLocalProj} when discussing $A$-models we consequently had $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{\Sigma}_\epsilon\vect{A}_0^{-1'}$.} Additionally normalizing the variances of the structural innovations to one by assuming $\vect{\epsilon}_t  \thicksim (\vect{0}, \vect{I}_n)$ results in 
-	\begin{equation} \label{eq:svar_ludvig2}
-	\begin{split}
-		\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'
-	\end{split}
-	\end{equation}
 
-\paragraph{Observational Equivalence}
-As formulated in \citet{rubioetal:10}, the identification of structural vector autoregressions (i.e., drawing inference from the reduced-form representation back to the underlying structural parameters in SVARs) is at the root of the 'identification problem' which forces researches to come up with additional '\textit{a priori} restrictions'\footnote{Author's italics.}, so-called ``identifying restrictions''\footnote{Author's quotes.}.\\
-In this setting due to the symmetry of the variance covariance matrix $\vect{\Sigma}_u$, only $\frac{n(n+1)}{2}$ different equations are specified and a necessary condition (as a standard criterion for identification) is that further $\frac{n(n-1)}{2}$ restrictions are needed to identify all $n^2$ elements of $\vect{B}_0$\footnote{Note to self: I might have to change the notation here from B0 to A0 depending on whether or not \citet{ludvigsonetal:18} actually consider an A or B-model.} with $n$ being the number of endogenoues variables (called the necessary ``order condition'' by \citealp{rothenberg:71}).\footnote{Similarly to the above $A$-models, if $\vect{B}_0$ is chosen according to a Choleski decomposition resulting in $\vect{B}_0$ being lower-triangular, enough restrictions make the system solvable.}\footnote{The case of $n=3$ illustrates the problem: $\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'$ results in $$		
-		\underbrace{%
-		\begin{bmatrix}
-    		\sigma_{11} & \sigma_{12} & \sigma_{13} \\
-		\sigma_{21} & \sigma_{22} & \sigma_{23} \\
-		\sigma_{31} & \sigma_{32} & \sigma_{33}
- 		\end{bmatrix}
-		%
-}_{\text{6 values}} = \underbrace{%
-		\begin{bmatrix}
-    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
-		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
-		b_{31}^0 & b_{32}^0 & b_{33}^0
- 		\end{bmatrix}^{-1}
-		%
-}_{\text{9 unknowns}}
-\begin{bmatrix}
-    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
-		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
-		b_{31}^0 & b_{32}^0 & b_{33}^0
- 		\end{bmatrix}^{{-1}'}$$ 
-		where 6 equations are not sufficient to solve the system of linear equations consisting of 9 unknowns. ACHTUNG! ICH HAB' HIER DIE INVERSE DAZUGESCHRIEBEN IN ANLEHNUNG AN A_0; WENN ES DABEI BLEIBT; SOLLTE ICH ACUH A_0 ANSTATT B HINSCHREIBEN!}\\
-Referring to \citet{rothenberg:71} and the fact that the ``order condition'' is only a necessary condition, \citet{rubioetal:10} investigate under which conditions such models are globally identified and introduce a novel approach to global identification by exploiting the structure of orthogonal matrices. Central to their paper is the following: \\
-\\
-In line with our own notation, the class of SVARs that \citet{rubioetal:10} study have the general form
-\begin{equation} \label{eq:svar_1}
-\begin{split}
-	\vect{A}_0 \vect{y}_t = \sum\limits_{j=0}^\infty \vect{A}_j\vect{y}_{t-j} + \vect{\epsilon}_t
-\end{split}								
-\end{equation}
-where they assume 
-\begin{equation}\label{eq:svar_2}
-\begin{split}
-	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
-	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}] & = \vect{\Sigma}_\epsilon = \vect{I}_n.
-\end{split}								
-\end{equation}
-Compactly writing $\vect{A}_{+}^' = [\vect{A}_1^', \vect{A}_2^', \dots, \vect{A}_p^']$ and $\vect{x}_{t}^' = [\vect{y}_{t-1}^', \vect{y}_{t-2}^', \dots, \vect{y}_{t-p}^']$, they rewrite their model as
-\begin{equation}\label{eq:svar_3}
-\begin{split}
-	\vect{A}_0 \vect{y}_t =  \vect{x}_t \vect{A}_+ + \vect{\epsilon}_t
-\end{split}								
-\end{equation}
-with the reduced-form representation implied by the structural model being
-\begin{equation}\label{eq:svar_4}
-\begin{split}
-	 \vect{y}_t =  \vect{x}_t \vect{B} + \vect{u}_t
-\end{split}								
-\end{equation}
-with $\vect{B} = \vect{A}_0^{-1}\vect{A}_+$ and $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$ and
-	\begin{equation} \label{eq:svar_5}
-	\begin{split}
-		\mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] & = 
-      												\vect{\Sigma_u} = (\vect{A}_0^{-1}\vect{A}_0^{-1'})
-	\end{split}								
-	\end{equation}	
-The parameters of the structural model being $(\vect{A}_0, \vect{A}_+)$ and of the reduced-form model $(\vect{B}, \vect{\Sigma}_u)$, \citet{rubioetal:10} denote the set of all structural parameters by $\mathbb{P}^S$ and the set of all reduced-form parameters by $\mathbb{P}^R$ and define the function $g: \mathbb{P}^S \to \mathbb{P}^R: g(\vect{A}_0, \vect{A}_+) = (\vect{A}_0^{-1}\vect{A}_+, \vect{A}_0^{-1}\vect{A}_0^{-1'})$ for the relationship between structural and reduced-form parameters.\\
-\\
-Equipped with this notation, \citet{rubioetal:10} define the important concept of 'observational equivalence' as follows: \\
-Following \citet{rothenberg:71}, two parameter points, $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$, are considered \textit{observationally equivalent} $iff$ they both imply the same probability distribution of the data $\vect{y}_t$. For linear Gaussian models as studied by \citet{rubioetal:10}, this turns out to be equivalent to postulating that two parameter points are \textit{observationally equivalent} $iff$ they both have the same reduced-form representation $(\vect{B}, \vect{\Sigma}_u)$. Based on this, \citet{rubioetal:10} revert back to their function $g$ and conclude that it shows that two parameter points $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$ have the same reduced-form representation $iff$ ``there is an orthogonal matrix $\vect{Q}$ such that $\vect{A}_0 = \vect{\widetilde{\vect{A}_0}}\vect{Q}$ and $\vect{A}_+ = \widetilde{\vect{A}_+} \vect{Q}$''. In this context, \citet{rubioetal:10} write down two definitions:\\
-\begin{defi}
-A parameter point $(\vect{A}_0, \vect{A}_+)$ is globally identified if and only if there is no other parameter point that is observationally equivalent.
-\end{defi}
-\begin{defi}
-A parameter point $(\vect{A}_0, \vect{A}_+)$ is locally identified if and only if there is an open neighborhood about $(\vect{A}_0, \vect{A}_+)$ containing no other observationally equivalent parameter point.
-\end{defi}
 
-Observational equivalence is inherently linked to the identification problem in SVARs which, with respect to the definitions above and \citet{rubioetal:10}'s formulation are ``neither globally nor locally identified''. This situation calls for adequate restrictions on the part of the structural parameters to make a model identifiable. And because observational equivalence is identical to finding an orthogonal matrix $\vect{Q}$ as described above, the set of all $(n \times n)$ orthogonal matrices $\mathbb{Q}_n$ plays a central role both in their analysis and in the derivation of the econometric framework of \citet{ludvigsonetal:18} which will discuss in turn.
 
 
 
@@ -2225,11 +2147,11 @@ Before jumping to the resulting impulse responses of the baseline system $\vect{
 \chapter{Econometric Model}
 \label{sec:EconometricModel}
 
-\section[Theoretical Background on (S)VARs]{Theoretical Background on VARs\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
+\section[Preliminaries: Theoretical Background on (S)VARs]{Preliminaries: Theoretical Background on VARs\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
 \label{sec:TheoreticalBackgroundSVARs}
 
 \subsection{VARs and the Derivation of Impulse Responses}
-We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
+We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-equations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
 \begin{equation} \label{eq:svar1}
 \begin{split}
 	y_{1t} & = a_{01}y_{2t} + a_{11}y_{1t-1} + a_{12}y_{2t-1} + \epsilon_{1t} \\
@@ -2578,6 +2500,92 @@ The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0
 
 
 \section{Framework of \citet{ludvigsonetal:18}}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}
+
+As outlined in Section~\ref{sec:exoEndoJuradoetal} and complementing the specifications we have estimated so far, \citet[p. 2]{ludvigsonetal:18} ask, first, whether uncertainty is ``primarily a source of business cycle fluctuations or a consequence of them'' and, second, whether models of uncertainty should distinguish between financial and 'real' macroeconomic uncertainty. Their suggested model hence accounts for the distinction between both, types of uncertainty and introduces a novel identification strategy that ``allows for simultaneous feedback between uncertainty and real activity'' which the authors achieve by means of two types of \textit{shock-based} restrictions consisting of (as they call them) ``event constraints'' and ``correlation constraints'' within the class of SVAR models.\\
+\\
+The paragraph below might have to move or ultimately be deleted:\\
+As outlined in \citet{lutkepohl:05}, in structural VAR analysis, the emphasis has generally shifted from specifying the relations between the observable variables (so-called $A$-models; which we have discussed in Section~\ref{sec:IRFsVARversusLocalProj}) to directly identifying the structural innovations $\vect{\epsilon}_t$ from the reduced form residuals $\vect{u}_t$ by directly applying the notion that reduced-form errors are linear functions of the structural ones. So in the style of \ref{eq:svar6} and the identity capturing the relationship between reduced-form and structural errors in $A$-models as $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$, the relationship is defined directly as $\vect{u}_t = \vect{B}_0\vect{\epsilon}_t$ with the resulting relationship of $\vect{\Sigma}_u = \vect{B}\vect{\Sigma}_\epsilon\vect{B}'$ between the reduced-form and structural variance-covariance matrix.\footnote{Note that in Section~\ref{sec:IRFsVARversusLocalProj} when discussing $A$-models we consequently had $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{\Sigma}_\epsilon\vect{A}_0^{-1'}$.} Additionally normalizing the variances of the structural innovations to one by assuming $\vect{\epsilon}_t  \thicksim (\vect{0}, \vect{I}_n)$ results in 
+	\begin{equation} \label{eq:svar_ludvig2}
+	\begin{split}
+		\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'
+	\end{split}
+	\end{equation}
+	
+	
+	
+\subsection{Observational Equivalence}
+As formulated in \citet{rubioetal:10}, the identification of structural vector autoregressions (i.e., drawing inference from the reduced-form representation back to the underlying structural parameters in SVARs) is at the root of the 'identification problem' which forces researches to come up with additional '\textit{a priori} restrictions'\footnote{Author's italics.}, so-called ``identifying restrictions''\footnote{Author's quotes.}.\\
+In this setting due to the symmetry of the variance covariance matrix $\vect{\Sigma}_u$, only $\frac{n(n+1)}{2}$ different equations are specified and a necessary condition (as a standard criterion for identification) is that further $\frac{n(n-1)}{2}$ restrictions are needed to identify all $n^2$ elements of $\vect{B}_0$\footnote{Note to self: I might have to change the notation here from B0 to A0 depending on whether or not \citet{ludvigsonetal:18} actually consider an A or B-model.} with $n$ being the number of endogenoues variables (called the necessary ``order condition'' by \citealp{rothenberg:71}).\footnote{Similarly to the above $A$-models, if $\vect{B}_0$ is chosen according to a Choleski decomposition resulting in $\vect{B}_0$ being lower-triangular, enough restrictions make the system solvable.}\footnote{The case of $n=3$ illustrates the problem: $\vect{\Sigma}_u = \vect{B}_0 \vect{B}_0^'$ results in $$		
+		\underbrace{%
+		\begin{bmatrix}
+    		\sigma_{11} & \sigma_{12} & \sigma_{13} \\
+		\sigma_{21} & \sigma_{22} & \sigma_{23} \\
+		\sigma_{31} & \sigma_{32} & \sigma_{33}
+ 		\end{bmatrix}
+		%
+}_{\text{6 values}} = \underbrace{%
+		\begin{bmatrix}
+    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
+		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
+		b_{31}^0 & b_{32}^0 & b_{33}^0
+ 		\end{bmatrix}^{-1}
+		%
+}_{\text{9 unknowns}}
+\begin{bmatrix}
+    		b_{11}^0 & b_{12}^0 & b_{13}^0 \\
+		b_{21}^0 & b_{22}^0 & b_{23}^0 \\
+		b_{31}^0 & b_{32}^0 & b_{33}^0
+ 		\end{bmatrix}^{{-1}'}$$ 
+		where 6 equations are not sufficient to solve the system of linear equations consisting of 9 unknowns. ACHTUNG! ICH HAB' HIER DIE INVERSE DAZUGESCHRIEBEN IN ANLEHNUNG AN A_0; WENN ES DABEI BLEIBT; SOLLTE ICH ACUH A_0 ANSTATT B HINSCHREIBEN!}\\
+Referring to \citet{rothenberg:71} and the fact that the ``order condition'' is only a necessary condition, \citet{rubioetal:10} investigate under which conditions such models are globally identified and introduce a novel approach to global identification by exploiting the structure of orthogonal matrices. Central to their paper is the following: \\
+\\
+In line with our own notation, the class of SVARs that \citet{rubioetal:10} study have the general form
+\begin{equation} \label{eq:svar_1}
+\begin{split}
+	\vect{A}_0 \vect{y}_t = \sum\limits_{j=0}^\infty \vect{A}_j\vect{y}_{t-j} + \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+where they assume 
+\begin{equation}\label{eq:svar_2}
+\begin{split}
+	\mathbb{E}(\vect{\epsilon_t}) &  = \vect{0}  \\
+	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_{\tau}^'}] & = \vect{\Sigma}_\epsilon = \vect{I}_n.
+\end{split}								
+\end{equation}
+Compactly writing $\vect{A}_{+}^' = [\vect{A}_1^', \vect{A}_2^', \dots, \vect{A}_p^']$ and $\vect{x}_{t}^' = [\vect{y}_{t-1}^', \vect{y}_{t-2}^', \dots, \vect{y}_{t-p}^']$, they rewrite their model as
+\begin{equation}\label{eq:svar_3}
+\begin{split}
+	\vect{A}_0 \vect{y}_t =  \vect{x}_t \vect{A}_+ + \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+with the reduced-form representation implied by the structural model being
+\begin{equation}\label{eq:svar_4}
+\begin{split}
+	 \vect{y}_t =  \vect{x}_t \vect{B} + \vect{u}_t
+\end{split}								
+\end{equation}
+with $\vect{B} = \vect{A}_0^{-1}\vect{A}_+$ and $\vect{u}_t = \vect{A}_0^{-1}\vect{\epsilon}_t$ and
+	\begin{equation} \label{eq:svar_5}
+	\begin{split}
+		\mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] & = 
+      												\vect{\Sigma_u} = (\vect{A}_0^{-1}\vect{A}_0^{-1'})
+	\end{split}								
+	\end{equation}	
+The parameters of the structural model being $(\vect{A}_0, \vect{A}_+)$ and of the reduced-form model $(\vect{B}, \vect{\Sigma}_u)$, \citet{rubioetal:10} denote the set of all structural parameters by $\mathbb{P}^S$ and the set of all reduced-form parameters by $\mathbb{P}^R$ and define the function $g: \mathbb{P}^S \to \mathbb{P}^R: g(\vect{A}_0, \vect{A}_+) = (\vect{A}_0^{-1}\vect{A}_+, \vect{A}_0^{-1}\vect{A}_0^{-1'})$ for the relationship between structural and reduced-form parameters.\\
+\\
+Equipped with this notation, \citet{rubioetal:10} define the important concept of 'observational equivalence' as follows: \\
+Following \citet{rothenberg:71}, two parameter points, $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$, are considered \textit{observationally equivalent} $iff$ they both imply the same probability distribution of the data $\vect{y}_t$. For linear Gaussian models as studied by \citet{rubioetal:10}, this turns out to be equivalent to postulating that two parameter points are \textit{observationally equivalent} $iff$ they both have the same reduced-form representation $(\vect{B}, \vect{\Sigma}_u)$. Based on this, \citet{rubioetal:10} revert back to their function $g$ and conclude that it shows that two parameter points $(\vect{A}_0, \vect{A}_+)$ and $(\widetilde{\vect{A}_0}, \widetilde{\vect{A}_+})$ have the same reduced-form representation $iff$ ``there is an orthogonal matrix $\vect{Q}$ such that $\vect{A}_0 = \vect{\widetilde{\vect{A}_0}}\vect{Q}$ and $\vect{A}_+ = \widetilde{\vect{A}_+} \vect{Q}$''. In this context, \citet{rubioetal:10} write down two definitions:\\
+\begin{defi}
+A parameter point $(\vect{A}_0, \vect{A}_+)$ is globally identified if and only if there is no other parameter point that is observationally equivalent.
+\end{defi}
+\begin{defi}
+A parameter point $(\vect{A}_0, \vect{A}_+)$ is locally identified if and only if there is an open neighborhood about $(\vect{A}_0, \vect{A}_+)$ containing no other observationally equivalent parameter point.
+\end{defi}
+
+Observational equivalence is inherently linked to the identification problem in SVARs which, with respect to the definitions above and \citet{rubioetal:10}'s formulation are ``neither globally nor locally identified''. This situation calls for adequate restrictions on the part of the structural parameters to make a model identifiable. And because observational equivalence is identical to finding an orthogonal matrix $\vect{Q}$ as described above, the set of all $(n \times n)$ orthogonal matrices $\mathbb{Q}_n$ plays a central role both in their analysis and in the derivation of the econometric framework of \citet{ludvigsonetal:18} which will discuss in turn.
+	
+
+\subsection{The Model}
 \citet{ludvigsonetal:18} assume the following reduced-form VAR and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
 	\begin{equation} \label{eq:svar_ludvig1}
 	\begin{split}
