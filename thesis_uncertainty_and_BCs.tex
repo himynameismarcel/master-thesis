@@ -1416,135 +1416,7 @@ which details to
 	\end{equation}	
 Off of this specification, impulse responses for industrial production and employment in manufacturing capturing a one-time shock in uncertainty are calculated as outlined in Section~\ref{sec:IRFsVARversusLocalProj}.
 
-\item Based on \ref{eq:localproj43} and \ref{eq:IRFLocProjDefinition}, correspondingly, the specifications for a direct estimation of the impulse responses via local projections that mimic the Bloom VARs look as follows:\\
-\\
-Because we are interested in the responses of industrial production and employment in manufacturing in particular, as pointed out above, we do not have to jointly estimate the sequence of $h$ system regressions as detailed in Equations~\ref{eq:localproj42} and \ref{eq:localproj43}, respectively. Rather, we regress industrial production (denoted $y_{8,t}$ for the sake of consistency with the naming above) and employment in manufacturing (correspondingly denoted $y_{7, t}$) at each forecast horizon $s$ on the linear space spanned by $(\vect{y_{t-1}}, \vect{y_{t-2}}, \dots, \vect{y_{t-p}})'$. Writing out the system of equations for step $s=1$ only in detail below yields
-\begin{equation} \label{eq:localproj46}
-\begin{split}
-		\begin{bmatrix}
-    		y_{1,t+1} \\
-    		y_{2,t+1} \\
-		\vdots \\
-		y_{7, t+1} \\
-		y_{8,t+1}
- 		\end{bmatrix} & = 
-		\begin{bmatrix}
-    		\hattnobf{\alpha}_{{1}} \\
-    		\hattnobf{\alpha}_{{2}} \\
-		\vdots \\
-		\hattnobf{\alpha}_{{7}} \\
-		\hattnobf{\alpha}_{{8}}
- 		\end{bmatrix} + 
-		\begin{bmatrix}
-    		{\hattnobf{k}_{{1, 1}_1}^{1+1}} & {\hattnobf{k}_{{1, 2}_1}^{1+1}} & {\hattnobf{k}_{{1, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{1, 8}_1}^{1+1}}\\
-    		{\hattnobf{k}_{{2, 1}_1}^{1+1}} & {\hattnobf{k}_{{2, 2}_1}^{1+1}} & {\hattnobf{k}_{{2, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{2, 8}_1}^{1+1}}\\
-		\vdots & \vdots & \vdots & \cdots & \vdots \\
-		{\hattnobf{k}_{{7, 1}_1}^{1+1}} & {\hattnobf{k}_{{7, 2}_1}^{1+1}} & {\hattnobf{k}_{{7, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 7}_1}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_1}^{1+1}} & {\hattnobf{k}_{{8, 2}_1}^{1+1}} & {\hattnobf{k}_{{8, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_1}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-1} \\
-    		y_{2,t-1} \\
-		\vdots \\
-		y_{7, t-1} \\
-		y_{8, t-1}
- 		\end{bmatrix} + \\
-		& +
-		\begin{bmatrix}
-    		{\hattnobf{k}_{{1, 1}_2}^{1+1}} & {\hattnobf{k}_{{1, 2}_2}^{1+1}} & {\hattnobf{k}_{{1, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{1, 8}_2}^{1+1}}\\
-    		{\hattnobf{k}_{{2, 1}_2}^{1+1}} & {\hattnobf{k}_{{2, 2}_2}^{1+1}} & {\hattnobf{k}_{{2, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{2, 8}_2}^{1+1}}\\
-		\vdots & \vdots & \vdots & \cdots & \vdots \\
-		{\hattnobf{k}_{{7, 1}_2}^{1+1}} & {\hattnobf{k}_{{7, 2}_2}^{1+1}} & {\hattnobf{k}_{{7, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 8}_2}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_2}^{1+1}} & {\hattnobf{k}_{{8, 2}_2}^{1+1}} & {\hattnobf{k}_{{8, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_2}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-2} \\
-    		y_{2,t-2} \\
-		\vdots \\
-		y_{7, t-2} \\
-		y_{8, t-2}
- 		\end{bmatrix} +\\
-		& + \cdots + \\
-		& + 
-		\begin{bmatrix}
-    		{\hattnobf{k}_{{1, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{1, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{1, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{1, 8}_{12}}^{1+1}}\\
-    		{\hattnobf{k}_{{2, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{2, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{2, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{2, 8}_{12}}^{1+1}}\\
-		\vdots & \vdots & \vdots & \cdots & \vdots \\
-		{\hattnobf{k}_{{7, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{7, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{7, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 8}_{12}}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{8, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{8, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_{12}}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-12} \\
-    		y_{2,t-12} \\
-		\vdots \\
-		y_{7, t-12} \\
-		y_{8, t-12}
- 		\end{bmatrix} + 
-		\begin{bmatrix}
-    		\hattnobf{e}_{1, t+1} \\
-    		\hattnobf{e}_{2, t+1} \\
-		\vdots \\
-		\hattnobf{e}_{7, t+1} \\
-		\hattnobf{e}_{8, t+1}
- 		\end{bmatrix}. 
-\end{split}								
-\end{equation}
-Focussing on rows $7$ and $8$ only (the regressions for industrial production and employment in manufacturing) gives us the two regressions that have to be estimated for each $s = 1, 2, \dots, h$.
 
-\begin{equation} \label{eq:localproj46}
-\begin{split}
-		\begin{bmatrix}
-		y_{7, t+s} \\
-		y_{8,t+s}
- 		\end{bmatrix} & = 
-		\begin{bmatrix}
-		\hattnobf{\alpha}_{{7}} \\
-		\hattnobf{\alpha}_{{8}}
- 		\end{bmatrix} + 
-		\begin{bmatrix}
-		{\hattnobf{k}_{{7, 1}_1}^{1+1}} & {\hattnobf{k}_{{7, 2}_1}^{1+1}} & {\hattnobf{k}_{{7, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 7}_1}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_1}^{1+1}} & {\hattnobf{k}_{{8, 2}_1}^{1+1}} & {\hattnobf{k}_{{8, 3}_1}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_1}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-1} \\
-    		y_{2,t-1} \\
-		\vdots \\
-		y_{7, t-1} \\
-		y_{8, t-1}
- 		\end{bmatrix} + \\
-		& +
-		\begin{bmatrix}
-		{\hattnobf{k}_{{7, 1}_2}^{1+1}} & {\hattnobf{k}_{{7, 2}_2}^{1+1}} & {\hattnobf{k}_{{7, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 8}_2}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_2}^{1+1}} & {\hattnobf{k}_{{8, 2}_2}^{1+1}} & {\hattnobf{k}_{{8, 3}_2}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_2}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-2} \\
-    		y_{2,t-2} \\
-		\vdots \\
-		y_{7, t-2} \\
-		y_{8, t-2}
- 		\end{bmatrix} +\\
-		& + \cdots + \\
-		& + 
-		\begin{bmatrix}
-    		{\hattnobf{k}_{{7, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{7, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{7, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{7, 8}_{12}}^{1+1}}\\
-		{\hattnobf{k}_{{8, 1}_{12}}^{1+1}} & {\hattnobf{k}_{{8, 2}_{12}}^{1+1}} & {\hattnobf{k}_{{8, 3}_{12}}^{1+1}} & \cdots & {\hattnobf{k}_{{8, 8}_{12}}^{1+1}}
- 		\end{bmatrix} 
-		\begin{bmatrix}
-    		y_{1,t-12} \\
-    		y_{2,t-12} \\
-		\vdots \\
-		y_{7, t-12} \\
-		y_{8, t-12}
- 		\end{bmatrix} + 
-		\begin{bmatrix}
-    		\hattnobf{e}_{7, t+s} \\
-		\hattnobf{e}_{8, t+s}
- 		\end{bmatrix}. 
-\end{split}								
-\end{equation}
-
-\item The third and last specification we want to estimate is based on work by \citet{ludvigsonetal:18}. As introduced in Section~\ref{sec:exoEndoJuradoetal}, the authors suggest a novel identification scheme in an attempt to model causalities within an (S)VAR-framework. Because their model needs a separate dedicated explanation, Section~\ref{sec:ludvigsonetal18} will discuss both their empirical approach and the resulting specification.
 
 \end{enumerate}
 
@@ -1952,8 +1824,10 @@ The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0
 
 
 
-\section{Framework of \citet{ludvigsonetal:18}}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}
+\section[Framework of \citet{ludvigsonetal:18}]{Framework of \citet{ludvigsonetal:18}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}}
 
+As introduced in Section 2.3.1, the authors suggest a novel identification scheme in an attempt to model causalities within an (S)VAR-framework.\\
+\\
 As outlined in Section~\ref{sec:exoEndoJuradoetal} and complementing the specifications we have estimated so far, \citet[p. 2]{ludvigsonetal:18} ask, first, whether uncertainty is ``primarily a source of business cycle fluctuations or a consequence of them'' and, second, whether models of uncertainty should distinguish between financial and 'real' macroeconomic uncertainty. Their suggested model hence accounts for the distinction between both, types of uncertainty and introduces a novel identification strategy that ``allows for simultaneous feedback between uncertainty and real activity'' which the authors achieve by means of two types of \textit{shock-based} restrictions consisting of (as they call them) ``event constraints'' and ``correlation constraints'' within the class of SVAR models.\\
 \\
 The paragraph below might have to move or ultimately be deleted:\\
