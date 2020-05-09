@@ -1917,187 +1917,6 @@ changes, as, inevitably, it weighs on weak demand.
 
 
 
-\paragraph{Shock-Based Constraints in \citet{ludvigsonetal:18}}
-\textbf{\textit{Event constraints}} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 stock market crash and the 2007-09 financial crisis. \citet{ludvigsonetal:18} decide for this constraint because ``a credible identifiation scheme should produce estimates of $\vect{\epsilon}_t$ with features that accord with our ex-post understanding of historical events, at least during episodes of special interest.'' \citep[p. 7]{ludvigsonetal:18}  In particular, event constraints put the bounds $\overline{k}$ on the sign and magnitude of $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ during particular episodes which are collected into $\tau^*$. \\
-\\
-The reason why such special events turn out to be helpful for identification is that, despite the fact that two observationally equivalent structural models $\vect{A}_0^{-1}$ and $\widetilde{\vect{A}}_0^{-1}$ will produce the corresponding shock-processes $\big\{\vect{\epsilon}_t\big\}_{t=1}^T$ and $\big\{\widetilde{\vect{\epsilon}}_t\big\}_{t=1}^T$ where the first and second moments are equivalent, the individual elements of $\vect{\epsilon}_t$ and $\widetilde{\vect{\epsilon}}_t$ are not necessarily equal at each point in time. This can be easily seen because for $\widetilde{\vect{Q}} \neq \vect{Q}$ we get 
-\begin{equation} \label{eq:svar_ludvi9}
-\begin{split}
-\vect{\epsilon}_t & = \vect{A}_0\hatt{\vect{u}}_t = \\
-[\vect{A}_0^{-1} & = \vect{P}\vect{Q} \iff \vect{A}_0 = \vect{Q}^{-1}\vect{P}^{-1} \iff \\
-\vect{A}_0 & = \vect{Q}^{'}\vect{P}^{-1}] = \\
-	& \vect{Q}^'\vect{P}^{-1}\hatt{\vect{u}}_t 
-\end{split}								
-\end{equation}
-and 
-\begin{equation} \label{eq:svar_ludvi10}
-\begin{split}
-\widetilde{\vect{\epsilon}}_t = \widetilde{\vect{A}}_0\hatt{\vect{u}}_t = \widetilde{\vect{Q}}'\vect{P}^{-1}\hatt{\vect{u}}_t = \widetilde{\vect{Q}}\vect{u}_t \neq \vect{\epsilon}_t
-\end{split}								
-\end{equation}
-at any given $t$ which shows that event constraints could be used to reduce the number of solutions in $\hatt{\mathcal{A}}_0(\phi)$ to a smaller set $\overline{\vect{\mathcal{A}}}_0(\phi)$. \\
-\\
-To show this, \citet{ludvigsonetal:18} consider the bivariate case $n=2$:\\
-Writing down
-\begin{equation} \label{eq:svar_ludvi11}
-\begin{split}
-	\begin{bmatrix}
-    		u_{1t} \\
-		u_{2t}
- 		\end{bmatrix} & = 
-		\begin{bmatrix}
-    			a_{11}^0 &  a_{12}^0 \\
-			a_{21}^0 &  a_{22}^0
- 			\end{bmatrix}^{-1}
-			\begin{bmatrix}
-    				\epsilon_{1t} \\
-				\epsilon_{2t}
- 				\end{bmatrix}  \iff \\
-	\begin{bmatrix}
-    		\epsilon_{1t} \\
-		\epsilon_{2t}
- 		\end{bmatrix} & = 
-		\begin{bmatrix}
-    			a_{11}^0 &  a_{12}^0 \\
-			a_{21}^0 &  a_{22}^0
- 			\end{bmatrix}
-			\begin{bmatrix}
-    				u_{1t} \\
-				u_{2t}
- 				\end{bmatrix} \implies \\
-				\epsilon_{1t} & = a_{11}u_{1t} + a_{12}u_{2t}
-\end{split}								
-\end{equation}
-where the values of $u_{1t}$ and $u_{2t}$ are given since data is given for time $t$ in the span $[\tau_1, \tau_2]$. The above example shows that a restriction on the behavior of $\epsilon_{1t}$ at a specific time $t$ results in a non-linear restriction on $\vect{A}_0^{-1}$ and, equivalently, on $\vect{Q}$.
-\\
-\\
-With the stage set according to the above explanations, \citet{ludvigsonetal:18} require $\vect{\epsilon}_t$ to satisfy three event constraints which they parameterize by $\overline{\vect{k}} = (\overline{k}_1, \overline{k}_2, \overline{k}_3)'$\footnote{The bounds will be set below.}, $\overline{\vect{\tau}} = (\overline{\tau}_1, \overline{\tau}_2, \overline{\tau}_3)' = (1987:10, [2007:12, 2009:06], [2007:12, 2009:06])$ and $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty and collect the constraints into a system of inequalities
-\begin{equation} \label{eq:svar_ludvi12}
-\begin{split}
-	FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & = \begin{pmatrix}
-	FE_1(\overline{\tau}_1, \overline{k}_1)\\
-	 FE_2(\overline{\tau}_2, \overline{k}), \\
-	 FE_3(\overline{\tau}_3, \overline{k}_3)
-	\end{pmatrix} = \\
-	= \begin{pmatrix}
-	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_1= 1987:10} \dot \quad \epsilon_{F\overline{\tau}_1}  \\
-	 \sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in [2007:12, 2009:06]} \dot \quad \epsilon_{F\overline{\tau}_2}  \\
-	\overline{k}_3
-	\end{pmatrix} & - 
-	\begin{pmatrix}
-	\overline{k}_1\\
-	\overline{k}_2  \\
-	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_3 \forall \in [2007:12, 2009:06]} \dot \quad \epsilon_{IPM\overline{\tau}_3} 
-	\end{pmatrix} \geq \vect{0}
-\end{split}								
-\end{equation}
-Each $FE_i(\overline{\tau}_i, \overline{k}_i)$ represents a vector of constraints of magnitude $\overline{k}_i$ on $\epsilon_{it}$ for corresponding $t \in \overline{\tau}_i$. Together, $FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})$ defines inequality constraints based on timing, sign and magnitude that help identification of the underlying structural model. $FE_1$ requires that the financial uncertainty shock that occurred in October 1987 be a large one; $FE_2$ postulates that there must be at least one month during the financial crises 2007-2009 for which the financial uncertainty shock was large and positive and $FC_3$ requires that any real activity shocks found during the Great Recession (the NBER dates for the recession coincide with the financial crisis) do not take any unusually large positive values.\\
-The motivation for the above constraints is that if a potential $\vect{Q}$ implies a corresponding shock series that is difficult to hold on to during our key time episodes, it will be removed from the solution set $\hatt{\mathcal{A}}_0(\phi)$. Correspondingly, in the postulated inequality constraints the values for the $\overline{k}_i$s have to be meaningful and timing of events $\overline{\tau}_i$ accurate otherwise solutions that pass these constraints will be meaningless after all.
-\\
-\\
-With regard to the first two constraints on financial uncertainty for the stock market crash on Black Monday and the recent financial crisis, \citet{ludvigsonetal:18} declare that the established constraints want to make sure that ``\textit{at least some}\footnote{Author's italics.} of the forecast error variance of $U_F$ in these episodes of most extreme financial uncertainty is attributable to large shocks that originated in financial markets'' which ``is a maintained assumption [...] that we argue is grounded in a broad historical reading of the times'' \citep[p. 8]{ludvigsonetal:18} and here is captured by $\vect{\epsilon}_F$. To clarify, \citet{ludvigsonetal:18} point out that the constraints, however, do not require that all or most of the variability in these episodes should come from shock originating in financial markets because they do not rule out large adverse shocks in $\vect{\epsilon}_M$ and $\vect{\epsilon}_{IPM}$. 
-
-
-
-
-The second set of constraints considered by \citet{ludvigsonetal:18} are \textbf{\textit{correlation constraints}} which require that the identified uncertainty shocks recovered from $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ show a minimum absolute correlation with certain variables that are external to the VAR estimations which they encode with $\vect{S}_t$. In their baseline specification they use aggregate stock market return and impose restrictions on its correlation with uncertainty shocks. \\
-\\
-As a motivating example, \citet{ludvigsonetal:17} consider the following example of a bivariate model:
-\begin{equation} \label{eq:svar_ludvi12_a}
-\begin{split}
-	\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 
-		\begin{pmatrix}
-			u_{1t} \\
-			u_{2t}
-		\end{pmatrix} \iff \\
-\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 	
-					\begin{pmatrix}
-    			a_{11}^0 &  a_{12}^0 \\
-			a_{21}^0 &  a_{22}^0
- 			\end{pmatrix}^{-1}
-		\begin{pmatrix}
-			\epsilon_{1t} \\
-			\epsilon_{2t}
-		\end{pmatrix},\\
-		\begin{pmatrix}
-			\epsilon_1 \\
-			\epsilon_2
-		\end{pmatrix} & \thicksim \mathcal{N}(\vect{0}, \vect{I}_n)
-\end{split}								
-\end{equation}
-\\
-EXAMPLE NOT FINISHED! (if time is left, I can add more explanations to this!)
-\\
-\\
-To formalize this and further letting $\hat{e}_{St}$ be the first order autoregressive residual for $S_t$, $\hat{e}_{St}$, being a reduced-form residual, results as a combination of primitive shocks from various sources including, among others, the three shocks modeled within the VAR system. In particular, letting ($c_M(\vect{A}_0^{-1})$, $c_{IMP}(\vect{A}_0^{-1})$, $c_{F}(\vect{A}_0^{-1})$) be the sample correlations between $\hat{e}_{St}$ and the structural shocks ($\epsilon_{Mt}(\vect{A}_0^{-1})$, $\epsilon_{IPMt}(\vect{A}_0^{-1})$, $\epsilon_{Ft}(\vect{A}_0^{-1})$) and $\overline{\vect{\lambda}} = (\overline{\lambda}_1, \overline{\lambda}_2, \overline{\lambda}_3)$, the system of inequalities for correlation constraints is
-\begin{equation} \label{eq:svar_ludvi13}
-\begin{split}
-	FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & = \begin{pmatrix}
-	FC_1(\overline{\lambda}_1 < 0, \vect{S})\\
-	 FC_2(\overline{\lambda}_2 \geq 1, \vect{S}), \\
-	 FC_3(\overline{\lambda}_3, \vect{S})
-	\end{pmatrix} = \\
-	& = \begin{pmatrix}
-	 		\begin{pmatrix}
-	 			\overline{\lambda}_1 - c_M(\vect{A}_0^{-1})\\
-				\overline{\lambda}_1 - c_F(\vect{A}_0^{-1})
-			\end{pmatrix} \geq \vect{0} \\
-			|c_F(\vect{A}_0^{-1})| - \overline{\lambda}_2|c_M(\vect{A}_0^{-1}| \geq 0 \\
-			c_{MF} - \overline{\lambda}_3 \geq 0; c_{MF}^2 = c_M(\vect{A}_0^{-1})^2 + c_F(\vect{A}_0^{-1})^2.
-	\end{pmatrix} 
-\end{split}								
-\end{equation}
-The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$.\\
-Together, the constraints in \ref{eq:svar_ludvi13} provide cross-equation restrictions on the parameters in a potential $\vect{A}_0^{-1}$, whereby the correlations are not invariant to orthonormal rotations (by $\vect{Q}$) so that the generated correlations in each draw will be different.
-
-\paragraph{Identified Solution Set and maxG - Solution}
-Combining default covariance structure restrictions with the introduced event and correlation constraints, \citet{ludvigsonetal:18} call the \textit{identifed}\footnote{Author's italics.} solution set 
-\begin{equation} \label{eq:svar_ludvi14}
-\begin{split}
-\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})  = \{\vect{A}_0^{-1} & = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad diag(\vect{A}_0^{-1}) \geq 0\}; \\
-			FZ(\vect{Q}; \phi) & = \vect{0}, \\
-			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & \geq \vect{0}, \\
-			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & \geq \vect{0}
-\end{split}								
-\end{equation}
-which only contains estimates of $\vect{A}_0^{-1}$ that satisfy all constraints. Thereby a particular solution can only be in both $\hatt{\mathcal{A}}_0$ (the unconstrained solution set) and $\overline{\vect{\mathcal{A}}}_0$ if all restrictions are satisfied. And while $\overline{\vect{\mathcal{A}}}_0$ will be a set as well it should be notably smaller than $\hatt{\mathcal{A}}_0$ (without any additional restrictions other than the usual covariance restrictions).
-\\
-Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.\\
-\\
-The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.\\
-And while there is no single solution in $\overline{\vect{\mathcal{A}}}_0$ that is more likely than another one, as a reference point (and following \citet{ludvigsonetal:18}), we will also refer to the so-called 'maxG' - solution when discussing the results. In particular, the 'maxG' - solution serves as a reference point at which the value of the introduced constraints (inequalities) are jointly maximized. Formally, as the maxG-solution the quadratic norm is chosen so that
-\begin{equation} \label{eq:svar_ludvi16}
-\begin{split}
-\vect{A}_0^{maxG} \equiv \operatorname*{argmax}_{\vect{A}_0 \in \overline{\vect{\mathcal{A}}}_0} \sqrt{\overline{f}(\vect{A}_0)^'\overline{f}(\vect{A}_0)} \quad \text{where} \quad \overline{f}(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S}) = \begin{pmatrix}
-			FZ(\vect{Q}; \phi)' \\
-			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})' \\
-			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})'	
-		\end{pmatrix}^'
-\end{split}								
-\end{equation}
-With respect to the introduced constraints, the inequalities will be large for the most extremely positive financial uncertainty shocks in 1987 and during the Great Recession, for the most negative real activity shocks during the Great Recession and when uncertainty shocks have the highest absolute correlation with the variable external to the VAR( in the baseline case: aggregate stock market returns), both jointly and collectively. With these features, the 'maxG' - solution can, economically, be regarded as the ``worst-case'' - scenario.
-
-\paragraph{Baseline SVAR(3)-6}
-\citet{ludvigsonetal:18} estimate several VAR systems to identify uncertainty shocks from the VAR residuals using the restrictions from above. Here we will reproduce their baseline estimation which we have already introduced above consisting of $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty. In contrast to \citet{ludvigsonetal:18} who use their own constructed measure of financial uncertainty we use the VXO. The VAR-System uses $p=6$ lags (and will report the results for $p=12$ in the Appendix).
-
-\paragraph{Solution Algorithm}
-As indicated above, a decisive part of the solution algorithm is the construction of the unconstrained solution set $\hatt{\mathcal{A}}_0$ and the derivation of the identified set $\overline{\vect{\mathcal{A}}}_0$. \\
-\\
-The unconstrained solution set $\hatt{\mathcal{A}}_0$ is obtained through the following steps:
-\begin{enumerate}[i]
-	\item estimation of the reduced-form model and initialization of $\vect{A}_0^{-1}$ as the unique lower-triangular Cholesky factor $\hatt{\vect{P}}$ of $\hatt{\vect{\Sigma}}_u$ with non-negative diagonal elements
-	\item rotation of $\hatt{\vect{P}}$ by K = 1.5 million random orthogonal matrices $\vect{Q}$;\\
-	 each rotation begins by drawing an $(n \times n)$ matrix $\vect{M}$ of normally and independently distributed values (i.e., drawn from a normal distribution with $\mu = 0$ and $\sigma = 1$); $\vect{Q}$ is then taken to be the orthonormal matrix resulting from a $\vect{Q}\vect{R}$ decomposition of $\vect{M}$
-	 \item because $\vect{A}_0^{-1} = \vect{P}\vect{Q}$, the covariance restrictions are imposed by construction 
-\end{enumerate}
-
-Every generated $\vect{A}_0^{-1}$ resulting from one of the 1.5 million rotations is then confronted with the event and correlation-constraints for further processing. This step, however, needs a reasonable choice of the parameters $\overline{\vect{\lambda}}, \overline{\vect{\tau}}$ and $\overline{\vect{k}}$. Using a mix of theory, empirical analysis and economic reasoning, \citet{ludvigsonetal:18} set the parameters to  $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$ and the threshold for the collective correlation to $\overline{\lambda}_3 = 0.18$. The choices for $\overline{k}_1$ and $\overline{k}_2$, are, according to \citet{ludvigsonetal:18} partyl guided by \citet{bloom:09} who chooses to study the dynamic effects of four standard deviation shocks to uncertainty in his impulse response analyses. Accordingly, \citet{ludvigsonetal:18} set both $\overline{k}_1 = 4$ and $\overline{k}_2 = 4$.\footnote{This threshold is chosen considering that the shocks are shown to be non-Gaussian with exhibiting excess skewness and kurtosis.} Further, $\overline{k}_3$ is set to 2 to dismiss shocks in real activity that go beyond two standard deviations above their sample mean during 2007-2009.
-\\
-At each draw of $\vect{A}_0^{-1} = \hatt{\vect{P}}\vect{Q}$ and the subsequent generation of $\vect{\epsilon}_t = \vect{A}_0\hatt{\vect{u}}_t$, only those models will be stored that fulfill all constraints.
-
-A few sentences from other parts that actually belong here:\\
--) Consequently, in an SVAR framework as suggested by \citet{ludvigsonetal:18}, the $\vect{P}$-matrix to orthogonalize the reduced-form disturbances is not mechanically constructed as the Cholesky decomposition of the error covariance matrix (zero short-run restrictions; recursive identification) but rather is obtained from contemporaneous and theor-based restrictions placed on the $\vect{P}$ - matrix.\\
--) 
 
 \paragraph{Baseline Results}
 
@@ -2647,6 +2466,189 @@ By collecting the reduced form innovations $\vect{u}_t$ into $\phi$ (by making u
 Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinitely many solutions. \citet{ludvigsonetal:18} hence introduce additional restrictions that go beyond classical sign restrictions, or more generally inequality restrictions (which tend to place these restrictions on the impulse response functions and/or $\vect{A}_0^{-1}$ itself) in an attempt to yield a smaller solution set denoted as $\overline{\mathcal{A}_0}(\phi)$.\\
 \\
 Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the restrictions that \citet{ludvigsonetal:18} define involve the identified structural shocks $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. We will outline these two set of constraints in turn.
+
+
+\subsection{Shock-Based Constraints in \citet{ludvigsonetal:18}}
+\textbf{\textit{Event constraints}} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 stock market crash and the 2007-09 financial crisis. \citet{ludvigsonetal:18} decide for this constraint because ``a credible identifiation scheme should produce estimates of $\vect{\epsilon}_t$ with features that accord with our ex-post understanding of historical events, at least during episodes of special interest.'' \citep[p. 7]{ludvigsonetal:18}  In particular, event constraints put the bounds $\overline{k}$ on the sign and magnitude of $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ during particular episodes which are collected into $\tau^*$. \\
+\\
+The reason why such special events turn out to be helpful for identification is that, despite the fact that two observationally equivalent structural models $\vect{A}_0^{-1}$ and $\widetilde{\vect{A}}_0^{-1}$ will produce the corresponding shock-processes $\big\{\vect{\epsilon}_t\big\}_{t=1}^T$ and $\big\{\widetilde{\vect{\epsilon}}_t\big\}_{t=1}^T$ where the first and second moments are equivalent, the individual elements of $\vect{\epsilon}_t$ and $\widetilde{\vect{\epsilon}}_t$ are not necessarily equal at each point in time. This can be easily seen because for $\widetilde{\vect{Q}} \neq \vect{Q}$ we get 
+\begin{equation} \label{eq:svar_ludvi9}
+\begin{split}
+\vect{\epsilon}_t & = \vect{A}_0\hatt{\vect{u}}_t = \\
+[\vect{A}_0^{-1} & = \vect{P}\vect{Q} \iff \vect{A}_0 = \vect{Q}^{-1}\vect{P}^{-1} \iff \\
+\vect{A}_0 & = \vect{Q}^{'}\vect{P}^{-1}] = \\
+	& \vect{Q}^'\vect{P}^{-1}\hatt{\vect{u}}_t 
+\end{split}								
+\end{equation}
+and 
+\begin{equation} \label{eq:svar_ludvi10}
+\begin{split}
+\widetilde{\vect{\epsilon}}_t = \widetilde{\vect{A}}_0\hatt{\vect{u}}_t = \widetilde{\vect{Q}}'\vect{P}^{-1}\hatt{\vect{u}}_t = \widetilde{\vect{Q}}\vect{u}_t \neq \vect{\epsilon}_t
+\end{split}								
+\end{equation}
+at any given $t$ which shows that event constraints could be used to reduce the number of solutions in $\hatt{\mathcal{A}}_0(\phi)$ to a smaller set $\overline{\vect{\mathcal{A}}}_0(\phi)$. \\
+\\
+To show this, \citet{ludvigsonetal:18} consider the bivariate case $n=2$:\\
+Writing down
+\begin{equation} \label{eq:svar_ludvi11}
+\begin{split}
+	\begin{bmatrix}
+    		u_{1t} \\
+		u_{2t}
+ 		\end{bmatrix} & = 
+		\begin{bmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{bmatrix}^{-1}
+			\begin{bmatrix}
+    				\epsilon_{1t} \\
+				\epsilon_{2t}
+ 				\end{bmatrix}  \iff \\
+	\begin{bmatrix}
+    		\epsilon_{1t} \\
+		\epsilon_{2t}
+ 		\end{bmatrix} & = 
+		\begin{bmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{bmatrix}
+			\begin{bmatrix}
+    				u_{1t} \\
+				u_{2t}
+ 				\end{bmatrix} \implies \\
+				\epsilon_{1t} & = a_{11}u_{1t} + a_{12}u_{2t}
+\end{split}								
+\end{equation}
+where the values of $u_{1t}$ and $u_{2t}$ are given since data is given for time $t$ in the span $[\tau_1, \tau_2]$. The above example shows that a restriction on the behavior of $\epsilon_{1t}$ at a specific time $t$ results in a non-linear restriction on $\vect{A}_0^{-1}$ and, equivalently, on $\vect{Q}$.
+\\
+\\
+With the stage set according to the above explanations, \citet{ludvigsonetal:18} require $\vect{\epsilon}_t$ to satisfy three event constraints which they parameterize by $\overline{\vect{k}} = (\overline{k}_1, \overline{k}_2, \overline{k}_3)'$\footnote{The bounds will be set below.}, $\overline{\vect{\tau}} = (\overline{\tau}_1, \overline{\tau}_2, \overline{\tau}_3)' = (1987:10, [2007:12, 2009:06], [2007:12, 2009:06])$ and $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty and collect the constraints into a system of inequalities
+\begin{equation} \label{eq:svar_ludvi12}
+\begin{split}
+	FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & = \begin{pmatrix}
+	FE_1(\overline{\tau}_1, \overline{k}_1)\\
+	 FE_2(\overline{\tau}_2, \overline{k}), \\
+	 FE_3(\overline{\tau}_3, \overline{k}_3)
+	\end{pmatrix} = \\
+	= \begin{pmatrix}
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_1= 1987:10} \dot \quad \epsilon_{F\overline{\tau}_1}  \\
+	 \sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in [2007:12, 2009:06]} \dot \quad \epsilon_{F\overline{\tau}_2}  \\
+	\overline{k}_3
+	\end{pmatrix} & - 
+	\begin{pmatrix}
+	\overline{k}_1\\
+	\overline{k}_2  \\
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_3 \forall \in [2007:12, 2009:06]} \dot \quad \epsilon_{IPM\overline{\tau}_3} 
+	\end{pmatrix} \geq \vect{0}
+\end{split}								
+\end{equation}
+Each $FE_i(\overline{\tau}_i, \overline{k}_i)$ represents a vector of constraints of magnitude $\overline{k}_i$ on $\epsilon_{it}$ for corresponding $t \in \overline{\tau}_i$. Together, $FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})$ defines inequality constraints based on timing, sign and magnitude that help identification of the underlying structural model. $FE_1$ requires that the financial uncertainty shock that occurred in October 1987 be a large one; $FE_2$ postulates that there must be at least one month during the financial crises 2007-2009 for which the financial uncertainty shock was large and positive and $FC_3$ requires that any real activity shocks found during the Great Recession (the NBER dates for the recession coincide with the financial crisis) do not take any unusually large positive values.\\
+The motivation for the above constraints is that if a potential $\vect{Q}$ implies a corresponding shock series that is difficult to hold on to during our key time episodes, it will be removed from the solution set $\hatt{\mathcal{A}}_0(\phi)$. Correspondingly, in the postulated inequality constraints the values for the $\overline{k}_i$s have to be meaningful and timing of events $\overline{\tau}_i$ accurate otherwise solutions that pass these constraints will be meaningless after all.
+\\
+\\
+With regard to the first two constraints on financial uncertainty for the stock market crash on Black Monday and the recent financial crisis, \citet{ludvigsonetal:18} declare that the established constraints want to make sure that ``\textit{at least some}\footnote{Author's italics.} of the forecast error variance of $U_F$ in these episodes of most extreme financial uncertainty is attributable to large shocks that originated in financial markets'' which ``is a maintained assumption [...] that we argue is grounded in a broad historical reading of the times'' \citep[p. 8]{ludvigsonetal:18} and here is captured by $\vect{\epsilon}_F$. To clarify, \citet{ludvigsonetal:18} point out that the constraints, however, do not require that all or most of the variability in these episodes should come from shock originating in financial markets because they do not rule out large adverse shocks in $\vect{\epsilon}_M$ and $\vect{\epsilon}_{IPM}$. 
+
+
+
+
+The second set of constraints considered by \citet{ludvigsonetal:18} are \textbf{\textit{correlation constraints}} which require that the identified uncertainty shocks recovered from $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ show a minimum absolute correlation with certain variables that are external to the VAR estimations which they encode with $\vect{S}_t$. In their baseline specification they use aggregate stock market return and impose restrictions on its correlation with uncertainty shocks. \\
+\\
+As a motivating example, \citet{ludvigsonetal:17} consider the following example of a bivariate model:
+\begin{equation} \label{eq:svar_ludvi12_a}
+\begin{split}
+	\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 
+		\begin{pmatrix}
+			u_{1t} \\
+			u_{2t}
+		\end{pmatrix} \iff \\
+\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 	
+					\begin{pmatrix}
+    			a_{11}^0 &  a_{12}^0 \\
+			a_{21}^0 &  a_{22}^0
+ 			\end{pmatrix}^{-1}
+		\begin{pmatrix}
+			\epsilon_{1t} \\
+			\epsilon_{2t}
+		\end{pmatrix},\\
+		\begin{pmatrix}
+			\epsilon_1 \\
+			\epsilon_2
+		\end{pmatrix} & \thicksim \mathcal{N}(\vect{0}, \vect{I}_n)
+\end{split}								
+\end{equation}
+\\
+EXAMPLE NOT FINISHED! (if time is left, I can add more explanations to this!)
+\\
+\\
+To formalize this and further letting $\hat{e}_{St}$ be the first order autoregressive residual for $S_t$, $\hat{e}_{St}$, being a reduced-form residual, results as a combination of primitive shocks from various sources including, among others, the three shocks modeled within the VAR system. In particular, letting ($c_M(\vect{A}_0^{-1})$, $c_{IMP}(\vect{A}_0^{-1})$, $c_{F}(\vect{A}_0^{-1})$) be the sample correlations between $\hat{e}_{St}$ and the structural shocks ($\epsilon_{Mt}(\vect{A}_0^{-1})$, $\epsilon_{IPMt}(\vect{A}_0^{-1})$, $\epsilon_{Ft}(\vect{A}_0^{-1})$) and $\overline{\vect{\lambda}} = (\overline{\lambda}_1, \overline{\lambda}_2, \overline{\lambda}_3)$, the system of inequalities for correlation constraints is
+\begin{equation} \label{eq:svar_ludvi13}
+\begin{split}
+	FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & = \begin{pmatrix}
+	FC_1(\overline{\lambda}_1 < 0, \vect{S})\\
+	 FC_2(\overline{\lambda}_2 \geq 1, \vect{S}), \\
+	 FC_3(\overline{\lambda}_3, \vect{S})
+	\end{pmatrix} = \\
+	& = \begin{pmatrix}
+	 		\begin{pmatrix}
+	 			\overline{\lambda}_1 - c_M(\vect{A}_0^{-1})\\
+				\overline{\lambda}_1 - c_F(\vect{A}_0^{-1})
+			\end{pmatrix} \geq \vect{0} \\
+			|c_F(\vect{A}_0^{-1})| - \overline{\lambda}_2|c_M(\vect{A}_0^{-1}| \geq 0 \\
+			c_{MF} - \overline{\lambda}_3 \geq 0; c_{MF}^2 = c_M(\vect{A}_0^{-1})^2 + c_F(\vect{A}_0^{-1})^2.
+	\end{pmatrix} 
+\end{split}								
+\end{equation}
+The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$.\\
+Together, the constraints in \ref{eq:svar_ludvi13} provide cross-equation restrictions on the parameters in a potential $\vect{A}_0^{-1}$, whereby the correlations are not invariant to orthonormal rotations (by $\vect{Q}$) so that the generated correlations in each draw will be different.
+
+\subsection{Identified Solution Set and maxG - Solution}
+Combining default covariance structure restrictions with the introduced event and correlation constraints, \citet{ludvigsonetal:18} call the \textit{identifed}\footnote{Author's italics.} solution set 
+\begin{equation} \label{eq:svar_ludvi14}
+\begin{split}
+\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})  = \{\vect{A}_0^{-1} & = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad diag(\vect{A}_0^{-1}) \geq 0\}; \\
+			FZ(\vect{Q}; \phi) & = \vect{0}, \\
+			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & \geq \vect{0}, \\
+			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & \geq \vect{0}
+\end{split}								
+\end{equation}
+which only contains estimates of $\vect{A}_0^{-1}$ that satisfy all constraints. Thereby a particular solution can only be in both $\hatt{\mathcal{A}}_0$ (the unconstrained solution set) and $\overline{\vect{\mathcal{A}}}_0$ if all restrictions are satisfied. And while $\overline{\vect{\mathcal{A}}}_0$ will be a set as well it should be notably smaller than $\hatt{\mathcal{A}}_0$ (without any additional restrictions other than the usual covariance restrictions).
+\\
+Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.\\
+\\
+The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.\\
+And while there is no single solution in $\overline{\vect{\mathcal{A}}}_0$ that is more likely than another one, as a reference point (and following \citet{ludvigsonetal:18}), we will also refer to the so-called 'maxG' - solution when discussing the results. In particular, the 'maxG' - solution serves as a reference point at which the value of the introduced constraints (inequalities) are jointly maximized. Formally, as the maxG-solution the quadratic norm is chosen so that
+\begin{equation} \label{eq:svar_ludvi16}
+\begin{split}
+\vect{A}_0^{maxG} \equiv \operatorname*{argmax}_{\vect{A}_0 \in \overline{\vect{\mathcal{A}}}_0} \sqrt{\overline{f}(\vect{A}_0)^'\overline{f}(\vect{A}_0)} \quad \text{where} \quad \overline{f}(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S}) = \begin{pmatrix}
+			FZ(\vect{Q}; \phi)' \\
+			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})' \\
+			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})'	
+		\end{pmatrix}^'
+\end{split}								
+\end{equation}
+With respect to the introduced constraints, the inequalities will be large for the most extremely positive financial uncertainty shocks in 1987 and during the Great Recession, for the most negative real activity shocks during the Great Recession and when uncertainty shocks have the highest absolute correlation with the variable external to the VAR( in the baseline case: aggregate stock market returns), both jointly and collectively. With these features, the 'maxG' - solution can, economically, be regarded as the ``worst-case'' - scenario.
+
+\subsection{Baseline SVAR(6)-3}
+\citet{ludvigsonetal:18} estimate several VAR systems to identify uncertainty shocks from the VAR residuals using the restrictions from above. Here we will reproduce their baseline estimation which we have already introduced above consisting of $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty. In contrast to \citet{ludvigsonetal:18} who use their own constructed measure of financial uncertainty we use the VXO. The VAR-System uses $p=6$ lags (and will report the results for $p=12$ in the Appendix).
+
+\subsection{Solution Algorithm}
+As indicated above, a decisive part of the solution algorithm is the construction of the unconstrained solution set $\hatt{\mathcal{A}}_0$ and the derivation of the identified set $\overline{\vect{\mathcal{A}}}_0$. \\
+\\
+The unconstrained solution set $\hatt{\mathcal{A}}_0$ is obtained through the following steps:
+\begin{enumerate}[i]
+	\item estimation of the reduced-form model and initialization of $\vect{A}_0^{-1}$ as the unique lower-triangular Cholesky factor $\hatt{\vect{P}}$ of $\hatt{\vect{\Sigma}}_u$ with non-negative diagonal elements
+	\item rotation of $\hatt{\vect{P}}$ by K = 1.5 million random orthogonal matrices $\vect{Q}$;\\
+	 each rotation begins by drawing an $(n \times n)$ matrix $\vect{M}$ of normally and independently distributed values (i.e., drawn from a normal distribution with $\mu = 0$ and $\sigma = 1$); $\vect{Q}$ is then taken to be the orthonormal matrix resulting from a $\vect{Q}\vect{R}$ decomposition of $\vect{M}$
+	 \item because $\vect{A}_0^{-1} = \vect{P}\vect{Q}$, the covariance restrictions are imposed by construction 
+\end{enumerate}
+
+Every generated $\vect{A}_0^{-1}$ resulting from one of the 1.5 million rotations is then confronted with the event and correlation-constraints for further processing. This step, however, needs a reasonable choice of the parameters $\overline{\vect{\lambda}}, \overline{\vect{\tau}}$ and $\overline{\vect{k}}$. Using a mix of theory, empirical analysis and economic reasoning, \citet{ludvigsonetal:18} set the parameters to  $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$ and the threshold for the collective correlation to $\overline{\lambda}_3 = 0.18$. The choices for $\overline{k}_1$ and $\overline{k}_2$, are, according to \citet{ludvigsonetal:18} partyl guided by \citet{bloom:09} who chooses to study the dynamic effects of four standard deviation shocks to uncertainty in his impulse response analyses. Accordingly, \citet{ludvigsonetal:18} set both $\overline{k}_1 = 4$ and $\overline{k}_2 = 4$.\footnote{This threshold is chosen considering that the shocks are shown to be non-Gaussian with exhibiting excess skewness and kurtosis.} Further, $\overline{k}_3$ is set to 2 to dismiss shocks in real activity that go beyond two standard deviations above their sample mean during 2007-2009.
+\\
+At each draw of $\vect{A}_0^{-1} = \hatt{\vect{P}}\vect{Q}$ and the subsequent generation of $\vect{\epsilon}_t = \vect{A}_0\hatt{\vect{u}}_t$, only those models will be stored that fulfill all constraints.
+
+A few sentences from other parts that actually belong here:\\
+-) Consequently, in an SVAR framework as suggested by \citet{ludvigsonetal:18}, the $\vect{P}$-matrix to orthogonalize the reduced-form disturbances is not mechanically constructed as the Cholesky decomposition of the error covariance matrix (zero short-run restrictions; recursive identification) but rather is obtained from contemporaneous and theor-based restrictions placed on the $\vect{P}$ - matrix.\\
+-) 
 
 
 \chapter{Data}
