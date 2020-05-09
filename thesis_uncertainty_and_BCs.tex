@@ -1915,61 +1915,13 @@ changes, as, inevitably, it weighs on weak demand.
 
 
 
-
-
-
-\paragraph{Baseline Results}
-
-\begingroup
-    \fontsize{8pt}{12pt}\selectfont
-    Note to self:
-\begin{itemize}
-	\item \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre-crisis sample which yields less conclusive answers; therefore they write: ``A premise of this paper is that the 2007-2009 financial crisis was an important rare event that can help distinguish the transmission of financial versus real uncertainty shocks. This maintained assumption appears supported by the subsample analysis.''
-\end{itemize}
-\endgroup
-
-Before jumping to the resulting impulse responses of the baseline system $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ in Figure~\ref{fig:impulse.responses_all.SVAR}, we first want to briefly discuss the recovered uncertainty shocks which exhibit a few noteworthy features. \\
-\\
-
-
-\begin{figure}[!h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_maxG.pdf}}
-      \caption[Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
-      \textit{Note:}  The horizontal line corresponds to 3 standard deviations above/below the unconditional mean of each series. The shocks $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ for maxG solution are reported, where $\vect{u}_t$ holds the residuals from VAR(6) of ($U_{Macro}, IPM, U_{Fin}$). The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_shocks}
-\end{figure}
-
-
-
-\begin{figure}[!h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_largeShocks.pdf}}
-      \caption[Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
-      \textit{Note:}  The figure shows all shocks in the identified set that are at least 2 standard deviations above the unconditional mean for $\epsilon_{Macro}$ and $\epsilon_{Fin}$ and at least 2 standard deviations below the mean for $\epsilon_{ipm}$. For the middle pane ($\epsilon_{ipm}$) the sign of the shocks were flipped (so that negative shocks exceeding 2 standard deviations also point upwards). The horizontal line corresponds to 3 standard deviations. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_largeshocks}
-\end{figure}
-
-
-\begin{figure}[!h]
-   \centering
-   \setlength\fboxsep{0pt}
-   \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.5cm -1cm, width=1\textwidth]{impulse_responses_all_SVAR.pdf}}
-      \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
-      \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:impulse.responses_all.SVAR}
-\end{figure}
-
-
 \chapter{Econometric Model}
 \label{sec:EconometricModel}
 
 \section[Preliminaries: Theoretical Background on (S)VARs]{Preliminaries: Theoretical Background on VARs\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
 \label{sec:TheoreticalBackgroundSVARs}
 
-\subsection{VARs and the Derivation of Impulse Responses}
+\subsection{(S)VARs and the Derivation of Impulse Responses}
 We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-equations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
 \begin{equation} \label{eq:svar1}
 \begin{split}
@@ -2468,7 +2420,7 @@ Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinite
 Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the restrictions that \citet{ludvigsonetal:18} define involve the identified structural shocks $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. We will outline these two set of constraints in turn.
 
 
-\subsection{Shock-Based Constraints in \citet{ludvigsonetal:18}}
+\subsection{Shock-Based Constraints}
 \textbf{\textit{Event constraints}} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 stock market crash and the 2007-09 financial crisis. \citet{ludvigsonetal:18} decide for this constraint because ``a credible identifiation scheme should produce estimates of $\vect{\epsilon}_t$ with features that accord with our ex-post understanding of historical events, at least during episodes of special interest.'' \citep[p. 7]{ludvigsonetal:18}  In particular, event constraints put the bounds $\overline{k}$ on the sign and magnitude of $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ during particular episodes which are collected into $\tau^*$. \\
 \\
 The reason why such special events turn out to be helpful for identification is that, despite the fact that two observationally equivalent structural models $\vect{A}_0^{-1}$ and $\widetilde{\vect{A}}_0^{-1}$ will produce the corresponding shock-processes $\big\{\vect{\epsilon}_t\big\}_{t=1}^T$ and $\big\{\widetilde{\vect{\epsilon}}_t\big\}_{t=1}^T$ where the first and second moments are equivalent, the individual elements of $\vect{\epsilon}_t$ and $\widetilde{\vect{\epsilon}}_t$ are not necessarily equal at each point in time. This can be easily seen because for $\widetilde{\vect{Q}} \neq \vect{Q}$ we get 
@@ -2657,8 +2609,55 @@ A few sentences from other parts that actually belong here:\\
 \chapter{Results}
 \label{sec:Results}
 
+\section{Uncertainty Shocks}
+
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Note to self:
+\begin{itemize}
+	\item \citet[p. 25]{ludvigsonetal:18} run their algorithm also for a pre-crisis sample which yields less conclusive answers; therefore they write: ``A premise of this paper is that the 2007-2009 financial crisis was an important rare event that can help distinguish the transmission of financial versus real uncertainty shocks. This maintained assumption appears supported by the subsample analysis.''
+\end{itemize}
+\endgroup
+
+Before jumping to the resulting impulse responses of the baseline system $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ in Figure~\ref{fig:impulse.responses_all.SVAR}, we first want to briefly discuss the recovered uncertainty shocks which exhibit a few noteworthy features. \\
+\\
+
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_maxG.pdf}}
+      \caption[Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Time Series of standardized structural shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The horizontal line corresponds to 3 standard deviations above/below the unconditional mean of each series. The shocks $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ for maxG solution are reported, where $\vect{u}_t$ holds the residuals from VAR(6) of ($U_{Macro}, IPM, U_{Fin}$). The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_shocks}
+\end{figure}
+
+
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_largeShocks.pdf}}
+      \caption[Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Large Shocks derived from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The figure shows all shocks in the identified set that are at least 2 standard deviations above the unconditional mean for $\epsilon_{Macro}$ and $\epsilon_{Fin}$ and at least 2 standard deviations below the mean for $\epsilon_{ipm}$. For the middle pane ($\epsilon_{ipm}$) the sign of the shocks were flipped (so that negative shocks exceeding 2 standard deviations also point upwards). The horizontal line corresponds to 3 standard deviations. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:ludvigsonetal_timeseries_e_largeshocks}
+\end{figure}
+
+
+
+
 \section[Impulse Response Analysis]{Impulse Response Analysis}
 \label{sec:ImpulseResponseAnalysis}
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.5cm -1cm, width=1\textwidth]{impulse_responses_all_SVAR.pdf}}
+      \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:impulse.responses_all.SVAR}
+\end{figure}
 
 \section[Variance Decomposition]{Variance Decomposition}
 \label{sec:VarianceDecomposition}
