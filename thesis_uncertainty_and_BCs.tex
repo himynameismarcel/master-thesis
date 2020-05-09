@@ -1291,35 +1291,6 @@ To put Jordá's local projections properly in context with respect to VARs, in w
 
 
 
-
-
-
-
-
-
-\paragraph{Estimation of VARs}
-
-
-\paragraph{Defining Impulse Responses Under Unknown Wold Decomposition}
-\citet{jorda:05} outlines that the deployment of the Wold decomposition (i.e., transformation of a VAR into its MA($\infty$) counterpart) to be able to recover the impulse responses is justified under the premise that the estimated model indeed resembles the underlying DGP. To focus on the actual goal of impulse responses in a model-free context, \citet{jorda:05} reverts back to the original definition of impulse responses without reference to the unknown DGP (and hence without knowing the Wold decomposition) as described by \citet{koopetal:96} and \citet{hamilton:94}:\\
-\citet{koopetal:96}\footnote{\citet{hamilton:94} uses a similar description.} introduce the (as they call it) \textit{traditional} definition of an impulse response function as the difference between two different realizations of $\vect{y_{t+s}}$ that are identical up to time $t-1$ but diverge in time $t$ so that 
-\begin{equation}
-	\vect{x_{t-1}'} = (\vect{y_{t-1}^'}, \vect{y_{t-2}^'}, \dots, \vect{y_{t-p}^'})
-\end{equation}
-is the information received about the system up to date $t-1$. In this setting, one realization assumes that the system was hit by a shock of size $\vect{\delta}$ between $t$ and $t+s$ while the other one (called benchmark) is not impacted between $t$ and $t+s$. Based on this distinction, even if its Wold decomposition does not exist (as mentioned above) the impulse response function can be defined as the difference between the two forecasts
-\begin{equation}\label{eq:IRForecast}
-\begin{split}
-	IRF(t, s, \vect{\delta}) & = \mathbb{E}(\vect{y_{t+s}}|\vect{u_t}=\vect{\delta}; \vect{x_{t-1}}) - \mathbb{E}(\vect{y_{t+s}}|\vect{u_t}=\vect{0};\vect{x_{t-1}}) \\
-	& = \vect{\Psi_s \delta} \\
-	\text{for} \quad s & = 0, 1, 2, \dots
-\end{split}
-\end{equation}
-where $\mathbb{E}(.|.)$ denotes the best, mean squared error prediction, $\vect{y_t}$ is an $(n \times 1)$ random vector, $\vect{0}$ is of dimension $(n \times 1)$, $\vect{u_t}$ is the $(n \times 1)$ vector of reduced-form disturbances and $\vect{\delta}$ is an $(n \times 1)$ vector containing the respective changes of $\vect{u_t}$ and answers the question: ``What is the effect of a shock of size $\vect{\delta}$ hitting the system at time $t$ on the state of the system at time $t+s$, given that no other shocks hit the system?'' \citep{koopetal:96}. As stated above, the representation of IRFs in Equations~\ref{eq:IRForecast} or \ref{eq:svar10} give the effect to a one-time unit increase to one of the (structural) shocks while holding all else constant. 
-\\
-\\
-Because of the tricky identification of contemporaneous causal relations in a VAR setting, \citet{jorda:05} criticizes the mechanical standard Wold-causal ordering of the elements of $\vect{y_t}$ on which the VAR literature often relies to establish the triangular factorization of the reduced-form variance-covariance matrix $\vect{\Sigma_u}$ and at the same time finds that the ``statistical-based structural identification of contemporaneous causal links'' is a difficult venture.\footnote{An issue we will pick up again in Section~\ref{sec:ludvigsonetal18} when discussing the approach of \citet{ludvigsonetal:18}.}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%RESULTINGSPECIFICATIONS%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Resulting Specifications}
 Based on the explanations above, we will estimate three models:
