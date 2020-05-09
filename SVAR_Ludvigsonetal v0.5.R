@@ -226,7 +226,7 @@ return.data <- SVAR.data %>%
     A_0_valid <- list()
     
     ## the below has to run 1.5 million times:
-    for(k in 1:200000){
+    for(k in 1:1500000){
           # k <- 3
           # print(k)
           # print(x)
@@ -1215,6 +1215,7 @@ return.data <- SVAR.data %>%
     
       impulse.responses_all.SVAR
        
+      ggsave(file="impulse_responses_all_SVAR.pdf")
       # ggsave(file="impulse_responses_all_SVAR_test.pdf")
        
 #######################
