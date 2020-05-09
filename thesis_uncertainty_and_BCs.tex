@@ -802,7 +802,6 @@ Within the range of finance-based measures stock market volatility is a widely u
 %\label{tab:bloom_shocks}
 %\end{table}
 
-git commit -a -m "removed survey-based measure: michigan Survey of Consumers from thesis"
 
 \subsection{A News-Based Measure: \citet{bakeretal:15}}
 \label{sec:epuindex}
@@ -1276,12 +1275,22 @@ Central to our study of the effects that the models suggest is the dynamic behav
 %\newpage
 \section[Impulse Responses in a VAR Setting Versus Local Projections]{Impulse Responses in a VAR Setting Versus Local Projections\footnote{This entire section draws heavily from various sources including ...... LIST ALL THE BOOKS and other resources I have used!}}
 \label{sec:IRFsVARversusLocalProj}
-\citet{jorda:05} popularized the idea of computing impulse responses for vector time series based on \textit{local projections} that go without the specification and estimation of the ``[...] unknown true multivariate dynamic system itself'' \citep[p. 1]{jorda:05}. \\
+
+\begingroup
+    \fontsize{8pt}{12pt}\selectfont
+    Leftovers from previous version:
+\begin{itemize}
+	\item \citet{jorda:05} popularized the idea of computing impulse responses for vector time series based on \textit{local projections} that go without the specification and estimation of the ``[...] unknown true multivariate dynamic system itself'' \citep[p. 1]{jorda:05}. \\
 As part of the advantages, \citet{jorda:05}, among others, shows that local projections provide appropriate inference that goes without asymptotic delta-method approximations or numerical techniques, are robust to misspecificaions of the DGP and more easily allow non-linear specifications (\textit{flexible local projection}). The key argument regards the original purpose of time-series models, i.e., forecasting: A (multiple) linear system (like a VAR) is optimally designed for one-period ahead forecasts and will still produce reasonable one-period ahead forecasts under a misspecified model.\footnote{Using the term 'linear projection' to describe a forecast formed from a linear function of past observations as it is the case in traditional time-series forecasting emphasizes the common goal of traditional time-series forecasting versus local projections.} In case of an acute misspecification, however, looking at more distant horizons, misspecification errors are worsened along with the forecast horizon and passed on to the more distant point forecasts. 
 
 Technically, local projections are the result of sequential regressions of a dependent variable shifted several steps ahead, i.e., regressions of the dependent variables at horizon $t+h$ on the set of regressors at time $t$. As such, the method shares many similarities with direct multi-step forecasting techniques.\footnote{See e.g., \citet{marcellinoetal:06} for a comparison of direct and iterated multistep methods in forecasting practice for univariate time series. They describe forecasts based on a multiperiod model (direct forecast) as regressing a multiperiod-ahead value of the dependent variable on current and lagged values of the variable and show that the comparison between iterated (i.e., forecasts derived from time series models) and direct forecasts involve a trade-off between bias and efficiency: iterated methods win with respect to parameter efficiency but produce a compounded bias if the one-step-ahead model is already misspecified. Similarly like \citet{jorda:05} write that the idea of direct multiperiod forecasts (in comparison to iterated forecasts based on a univariate or multivariate time-series models) goes back to at least \citet{cox:61} whereas \citet{weiss:91} established consistency and asymptotic normality of direct forecasts under general conditions. \citet{bhansali:02} provides a review of the literature.} While direct forecasting aims at an optimal multi-step point forecast of the dependent variable, local projections target a consistent estimation of the corresponding impulse response coefficients (which are obviously two interrelated goals).\\
 \\
 To put Jordá's local projections properly in context with respect to VARs, in what follows we outline some theory regarding VARs which will allow us then to seamlessly introduce local projections into the picture.
+
+\endgroup
+
+
+
 
 \paragraph{VARs and the Derivation of Impulse Responses}
 We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-quations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} (i.e., a bivariate SVAR(1)) whereby the time path of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is an SVAR($1$).} so that
@@ -2615,7 +2624,14 @@ Before jumping to the resulting impulse responses of the baseline system $\vect{
 \end{figure}
 
 
+\chapter{Econometric Model}
+\label{sec:EconometricModel}
 
+\chapter{Data}
+\label{sec:Data}
+
+\chapter{Results}
+\label{sec:Results}
 
 %\newpage
 \chapter{Conclusion}
