@@ -1294,147 +1294,7 @@ To put Jordá's local projections properly in context with respect to VARs, in w
 
 
 
-\paragraph{Identification of Structural VARs}
-The above derivations have not yet explained the identification of $\vect{A_0^{-1}}$ that is needed to seamlessly connect the estimated reduced-form VAR with the structural VAR that is of actual interest. \\
-\\
-The usual strategy is to first estimate the reduced-form system as in Equation~\ref{eq:svar5}. In this VAR($1$)-model this amounts to estimating $n^2 + \frac{n(n+1)}{2}$ parameters ($n^2$ for the coefficient matrix $\vect{B_1}$ and $\frac{n(n+1)}{2}$ for the variance covariance-matrix of the reduced-form errors). 
-\\
-In our bivariate case above, we concluded that we need at least one restriction on the parameters of Equation~\ref{eq:svar4} so that the system of equations becomes solvable. Identification schemes include, among others, zero short-run restrictions (known as Choleski identification), sign restrictions, zero long-run restrictions (also called Blanchard-Quah following \citealp{blanchardandquah:89}), etc.\\
-\\
-For example, imposing a short-run restriction by assuming that the impact matrix $\vect{A_0}$ is lower triangular with
-\begin{equation} \label{eq:svar11}
-\begin{split}
- 		\vect{A_0} = 	\begin{bmatrix}
-    					1 & 0 \\
-					-a_{02} & 1
- 					\end{bmatrix}
-\end{split}								
-\end{equation}
-i.e., the restriction that $-a_{01}=0$, is sufficient to just identify $-a_{02}$ (from the reduced form covariance matrix $\vect{\Sigma_u}$; shown below) and subsequently results in 
-\begin{equation} \label{eq:svar12}
-\begin{split}
- 		\vect{A_0^{-1}} = \vect{\Theta_0} = 	
-					\begin{bmatrix}
-    					1 & 0 \\
-					a_{02} & 1
- 					\end{bmatrix} = 
-						\begin{bmatrix}
-    						1 & 0 \\
-						\theta_{21}^{(0)} & 1
- 						\end{bmatrix}
-\end{split}								
-\end{equation}
-for the SMA representation imposing the restriction that the value $y_{2t}$ does not have a contemporaneous effects on $y_{1t}$ while due to $-a_{02} \neq 0$ we would allow for the reverse. The reasoning behind such an identification strategy usually stems from arguments that declare certain variable to be sticky, meaning that they do not respond immediately to certain shocks. Further, we see that the restriction $a_{01}=0$ in the SVAR representation is equivalent to assuming $\theta_{12}^{(0)}=0$ in the SMA, meaning that $\epsilon_{1t}$ has no contemporaneous impact on $y_{2t}$.\\
-With $\vect{A_0}$ being a lower triangular matrix of the above form, further the reduced form VAR errors $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ become
-\begin{equation} \label{eq:svar13}
-\begin{split}
- 		\vect{u_t} = \begin{bmatrix}
-    					u_{1t} \\
-					u_{2t} 
- 					\end{bmatrix} = 
-						\begin{bmatrix}
-    						1 & 0 \\
-						a_{02} & 1  
- 						\end{bmatrix} 
-							\begin{bmatrix}
-    							\epsilon_{1t} \\
-							\epsilon_{2t} 
- 							\end{bmatrix} = 
-								\begin{bmatrix}
-    								\epsilon_{1t} \\
-								\epsilon_{2t}+a_{01}\epsilon_{1t} 
- 								\end{bmatrix} 			
-\end{split}								
-\end{equation}
-The SVAR representation derived under above the assumption hence establishes a recursive causal ordering (i.e., a cascading causal chain of shocks) which may be computed using the Choleski factorization of the reduced form covariance matrix $\vect{\Sigma_u}$ (the Choleski identification is hence also called recursive identification).\footnote{In this identification scheme the order of the variables entering the VAR matters because the variable placed on top is assumed to be the most exogenous and is only affected by a shock to itself. The actual ordering depends on the researcher's own thinking about the most likely propagation chain a shock will adhere to. Further note, that establishing that certain shock have effects only on some variables at a certain point in time is identical to certain \textit{variables} having effects only on some variable at a certain point in time.} 
-\\
-Writing down the Choleski factorization of the positive semi-definite matrix $\vect{\Sigma_u}$ gives
-\begin{equation} \label{eq:svar14}
-\begin{split}
- 		\vect{\Sigma_u} & = \vect{P}\vect{P'} \quad \text{with} \\
-		\vect{P} & = \begin{bmatrix}
-    							p_{11} & 0 \\
-							p_{21} & p_{22}
- 							\end{bmatrix}
-\end{split}								
-\end{equation}
-with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$\footnote{The distinction between the application of a Choleski decomposition and the triangular factorization, which we will discuss in turn, in the context of VARs is very subtle and is related to whether a (reduced-form) VAR is estimated and the resulting $\vect{\Theta}_j$ impulse responses are simply mechanically orthogonalized which results in the orthogonalized impulses having unit variance or whether, in the context of an SVAR, a triangular factorization as described next is established and $\vect{A}_0$ is chosen in a way which implies a Wold causal ordering which, qualitatively, establishes the same orthogonalized impulse responses as well without, however, necessarily having unit variances for the $\vect{\epsilon}_t$s.}. A closely related variant of the this classical representation of the Cholesky decomposition is the L$\Lambda$L decomposition (triangular factorization) in the form of 
-\begin{equation} \label{eq:svar15}
-\begin{split}
- 		\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L'}
-\end{split}								
-\end{equation}
-where $\vect{L}$ is a lower triangular matrix with $1$s along the diagonal and $\vect{\Lambda}$ is a diagonal matrix with non-negative elements
-\begin{equation} \label{eq:svar16}
-\begin{split}
-	\vect{L} =  \begin{bmatrix}
-    				1 & 0 \\
-				l_{21} & 1 
- 				\end{bmatrix}, 
-				\vect{\Lambda} = 
-					\begin{bmatrix}
-    					\lambda_1 & 0 \\
-					0 & \lambda_2 
- 					\end{bmatrix},
-					\lambda_i \leq 0, i = 1, 2
-\end{split}								
-\end{equation}
-whereby the representation of this decomposition is related to the classical notation of the Cholesky decomposition of the form $\vect{PP'}$ via
-\begin{equation} \label{eq:svar17}
-\begin{split}
-	\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L}' = \vect{L}\vect{\Lambda}^{1/2}(\vect{\Lambda}^{1/2})'\vect{L}' = (\vect{L}\vect{\Lambda})^{1/2}\left ( (\vect{L}\vect{\Lambda})^{1/2}\right )' \\
-				& = \vect{P}\vect{P'}.
-\end{split}								
-\end{equation}
-In other words, the triangular decomposition $\vect{\Sigma_u} = \vect{L}\vect{\Lambda}\vect{L'}$ is obtained from the Choleski decomposition $\vect{\Sigma_u} = \vect{P}\vect{P'}$ by defining a diagonal matrix $\vect{D}$ which has the same main diagonal as $\vect{P}$ and by specifying $\vect{L} = \vect{P}\vect{D^{-1}}$ and $\vect{\Lambda} = \vect{D}\vect{D'}$.\\
-Starting from a reduced from VAR
-\begin{equation} \label{eq:svar18}
-\begin{split}
-	\vect{y_t} & = \vect{A_1}\vect{y_{t-1}} + \vect{u_t} \\
-	\vect{\Sigma_u} & = \mathbb{E}[\vect{u_t}\vect{u_t}']
-\end{split}								
-\end{equation}
-performing the triangular factorization on the covariance matrix $\vect{\Sigma_u}$ and constructing a pseudo SVAR model by premultiplying the reduced form VAR by $\vect{L}^{-1}$ gives
-\begin{equation} \label{eq:svar19}
-\begin{split}
-	\vect{L}^{-1}\vect{y_t} & = \vect{L}^{-1}\vect{B_1}\vect{y_{t-1}} + \vect{L}^{-1}\vect{u_t}
-\end{split}								
-\end{equation}
-which can be rewritten to
-\begin{equation} \label{eq:svar21}
-\begin{split}
-	\vect{A_0}\vect{y_t} & = \vect{A_1}\vect{y_{t-1}} + \vect{\epsilon_t}
-\end{split}								
-\end{equation}
-with $\vect{A_0} = \vect{L^{-1}}$, $\vect{A_1} = \vect{L}^{-1}\vect{B_1}$, $\vect{\epsilon_t} = \vect{L}^{-1}\vect{u_t}$.\\
-Hence, with a proper choice of $\vect{A}_0$, the pseudo structural errors $\vect{\epsilon_t}$ have a diagonal covariance matrix $\vect{\Lambda}$ resulting from 
-\begin{equation} \label{eq:svar22}
-\begin{split}
-	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_t}'] & = \vect{L}^{-1} \mathbb{E}[\vect{u_t}\vect{u_t}']\vect{L^{-1}}' = \\
-										& = \vect{L}^{-1} \vect{\Sigma_u} \vect{L^{-1}}' = \\
-										& = \vect{L}^{-1} \vect{L \Lambda L}' \vect{L^{-1}}' = \\
-										& = \vect{\Lambda},
-\end{split}								
-\end{equation}
-meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm $\lambda$ and accounts for (eliminates) the correlation between the reduced-form errors. The $(i, j)$ element of $\vect{\Lambda}$ gives the variance of $u_{ji}$. Ultimately the structural $\vect{A_0}$ - matrix is
-\begin{equation} \label{eq:svar23}
-\begin{split}
-	\vect{A_0} = \begin{bmatrix}
-    					1 & 0 \\
-					-a_{02} & 1
- 					\end{bmatrix} = 
-					\vect{L}^{-1} = 
-						\begin{bmatrix}
-    						1 & 0 \\
-						t_{21} & 1
- 						\end{bmatrix}
-\end{split}								
-\end{equation}
-The above result can also be seen by the following:\\
-Knowing that one way to orthogonalize impulse-responses in a reduced-form VAR with possibly correlated errors in $\vect{\Sigma}_u$ is the Choleski decomposition (which gives rise to the Wold causal ordering), when the reduced-form variance-covariance matrix instead is decomposed in its triangular factorization as $\vect{\Sigma}_u = \vect{L}\vect{\Lambda}\vect{L}'$ and knowing that $\vect{\Sigma_u}  \equiv \mathbb{E}[\vect{u_t}\vect{u_t^'}]= \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'$ (which is equivalent to $\vect{\Sigma_\epsilon} = \vect{A_0}\vect{\Sigma_u}\vect{A_0}'$), establishes that $\vect{L} = \vect{A}_0^{-1}$ and $\vect{\Sigma_\epsilon} = \vect{\Lambda}$. 
-\\
-\\
-The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0^{-1}$ being a lower triangular matrix with $diag(\vect{A}_0^{-1}) = 1$ causes the system of equations $\vect{\Sigma}_\epsilon  = \vect{A_0^{-1}}\vect{\Sigma_u}\vect{A_0^{-1}}'$ having a unique solution (at least locally).
+
 
 
 \paragraph{Estimation of VARs}
@@ -2631,6 +2491,150 @@ Subsequently, a plot of the elements $(i, j)$ of the respective structural MA ma
 \end{split}								
 \end{equation}
 is the \textit{impulse-response function} that describes the response of $y_{i, t+s}$ to a one-time one-unit impulse in $y_{jt}$ with all other variables dated $t$ or earlier held constant.
+
+
+
+\subsection{Identification of Structural VARs}
+The above derivations have not yet explained the identification of $\vect{A_0^{-1}}$ that is needed to seamlessly connect the estimated reduced-form VAR with the structural VAR that is of actual interest. \\
+\\
+The usual strategy is to first estimate the reduced-form system as in Equation~\ref{eq:svar5}. In this VAR($1$)-model this amounts to estimating $n^2 + \frac{n(n+1)}{2}$ parameters ($n^2$ for the coefficient matrix $\vect{B_1}$ and $\frac{n(n+1)}{2}$ for the variance covariance-matrix of the reduced-form errors). 
+\\
+In our bivariate case above, we concluded that we need at least one restriction on the parameters of Equation~\ref{eq:svar4} so that the system of equations becomes solvable. Identification schemes include, among others, zero short-run restrictions (known as Choleski identification), sign restrictions, zero long-run restrictions (also called Blanchard-Quah following \citealp{blanchardandquah:89}), etc.\\
+\\
+For example, imposing a short-run restriction by assuming that the impact matrix $\vect{A_0}$ is lower triangular with
+\begin{equation} \label{eq:svar11}
+\begin{split}
+ 		\vect{A_0} = 	\begin{bmatrix}
+    					1 & 0 \\
+					-a_{02} & 1
+ 					\end{bmatrix}
+\end{split}								
+\end{equation}
+i.e., the restriction that $-a_{01}=0$, is sufficient to just identify $-a_{02}$ (from the reduced form covariance matrix $\vect{\Sigma_u}$; shown below) and subsequently results in 
+\begin{equation} \label{eq:svar12}
+\begin{split}
+ 		\vect{A_0^{-1}} = \vect{\Theta_0} = 	
+					\begin{bmatrix}
+    					1 & 0 \\
+					a_{02} & 1
+ 					\end{bmatrix} = 
+						\begin{bmatrix}
+    						1 & 0 \\
+						\theta_{21}^{(0)} & 1
+ 						\end{bmatrix}
+\end{split}								
+\end{equation}
+for the SMA representation imposing the restriction that the value $y_{2t}$ does not have a contemporaneous effects on $y_{1t}$ while due to $-a_{02} \neq 0$ we would allow for the reverse. The reasoning behind such an identification strategy usually stems from arguments that declare certain variable to be sticky, meaning that they do not respond immediately to certain shocks. Further, we see that the restriction $a_{01}=0$ in the SVAR representation is equivalent to assuming $\theta_{12}^{(0)}=0$ in the SMA, meaning that $\epsilon_{1t}$ has no contemporaneous impact on $y_{2t}$.\\
+With $\vect{A_0}$ being a lower triangular matrix of the above form, further the reduced form VAR errors $\vect{u_t} = \vect{A_0^{-1}}\vect{\epsilon_t}$ become
+\begin{equation} \label{eq:svar13}
+\begin{split}
+ 		\vect{u_t} = \begin{bmatrix}
+    					u_{1t} \\
+					u_{2t} 
+ 					\end{bmatrix} = 
+						\begin{bmatrix}
+    						1 & 0 \\
+						a_{02} & 1  
+ 						\end{bmatrix} 
+							\begin{bmatrix}
+    							\epsilon_{1t} \\
+							\epsilon_{2t} 
+ 							\end{bmatrix} = 
+								\begin{bmatrix}
+    								\epsilon_{1t} \\
+								\epsilon_{2t}+a_{01}\epsilon_{1t} 
+ 								\end{bmatrix} 			
+\end{split}								
+\end{equation}
+The SVAR representation derived under above the assumption hence establishes a recursive causal ordering (i.e., a cascading causal chain of shocks) which may be computed using the Choleski factorization of the reduced form covariance matrix $\vect{\Sigma_u}$ (the Choleski identification is hence also called recursive identification).\footnote{In this identification scheme the order of the variables entering the VAR matters because the variable placed on top is assumed to be the most exogenous and is only affected by a shock to itself. The actual ordering depends on the researcher's own thinking about the most likely propagation chain a shock will adhere to. Further note, that establishing that certain shock have effects only on some variables at a certain point in time is identical to certain \textit{variables} having effects only on some variable at a certain point in time.} 
+\\
+Writing down the Choleski factorization of the positive semi-definite matrix $\vect{\Sigma_u}$ gives
+\begin{equation} \label{eq:svar14}
+\begin{split}
+ 		\vect{\Sigma_u} & = \vect{P}\vect{P'} \quad \text{with} \\
+		\vect{P} & = \begin{bmatrix}
+    							p_{11} & 0 \\
+							p_{21} & p_{22}
+ 							\end{bmatrix}
+\end{split}								
+\end{equation}
+with $\vect{P}$ being a lower triangular matrix with $p_{ii} \leq 0, i = 1, 2$\footnote{The distinction between the application of a Choleski decomposition and the triangular factorization, which we will discuss in turn, in the context of VARs is very subtle and is related to whether a (reduced-form) VAR is estimated and the resulting $\vect{\Theta}_j$ impulse responses are simply mechanically orthogonalized which results in the orthogonalized impulses having unit variance or whether, in the context of an SVAR, a triangular factorization as described next is established and $\vect{A}_0$ is chosen in a way which implies a Wold causal ordering which, qualitatively, establishes the same orthogonalized impulse responses as well without, however, necessarily having unit variances for the $\vect{\epsilon}_t$s.}. A closely related variant of the this classical representation of the Cholesky decomposition is the L$\Lambda$L decomposition (triangular factorization) in the form of 
+\begin{equation} \label{eq:svar15}
+\begin{split}
+ 		\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L'}
+\end{split}								
+\end{equation}
+where $\vect{L}$ is a lower triangular matrix with $1$s along the diagonal and $\vect{\Lambda}$ is a diagonal matrix with non-negative elements
+\begin{equation} \label{eq:svar16}
+\begin{split}
+	\vect{L} =  \begin{bmatrix}
+    				1 & 0 \\
+				l_{21} & 1 
+ 				\end{bmatrix}, 
+				\vect{\Lambda} = 
+					\begin{bmatrix}
+    					\lambda_1 & 0 \\
+					0 & \lambda_2 
+ 					\end{bmatrix},
+					\lambda_i \leq 0, i = 1, 2
+\end{split}								
+\end{equation}
+whereby the representation of this decomposition is related to the classical notation of the Cholesky decomposition of the form $\vect{PP'}$ via
+\begin{equation} \label{eq:svar17}
+\begin{split}
+	\vect{\Sigma_u} & = \vect{L}\vect{\Lambda}\vect{L}' = \vect{L}\vect{\Lambda}^{1/2}(\vect{\Lambda}^{1/2})'\vect{L}' = (\vect{L}\vect{\Lambda})^{1/2}\left ( (\vect{L}\vect{\Lambda})^{1/2}\right )' \\
+				& = \vect{P}\vect{P'}.
+\end{split}								
+\end{equation}
+In other words, the triangular decomposition $\vect{\Sigma_u} = \vect{L}\vect{\Lambda}\vect{L'}$ is obtained from the Choleski decomposition $\vect{\Sigma_u} = \vect{P}\vect{P'}$ by defining a diagonal matrix $\vect{D}$ which has the same main diagonal as $\vect{P}$ and by specifying $\vect{L} = \vect{P}\vect{D^{-1}}$ and $\vect{\Lambda} = \vect{D}\vect{D'}$.\\
+Starting from a reduced from VAR
+\begin{equation} \label{eq:svar18}
+\begin{split}
+	\vect{y_t} & = \vect{A_1}\vect{y_{t-1}} + \vect{u_t} \\
+	\vect{\Sigma_u} & = \mathbb{E}[\vect{u_t}\vect{u_t}']
+\end{split}								
+\end{equation}
+performing the triangular factorization on the covariance matrix $\vect{\Sigma_u}$ and constructing a pseudo SVAR model by premultiplying the reduced form VAR by $\vect{L}^{-1}$ gives
+\begin{equation} \label{eq:svar19}
+\begin{split}
+	\vect{L}^{-1}\vect{y_t} & = \vect{L}^{-1}\vect{B_1}\vect{y_{t-1}} + \vect{L}^{-1}\vect{u_t}
+\end{split}								
+\end{equation}
+which can be rewritten to
+\begin{equation} \label{eq:svar21}
+\begin{split}
+	\vect{A_0}\vect{y_t} & = \vect{A_1}\vect{y_{t-1}} + \vect{\epsilon_t}
+\end{split}								
+\end{equation}
+with $\vect{A_0} = \vect{L^{-1}}$, $\vect{A_1} = \vect{L}^{-1}\vect{B_1}$, $\vect{\epsilon_t} = \vect{L}^{-1}\vect{u_t}$.\\
+Hence, with a proper choice of $\vect{A}_0$, the pseudo structural errors $\vect{\epsilon_t}$ have a diagonal covariance matrix $\vect{\Lambda}$ resulting from 
+\begin{equation} \label{eq:svar22}
+\begin{split}
+	\mathbb{E}[\vect{\epsilon_t}\vect{\epsilon_t}'] & = \vect{L}^{-1} \mathbb{E}[\vect{u_t}\vect{u_t}']\vect{L^{-1}}' = \\
+										& = \vect{L}^{-1} \vect{\Sigma_u} \vect{L^{-1}}' = \\
+										& = \vect{L}^{-1} \vect{L \Lambda L}' \vect{L^{-1}}' = \\
+										& = \vect{\Lambda},
+\end{split}								
+\end{equation}
+meaning that the matrix $\vect{L}^{-1}$ rescales the reduced-form errors to norm $\lambda$ and accounts for (eliminates) the correlation between the reduced-form errors. The $(i, j)$ element of $\vect{\Lambda}$ gives the variance of $u_{ji}$. Ultimately the structural $\vect{A_0}$ - matrix is
+\begin{equation} \label{eq:svar23}
+\begin{split}
+	\vect{A_0} = \begin{bmatrix}
+    					1 & 0 \\
+					-a_{02} & 1
+ 					\end{bmatrix} = 
+					\vect{L}^{-1} = 
+						\begin{bmatrix}
+    						1 & 0 \\
+						t_{21} & 1
+ 						\end{bmatrix}
+\end{split}								
+\end{equation}
+The above result can also be seen by the following:\\
+Knowing that one way to orthogonalize impulse-responses in a reduced-form VAR with possibly correlated errors in $\vect{\Sigma}_u$ is the Choleski decomposition (which gives rise to the Wold causal ordering), when the reduced-form variance-covariance matrix instead is decomposed in its triangular factorization as $\vect{\Sigma}_u = \vect{L}\vect{\Lambda}\vect{L}'$ and knowing that $\vect{\Sigma_u}  \equiv \mathbb{E}[\vect{u_t}\vect{u_t^'}]= \vect{A_0^{-1}}\vect{\Sigma_\epsilon}\vect{A_0^{-1}}'$ (which is equivalent to $\vect{\Sigma_\epsilon} = \vect{A_0}\vect{\Sigma_u}\vect{A_0}'$), establishes that $\vect{L} = \vect{A}_0^{-1}$ and $\vect{\Sigma_\epsilon} = \vect{\Lambda}$. 
+\\
+\\
+The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0^{-1}$ being a lower triangular matrix with $diag(\vect{A}_0^{-1}) = 1$ causes the system of equations $\vect{\Sigma}_\epsilon  = \vect{A_0^{-1}}\vect{\Sigma_u}\vect{A_0^{-1}}'$ having a unique solution (at least locally).
 
 
 \chapter{Data}
