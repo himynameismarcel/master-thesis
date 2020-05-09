@@ -1286,7 +1286,7 @@ As part of the advantages, \citet{jorda:05}, among others, shows that local proj
 Technically, local projections are the result of sequential regressions of a dependent variable shifted several steps ahead, i.e., regressions of the dependent variables at horizon $t+h$ on the set of regressors at time $t$. As such, the method shares many similarities with direct multi-step forecasting techniques.\footnote{See e.g., \citet{marcellinoetal:06} for a comparison of direct and iterated multistep methods in forecasting practice for univariate time series. They describe forecasts based on a multiperiod model (direct forecast) as regressing a multiperiod-ahead value of the dependent variable on current and lagged values of the variable and show that the comparison between iterated (i.e., forecasts derived from time series models) and direct forecasts involve a trade-off between bias and efficiency: iterated methods win with respect to parameter efficiency but produce a compounded bias if the one-step-ahead model is already misspecified. Similarly like \citet{jorda:05} write that the idea of direct multiperiod forecasts (in comparison to iterated forecasts based on a univariate or multivariate time-series models) goes back to at least \citet{cox:61} whereas \citet{weiss:91} established consistency and asymptotic normality of direct forecasts under general conditions. \citet{bhansali:02} provides a review of the literature.} While direct forecasting aims at an optimal multi-step point forecast of the dependent variable, local projections target a consistent estimation of the corresponding impulse response coefficients (which are obviously two interrelated goals).\\
 \\
 To put Jordá's local projections properly in context with respect to VARs, in what follows we outline some theory regarding VARs which will allow us then to seamlessly introduce local projections into the picture.
-
+\end{itemize}
 \endgroup
 
 
@@ -1993,68 +1993,7 @@ A parameter point $(\vect{A}_0, \vect{A}_+)$ is locally identified if and only i
 
 Observational equivalence is inherently linked to the identification problem in SVARs which, with respect to the definitions above and \citet{rubioetal:10}'s formulation are ``neither globally nor locally identified''. This situation calls for adequate restrictions on the part of the structural parameters to make a model identifiable. And because observational equivalence is identical to finding an orthogonal matrix $\vect{Q}$ as described above, the set of all $(n \times n)$ orthogonal matrices $\mathbb{Q}_n$ plays a central role both in their analysis and in the derivation of the econometric framework of \citet{ludvigsonetal:18} which will discuss in turn.
 
-\paragraph{Framework of \citet{ludvigsonetal:18}}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}
-\citet{ludvigsonetal:18} assume the following reduced-form VAR and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
-	\begin{equation} \label{eq:svar_ludvig1}
-	\begin{split}
-		\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + \vect{u_t}\\
-		\vect{y_t} & = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}},\\
-				\vect{u}_t & \thicksim (\vect{0}, \vect{\Sigma}_u), \vect{\Sigma_u} = \mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] = \vect{P}\vect{\Sigma}_\epsilon\vect{P'} = \vect{P}\vect{I}_n\vect{P'} = \vect{P}\vect{P'}
-	\end{split}								
-	\end{equation}	
-where $\vect{P}$ is the unique lower-triangular Cholesky factor with non-negative diagonal elements. \citet{ludvigsonetal:18} formulate the innovations $\vect{u}_t$ to be related to the structural-form SVAR shock $\vect{\epsilon}_t$ via an invertible $(n \times n)$ - matrix $\vect{H}$
-	\begin{equation} \label{eq:svar_ludvig2}
-	\begin{split}
-		\vect{u}_t & = \vect{H}\vect{\Omega}\vect{\epsilon}_t \equiv \vect{A}_0^{-1}\vect{\epsilon}_t
-	\end{split}								
-	\end{equation}	
-with
-	\begin{equation} \label{eq:svar_ludvig3}
-	\begin{split}
-		\vect{\epsilon}_t & \thicksim (\vect{0}, \vect{\Sigma}_\epsilon), \vect{\Sigma}_\epsilon = \mathbb{E}[\vect{\epsilon}_t\vect{\epsilon}_\tau^'] = \vect{I}_n
-	\end{split}								
-	\end{equation}	
-and the matrix $\vect{\Omega}$ being a diagonal matrix with the variance of the shocks in the diagonal entries and the unit effect normalization that $H_{jj} = 1$ for all $j$.
-	\begin{equation} \label{eq:svar_ludvi4}
-	\begin{split}
-		\text{diag}(\vect{H}) = 1, \vect{\Omega} = \begin{bmatrix}
-    		\sigma_{11} & 0 & \dots & 0 \\
-		0 & \sigma_{22} & 0 & 0 \\
-		0 & \vdots & \dots & 0\\
-		0 & 0 & \dots & \sigma_{kk}
- 		\end{bmatrix}, 
-		\sigma_{kk} \geq 0 \forall j
-	\end{split}								
-	\end{equation}	
-Ultimately, the goal is to study the dynamic effects of the structural shocks (the impulse response functions) as given by
-\begin{equation} \label{eq:svar_ludvi5}
-\begin{split}
- 			\sum\limits_{k=0}^\infty \vect{\Theta_k} = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}
-\end{split}								
-\end{equation}
 
-Central to the framework of \citet{ludvigsonetal:18} is then the following: \\
-By definition they have set $\vect{\Sigma}_u = \vect{P}\vect{P}^'$ with $\vect{P}$ being the unique lower-triangular Cholesky factor. By introducing a set $\mathbb{Q}_n$ of $(n \times n)$ orthonormal matrices,\footnote{Note that \citet{rubioetal:10} were referring only to \textit{orthogonal}, not \textit{orthonormal} matrices. Orthonormality implies orthogonality, i.e., orthonormality is stronger by demanding for each basis vector spanning the respective space to have length 1.} any $\vect{A}_0^{-1} = \vect{P}\vect{Q}$ is 'observationally equivalent', given $\vect{\Sigma}_u$ and hence consistent with the reduced form variance-covariance matrix $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{A}_0^{-1'}$ for any given $\vect{Q} = (q_1, q_2, \dots, q_n) \in \mathbb{Q}_n$. \citet{ludvigsonetal:18} define this set of observationally equivalent $\vect{A}_0^{-1}$ as 
-\begin{equation} \label{eq:svar_ludvi6}
-\begin{split}
- 			\mathcal{A}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n\}
-\end{split}								
-\end{equation}
-whereby the only restriction that can be imposed at this stage follows from combining the unit effect normalization on $\vect{H}$ with $\sigma_{jj} \leq 0$ so that a unit change in the structural shock $j$ may be interpreated as a standard deviation increase in variable $j$. Taking this into account, $\mathcal{A}_0$ becomes
-\begin{equation} \label{eq:svar_ludvi7}
-\begin{split}
- 			\vect{\mathcal{A}}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
-\end{split}								
-\end{equation}
-By collecting the reduced form innovations $\vect{u}_t$ into $\phi$ (by making use of the $vec$\footnote{The $vec$-operator takes an $(n \times n$) matrix and stacks the columns into a single vector of length $n^2$.} and $vech$\footnote{The $vech$ (vector half) - operator takes a symmetric $(n \times n)$ matrix and stacks the lower triangular half into a single vector of length $\frac{d(d+1)}{2}$.} operator) so that $\phi = \Big(vec(\vect{A}_1)', vec(\vect{A}_2)', \dots, vec(\vect{A}_p)', vech(\vect{\Sigma}_u)'\Big)$, \ref{eq:svar_ludvi7} can be written as 
-\begin{equation} \label{eq:svar_ludvi8}
-\begin{split}
- 			\hatt{\mathcal{A}}_0(\phi) = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
-\end{split}								
-\end{equation}
-Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinitely many solutions. \citet{ludvigsonetal:18} hence introduce additional restrictions that go beyond classical sign restrictions, or more generally inequality restrictions (which tend to place these restrictions on the impulse response functions and/or $\vect{A}_0^{-1}$ itself) in an attempt to yield a smaller solution set denoted as $\overline{\mathcal{A}_0}(\phi)$.\\
-\\
-Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the restrictions that \citet{ludvigsonetal:18} define involve the identified structural shocks $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. We will outline these two set of constraints in turn.
 
 \paragraph{Shock-Based Constraints in \citet{ludvigsonetal:18}}
 \textbf{\textit{Event constraints}} require that identified financial uncertainty shocks have plausible properties during two episodes of heightened financial uncertainty: the 1987 stock market crash and the 2007-09 financial crisis. \citet{ludvigsonetal:18} decide for this constraint because ``a credible identifiation scheme should produce estimates of $\vect{\epsilon}_t$ with features that accord with our ex-post understanding of historical events, at least during episodes of special interest.'' \citep[p. 7]{ludvigsonetal:18}  In particular, event constraints put the bounds $\overline{k}$ on the sign and magnitude of $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ during particular episodes which are collected into $\tau^*$. \\
@@ -2635,6 +2574,71 @@ Knowing that one way to orthogonalize impulse-responses in a reduced-form VAR wi
 \\
 \\
 The Wold causal ordering (as one example of restrictions) implied in $\vect{A}_0^{-1}$ being a lower triangular matrix with $diag(\vect{A}_0^{-1}) = 1$ causes the system of equations $\vect{\Sigma}_\epsilon  = \vect{A_0^{-1}}\vect{\Sigma_u}\vect{A_0^{-1}}'$ having a unique solution (at least locally).
+
+
+
+\section{Framework of \citet{ludvigsonetal:18}}\footnote{Note that the exposition in \citet{ludvigsonetal:18} is based on general work on shock-restricted SVARs in \citet{ludvigsonetal:17}.}
+\citet{ludvigsonetal:18} assume the following reduced-form VAR and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
+	\begin{equation} \label{eq:svar_ludvig1}
+	\begin{split}
+		\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + \vect{u_t}\\
+		\vect{y_t} & = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}},\\
+				\vect{u}_t & \thicksim (\vect{0}, \vect{\Sigma}_u), \vect{\Sigma_u} = \mathbb{E}[\vect{u_t}\vect{u_{\tau}^'}] = \vect{P}\vect{\Sigma}_\epsilon\vect{P'} = \vect{P}\vect{I}_n\vect{P'} = \vect{P}\vect{P'}
+	\end{split}								
+	\end{equation}	
+where $\vect{P}$ is the unique lower-triangular Cholesky factor with non-negative diagonal elements. \citet{ludvigsonetal:18} formulate the innovations $\vect{u}_t$ to be related to the structural-form SVAR shock $\vect{\epsilon}_t$ via an invertible $(n \times n)$ - matrix $\vect{H}$
+	\begin{equation} \label{eq:svar_ludvig2}
+	\begin{split}
+		\vect{u}_t & = \vect{H}\vect{\Omega}\vect{\epsilon}_t \equiv \vect{A}_0^{-1}\vect{\epsilon}_t
+	\end{split}								
+	\end{equation}	
+with
+	\begin{equation} \label{eq:svar_ludvig3}
+	\begin{split}
+		\vect{\epsilon}_t & \thicksim (\vect{0}, \vect{\Sigma}_\epsilon), \vect{\Sigma}_\epsilon = \mathbb{E}[\vect{\epsilon}_t\vect{\epsilon}_\tau^'] = \vect{I}_n
+	\end{split}								
+	\end{equation}	
+and the matrix $\vect{\Omega}$ being a diagonal matrix with the variance of the shocks in the diagonal entries and the unit effect normalization that $H_{jj} = 1$ for all $j$.
+	\begin{equation} \label{eq:svar_ludvi4}
+	\begin{split}
+		\text{diag}(\vect{H}) = 1, \vect{\Omega} = \begin{bmatrix}
+    		\sigma_{11} & 0 & \dots & 0 \\
+		0 & \sigma_{22} & 0 & 0 \\
+		0 & \vdots & \dots & 0\\
+		0 & 0 & \dots & \sigma_{kk}
+ 		\end{bmatrix}, 
+		\sigma_{kk} \geq 0 \forall j
+	\end{split}								
+	\end{equation}	
+Ultimately, the goal is to study the dynamic effects of the structural shocks (the impulse response functions) as given by
+\begin{equation} \label{eq:svar_ludvi5}
+\begin{split}
+ 			\sum\limits_{k=0}^\infty \vect{\Theta_k} = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}
+\end{split}								
+\end{equation}
+
+Central to the framework of \citet{ludvigsonetal:18} is then the following: \\
+By definition they have set $\vect{\Sigma}_u = \vect{P}\vect{P}^'$ with $\vect{P}$ being the unique lower-triangular Cholesky factor. By introducing a set $\mathbb{Q}_n$ of $(n \times n)$ orthonormal matrices,\footnote{Note that \citet{rubioetal:10} were referring only to \textit{orthogonal}, not \textit{orthonormal} matrices. Orthonormality implies orthogonality, i.e., orthonormality is stronger by demanding for each basis vector spanning the respective space to have length 1.} any $\vect{A}_0^{-1} = \vect{P}\vect{Q}$ is 'observationally equivalent', given $\vect{\Sigma}_u$ and hence consistent with the reduced form variance-covariance matrix $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{A}_0^{-1'}$ for any given $\vect{Q} = (q_1, q_2, \dots, q_n) \in \mathbb{Q}_n$. \citet{ludvigsonetal:18} define this set of observationally equivalent $\vect{A}_0^{-1}$ as 
+\begin{equation} \label{eq:svar_ludvi6}
+\begin{split}
+ 			\mathcal{A}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n\}
+\end{split}								
+\end{equation}
+whereby the only restriction that can be imposed at this stage follows from combining the unit effect normalization on $\vect{H}$ with $\sigma_{jj} \leq 0$ so that a unit change in the structural shock $j$ may be interpreated as a standard deviation increase in variable $j$. Taking this into account, $\mathcal{A}_0$ becomes
+\begin{equation} \label{eq:svar_ludvi7}
+\begin{split}
+ 			\vect{\mathcal{A}}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
+\end{split}								
+\end{equation}
+By collecting the reduced form innovations $\vect{u}_t$ into $\phi$ (by making use of the $vec$\footnote{The $vec$-operator takes an $(n \times n$) matrix and stacks the columns into a single vector of length $n^2$.} and $vech$\footnote{The $vech$ (vector half) - operator takes a symmetric $(n \times n)$ matrix and stacks the lower triangular half into a single vector of length $\frac{d(d+1)}{2}$.} operator) so that $\phi = \Big(vec(\vect{A}_1)', vec(\vect{A}_2)', \dots, vec(\vect{A}_p)', vech(\vect{\Sigma}_u)'\Big)$, \ref{eq:svar_ludvi7} can be written as 
+\begin{equation} \label{eq:svar_ludvi8}
+\begin{split}
+ 			\hatt{\mathcal{A}}_0(\phi) = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\}.
+\end{split}								
+\end{equation}
+Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinitely many solutions. \citet{ludvigsonetal:18} hence introduce additional restrictions that go beyond classical sign restrictions, or more generally inequality restrictions (which tend to place these restrictions on the impulse response functions and/or $\vect{A}_0^{-1}$ itself) in an attempt to yield a smaller solution set denoted as $\overline{\mathcal{A}_0}(\phi)$.\\
+\\
+Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the restrictions that \citet{ludvigsonetal:18} define involve the identified structural shocks $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. We will outline these two set of constraints in turn.
 
 
 \chapter{Data}
