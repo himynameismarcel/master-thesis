@@ -995,7 +995,7 @@ lines(test3$EPU_Hist, col="blue")
 ########################################################################
 ### PART x: correlation matrix between the uncertainty measures
 ########################################################################
-comparison_measures_corr <- comparison_measures[c(2, 3, 4, 6)]
+comparison_measures_corr <- comparison_measures[c(2, 3, 4)]
 
 ## correlation matrix between the time-series
 corr <- cor(comparison_measures_corr, use = "complete.obs")

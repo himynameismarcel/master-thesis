@@ -162,14 +162,12 @@ options(stringsAsFactors = F)
 # install.packages("dynlm")
 # install.packages("sandwich")
 # install.packages("lmtest")
-# install.packages("xlsx")
 # install.packages("readxl")
 # install.packages("forecast")
 # install.packages("stargazer")
 # install.packages("vars")
 # install.packages("grid")
 # install.packages("gridExtra")
-# install.packages("anomalize")
 # install.packages("rowr")
 # install.packages("xts")
 # install.packages("dse")
@@ -190,30 +188,28 @@ library(tibble)
 library(tidyr)
 library(lubridate)
 library(ggplot2)
-theme_set(theme_bw())
+# theme_set(theme_bw())
 library(mFilter)
 library(zoo)
 library(miscFuncs)
 library(dynlm)
 library(sandwich)
 library(lmtest)
-library(xlsx)
 library(readxl)
 library(forecast)
 library(stargazer)
 library(vars)
 library(grid)
 library(gridExtra)
-library(ggpubr)
-library(anomalize)
-library(rowr)
+# library(ggpubr)
+# library(rowr)
 library(xts)
 library(dse)
 library(e1071)
 library(Hmisc)
-library(broom)
+# library(broom)
 library(purrr)
-library(timetk)
+#library(timetk)
 library(sweep)
 library(tseries)
 library(highfrequency)
@@ -263,7 +259,7 @@ class(sp500)
 # been transformed to a date)
 
 # we convert the data frame to a tibble
-sp500 <- as_data_frame(sp500)
+sp500 <- as_tibble(sp500)
 
 # next, we calculate the standard deviation for all 'ri' (daily returns
 # of the index in %) for each year-month (i.e., BY the variable 'ym'!);
@@ -944,7 +940,7 @@ volatility <- ggplot(sp500_merge_vxo,
 volatility
 
 # and we save the plot to be used in our latex-document
-ggsave("volatility.pdf")
+# ggsave("volatility.pdf")
 
 
 
@@ -994,7 +990,7 @@ volatility_trend <- ggplot() +
 volatility_trend 
 
 # and we save the plot to be used in our latex-document
-ggsave("volatility_trend.pdf")
+# ggsave("volatility_trend.pdf")
 
 
 volatility_cycle <- ggplot(sp500_merge_vxo, 
@@ -1018,7 +1014,7 @@ volatility_cycle <- ggplot(sp500_merge_vxo,
 
 volatility_cycle
 
-ggsave("volatility_cycle.pdf")
+# ggsave("volatility_cycle.pdf")
 
 #------------------------Initial Creation of Bloom-Shocks--------------------#
 # Note: In the below, the Bloom-shocks are only generated for the
@@ -1065,7 +1061,7 @@ volatility_cycle_shocks <- ggplot(sp500_merge_vxo,
 
 volatility_cycle_shocks
 
-ggsave("volatility_cycle_shocks.pdf")
+# ggsave("volatility_cycle_shocks.pdf")
 
 # the red dotted line in our plot above marks the following 
 # threshold:
@@ -1298,7 +1294,7 @@ volatility_cycle_shocks2 <- ggplot(sp500_merge_vxo,
 
 volatility_cycle_shocks2
 
-ggsave("volatility_cycle_shocks2.pdf")
+# ggsave("volatility_cycle_shocks2.pdf")
 
 
 # having created the data-frame shocks_start_end, we can now also
@@ -1406,7 +1402,7 @@ epu_index_plot <- ggplot(epu_index,
 epu_index_plot
 
 # and we save the plot to be used in our latex-document
-ggsave("epu_index_plot.pdf")
+# ggsave("epu_index_plot.pdf")
 
 
 ###############################
@@ -1481,7 +1477,7 @@ epu_index_historical_plot <- ggplot(epu_index_historical,
 epu_index_historical_plot
 
 # and we save the plot to be used in our latex-document
-ggsave("epu_index_historical_plot.pdf")
+# ggsave("epu_index_historical_plot.pdf")
 
 
 #----------------------------------------------------------------------------
@@ -1635,7 +1631,7 @@ michigan_plot <- ggplot() +
 michigan_plot
 
 # and we save the plot to be used in our latex-document
-ggsave("michigan_plot.pdf")
+#ggsave("michigan_plot.pdf")
 
 ########################################################################
 ### PART 4: loading and plotting of GTU and GT-index
@@ -1691,7 +1687,7 @@ GTU_index_plot <- ggplot() +
 GTU_index_plot
 
 # and we save the plot to be used in our latex-document
-ggsave("GTU_index_plot.pdf")
+# ggsave("GTU_index_plot.pdf")
 
 
 ########################################################################
@@ -1996,7 +1992,7 @@ macroUncertainty_index_plot
 
 
 # and we save the plot to be used in our latex-document
-ggsave("macroUncertainty_index_plot.pdf")
+# ggsave("macroUncertainty_index_plot.pdf")
 
 
 # having created the data-frame macro_shocks_start_end, we can now also
@@ -2130,12 +2126,16 @@ comparison_measures <- comparison_measures %>%
 
 
 # we reorder the varaibles
-# and ultimately decided to drop the GTU
-comparison_measures <- comparison_measures[c(2, 1, 3, 4, 5, 7)]
+# and ultimately decided to drop the GTU and Michigan and the 
+# News_Based_Policy_Uncert_Index
+#comparison_measures <- as_tibble(comparison_measures[c(2, 1, 3, 4, 5, 7)])
+comparison_measures <- as_tibble(comparison_measures[c(2, 3, 7, 4)])
+
+
 
 # we make a time-series object out of our data-frame
 # (and exclude the simple 'EPU')
-comparison_measures_ts <- ts(comparison_measures[c(2, 3, 4, 6)],
+comparison_measures_ts <- ts(comparison_measures[c(2, 3, 4)],
                              start = c(1960, 7), frequency = 12)
 
 
@@ -2193,14 +2193,15 @@ scaled_comparison_measures <- comparison_measures %>%
                           EPU_Hist  = (EPU_Hist - mean(EPU_Hist, 
                                              na.rm=TRUE))/
                             sd(EPU_Hist, na.rm=TRUE),
-                          Michigan  = (Michigan - mean(Michigan, 
-                                             na.rm=TRUE))/
-                            sd(Michigan, na.rm=TRUE),
+                          # Michigan  = (Michigan - mean(Michigan, 
+                          #                    na.rm=TRUE))/
+                          #   sd(Michigan, na.rm=TRUE),
                           Macro  = (Macro - mean(Macro, 
                                              na.rm=TRUE))/
-                            sd(Macro, na.rm=TRUE))    %>%
+                            sd(Macro, na.rm=TRUE))    
+              # %>%
                # and we remove EPU:
-               dplyr::select(-EPU)
+               # dplyr::select(-EPU)
   
 # we bring the data into a tidy data-format:
 scaled_comparison_measures <- scaled_comparison_measures %>%
@@ -2211,11 +2212,11 @@ scaled_comparison_measures <- scaled_comparison_measures %>%
 ggplot(scaled_comparison_measures, 
        aes(x = my, y = value, colour=uncert_measure,
            linetype = uncert_measure, shape=uncert_measure)) +
-    geom_line(size=0.6) +
-  geom_point(size=1) + 
-  scale_color_manual(values=c("#CC0000",
-                              "#2ac113",
-                              "#202020", "#0452d1", "#FF69B4")) + 
+  geom_line(size=0.8) +
+  # geom_point(size=1) + 
+  scale_color_manual(values=c("#01D71E",
+                              "#FF4DCA",
+                              "#0000FF")) + 
   scale_y_continuous(name = "Uncertainty Measures") +
   scale_x_continuous(name = "Year", limits = c(1960, 2018), 
                      breaks = seq(1960, 2018, by = 5),
