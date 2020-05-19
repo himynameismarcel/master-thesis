@@ -1020,24 +1020,24 @@ BLOOM_Shocks_Table.combined <- BLOOM_Shocks_Table.combined %>%
                                            change.x, 
                                            change.y.y)) %>%
                           # and lastly we have to rename all variables accordingly
-                          dplyr::rename(label = label.x.x,
+                          dplyr::rename(a.label = label.x.x,
                                         #change = ,
-                                        ID= shock_ID.x.x,
+                                        a.ID= shock_ID.x.x,
                                         #label = label,
                                         #change = ,
-                                        ID = shock_ID,
-                                        label = label.x,
+                                        b.ID = shock_ID,
+                                        c.label = label.x,
                                         #change = ,
-                                        ID = shock_ID.x,
-                                        label = label.y,
+                                        c.ID = shock_ID.x,
+                                        d.label = label.y,
                                         #change = ,
-                                        ID = shock_ID.y,
+                                        d.ID = shock_ID.y,
                                         #label = label.x,
                                         #change = ,
                                         #shock_ID = shock_ID.x,
-                                        label = label.y.y,
+                                        e.label = label.y.y,
                                         #change = ,
-                                        ID = shock_ID.y.y)
+                                        e.ID = shock_ID.y.y)
 
 
 # we try to export to a latex table
@@ -1096,7 +1096,7 @@ comparison_measures.sub <- comparison_measures %>%
 # note that before applying the 'gather' - function, we remove
 # the series for 'EPU' (because we only want to keep EPU Historical!)
 comparison_measures.sub.stacked <- comparison_measures.sub %>%
-                        dplyr::select(-EPU) %>%
+                        # dplyr::select(-EPU) %>%
                                       gather( 
                                       uncert_measure, value, 
                                       -my, na.rm=TRUE)
@@ -1213,7 +1213,7 @@ BLOOM_Shocks_plot_combined
 # lines-with-nested-x-variables-year-below-months
 
 # ggsave(file="BLOOM_Shocks_plot_combined.pdf")
-ggsave(file="BLOOM_Shocks_plot_combined_all2016.pdf")
+# ggsave(file="BLOOM_Shocks_plot_combined_all2016.pdf")
 
 
 

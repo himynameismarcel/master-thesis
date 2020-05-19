@@ -91,7 +91,7 @@ return.data <- SVAR.data %>%
     # estimation of model
     my.var <- VAR(SVAR.data.sub, type = "const", p = 6)
     # storing the variance-covariance matrix in Sigma_u
-    Sigma_u <- summary(my.var)$covres
+    Sigma_u <- summary(my.var)$covres * 633/652
     # alternative plot of Sigma_u without scientific notation:
     # format(summary(my.var)$covres, scientific=FALSE)
     
@@ -100,6 +100,12 @@ return.data <- SVAR.data %>%
     # (i.e. u_t' * u_t) of the residuals by 652 (=658-6) degrees of freedom
     # intsead of 633 (=658-(19+6))! --> Mention to Scharler when I send him
     # my thesis!
+    # Marcel (17.05.2020): After studying this issue again, I came to the
+    # conclusion, that, as mentioned in https://homepage.univie.ac.at/robert.kunst/var.pdf
+    # Ludvigson et al (2018) simply divided by the sample size and didn't
+    # apply a degrees-of-freedom correction.
+    # Hence, above we have applied a correction factor to translate the
+    # OLS-estimator into an MLE-estimate.
     
     # and storing the residuals for each variable in the matrix
     u_t <- residuals(my.var)
@@ -185,7 +191,7 @@ return.data <- SVAR.data %>%
     # (hence, we have to remove the first 5 entries!)
     
     # u_St is currently too long, hence we remove the
-    # first six entries:
+    # first five entries:
     u_St <- as.ts(tail(as.zoo(u_St), -5))
     
     # we initialize A_0^{-1} as the lower triangular matrix P
@@ -226,7 +232,7 @@ return.data <- SVAR.data %>%
     A_0_valid <- list()
     
     ## the below has to run 1.5 million times:
-    for(k in 1:5000){
+    for(k in 1:50000){
           # k <- 3
           # print(k)
           # print(x)
@@ -258,10 +264,20 @@ return.data <- SVAR.data %>%
                 
                 # Marcel, 06.05.2020: In their own code in the script
                 # rand_orthomat.m, Ludvigson et al. (2018) perform an operation
-                # which, in my opinion, is simply a matrix-multiplication with
-                # the identity-matrix; hence, I have not applied the same
-                # procedure here!
-
+                # which normalizes 
+                
+                # see: https://stackoverflow.com/questions/38426349/how-to-create-random-
+                # orthonormal-matrix-in-python-numpy/38430739#38430739
+                # and https://web.eecs.umich.edu/~rajnrao/Acta05rmt.pdf
+                # we extract the signs of the matrix R:
+                R.sign <- sign(qr.R(QR))
+                # and lastly replace the elements to the top-right of the diagonal
+                # with zeros:
+                R.sign[upper.tri(R.sign)] <- 0
+                
+                # in a last step we multiply Q with R.sign
+                Q <-Q %*% R.sign
+                
       
           ##########
           ## STEP 3:
@@ -273,6 +289,23 @@ return.data <- SVAR.data %>%
           # lower-triangular Cholesky factor)
           A_0_inv <- A_0_inv %*% Q
           # A_0_inv
+                
+          # Marcel (17.06.2020):
+          # On p. 4 of their paper, Ludvigson et al. (2018) write
+          # that the restrictions on the sign of A_inv_0 (i.e. 
+          # that it is assumed to be positive) follows from combining
+          # the unit effect normalization on H with the restriction 
+          # sigma_jj >= 0; hence, we too implement this assumption
+          # at this stage (we follow the same produced as above
+          # when recovering the orthogonal matrices Q):
+          A_0_inv.sign <- sign(A_0_inv)
+          # and lastly replace the elements to the top-right of the diagonal
+          # with zeros:
+          A_0_inv.sign[upper.tri(A_0_inv.sign)] <- 0
+          A_0_inv.sign[lower.tri(A_0_inv.sign)] <- 0
+          
+          # in a last step we multiply Q with R.sign
+          A_0_inv <-A_0_inv %*% A_0_inv.sign
           
           # note that A_0_inv is a candidate for a 
           # possible impact matrix!
@@ -1001,7 +1034,7 @@ return.data <- SVAR.data %>%
     
     # we need to create ordered factors, otherwise 'facet_wrap' combines the plots
     # in alphabetical order:
-    plot_SVAR.irfs.all <- plot_SVAR.irfs.all %>%
+    plot_SVAR.irfs.all.CONSTR_ALL <- plot_SVAR.irfs.all %>%
       ungroup %>%
       mutate(series_name = factor(series_name, 
                                  ordered = TRUE,
@@ -1170,7 +1203,7 @@ return.data <- SVAR.data %>%
     
     # we need to create ordered factors, otherwise 'facet_wrap' combines the plots
     # in alphabetical order:
-    plot_SVAR.irfs.maxG <- plot_SVAR.irfs.maxG %>%
+    plot_SVAR.irfs.maxG.CONSTR_ALL <- plot_SVAR.irfs.maxG %>%
       ungroup %>%
       mutate(series_name = factor(series_name, 
                                   ordered = TRUE,
@@ -1186,7 +1219,7 @@ return.data <- SVAR.data %>%
     # finally we plot the impulse responses:
     impulse.responses_all.SVAR <- 
       ggplot(data=plot_SVAR.irfs.all, aes(x=step, y=series_value)) + 
-      geom_line(aes(colour=series_name), alpha=0.6, size=1.5) +
+      geom_line(aes(colour=series_name), alpha=0.6, size=0.3) +
       geom_line(data=plot_SVAR.irfs.maxG, aes(x=step, y=series_value),
                 colour="black", size=2, linetype="dashed") +
       labs(color=NULL) + 
@@ -1214,7 +1247,7 @@ return.data <- SVAR.data %>%
     
       impulse.responses_all.SVAR
        
-      ggsave(file="impulse_responses_all_SVAR.pdf")
+      # ggsave(file="impulse_responses_all_SVAR.pdf")
       # ggsave(file="impulse_responses_all_SVAR_test.pdf")
       
        
