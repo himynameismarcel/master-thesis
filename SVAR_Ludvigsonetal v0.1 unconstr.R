@@ -871,19 +871,6 @@ rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
 ### Algorithm Only With NO CONSTRAINTS AT ALL
 ###--------------------------------------------------------------------------------------------
 
-#######################
-### Installing Packages
-#######################
-library(readxl)
-library(plyr)
-library(dplyr)
-library(tidyr)
-library(tibble)
-library(vars)
-library(matlib)
-library(forecast)
-library(Hmisc)
-
 ###-------------------------------
 ### Preliminary Explanations
 ###-------------------------------
@@ -927,12 +914,6 @@ return.data <- SVAR.data %>%
     k1 <- 4
     k2 <- 4
     k3 <- 2
-    
-    maxG.df <- data.frame(matrix(ncol = 2, nrow = 1))
-    x <- c("maxG", "iteration")
-    colnames(maxG.df) <- x
-    
-    maxG.df[1, 1] <- 0
     
     dates = seq(from = as.Date("1961-01-01"), 
                 to = as.Date("2015-04-01"), by = 'month')
@@ -1285,45 +1266,68 @@ return.data <- SVAR.data %>%
 # remove all but three objects from workspace
 rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
                         "plot_SVAR.irfs.all.FC_only",
-                        "plot_SVAR.irfs.all.NO_CONSTR",
-                        "plot_SVAR.irfs.maxG.CONSTR_ALL")))
+                        "plot_SVAR.irfs.all.NO_CONSTR"
+                        )))
 
+## before plotting, we have to add one more column to each of the data
+## frames to be able to use that information for the aes in ggplot:
+plot_SVAR.irfs.all.FE_only <- plot_SVAR.irfs.all.FE_only %>%
+                          mutate(type = "FE_only")
+plot_SVAR.irfs.all.FC_only <- plot_SVAR.irfs.all.FC_only %>%
+                          mutate(type = "FC_only")                
+plot_SVAR.irfs.all.NO_CONSTR <- plot_SVAR.irfs.all.NO_CONSTR %>%
+                          mutate(type = "NO_CONSTR") 
+plot_SVAR.irfs.all.CONSTR_ALL <- plot_SVAR.irfs.all.CONSTR_ALL %>%
+                          mutate(type = "CONSTR_ALL")  
 ###----------------------------------------------------------------------------------------
 ### finally we plot the impulse responses:  
 ###----------------------------------------------------------------------------------------    
-    impulse.responses_all.SVAR <- 
+    impulse.responses_all.SVAR.COMPLETE <- 
       ggplot(data=plot_SVAR.irfs.all.NO_CONSTR, aes(x=step, y=series_value)) + 
-      # geom_line(aes(colour=series_name), alpha=0.03, size=0.3) +
-      # geom_line(data=plot_SVAR.irfs.all.FC_only, aes(x=step, y=series_value),
-      #           alpha = 0.5, size = 0.3) +
-      geom_line(data=plot_SVAR.irfs.all.FE_only, aes(x=step, y=series_value),
-                alpha = 0.5, size = 0.3) +
+      geom_line(aes(group=series_name, colour=type), alpha=0.01, size=0.9) +
+  
+      geom_line(data=plot_SVAR.irfs.all.FC_only, aes(x=step, y=series_value,
+                        group=series_name, colour=type),
+                        alpha = 0.4, size = 0.3) +
+      geom_line(data=plot_SVAR.irfs.all.FE_only, aes(x=step, y=series_value,
+                        group=series_name, colour=type),
+                        alpha = 0.1, size = 0.1) +
+      geom_line(data=plot_SVAR.irfs.all.CONSTR_ALL, aes(x=step, y=series_value,
+                        group=series_name, colour=type),
+                        alpha = 1, size = 0.1) +  
+      facet_wrap(impulse ~ response,
+             scales="free_y", strip.position = "top") +
       labs(color=NULL) + 
       geom_hline(yintercept=0, color = "#514e4e", 
                  size=1) +
       scale_x_continuous(name = NULL) + 
       scale_y_continuous(name = NULL) +
-      theme(axis.text=element_text(size=10),
+      theme(axis.text=element_text(size=8),
             plot.title = element_text(size=10, face="bold", hjust = 0.5),
             axis.title=element_text(size=10),
-            legend.position="none",
+            legend.position="top",
             #legend.text=element_text(size=14),
             #axis.text.x=element_blank(),
             plot.margin = unit(c(1,1,1,1), "mm"),
             #panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank(),
+            aspect.ratio = 0.9,
+            strip.text = element_text(size = 8, margin = margin(0.7, 0.7, 0.7, 0.7, "mm")),
             strip.background = element_rect(colour="black", 
                                             fill="white", 
-                                            size=1.5, 
+                                            size=0.5, 
                                             linetype="solid")) + 
-      facet_wrap(impulse ~ response,
-                 scales="free_y", strip.position = "top") +
-      coord_cartesian(ylim = c(-2, 2))
+      coord_cartesian(ylim = c(-3, 3)) + 
+      guides(colour = guide_legend(override.aes = list(size = 5))) + 
+      #https://stackoverflow.com/questions/35712062/scale-fill-discrete-does-not-change-label-names
+      scale_colour_discrete(
+                      labels = c("All Constraints", "Correlation Constraints Only", 
+                                 "Event Constraints Only", "No Constraints"))
 
     
-      impulse.responses_all.SVAR
+      impulse.responses_all.SVAR.COMPLETE
        
-      # ggsave(file="impulse_responses_all_SVAR_unconstr_constr.pdf")
+      ggsave(file="impulse_responses_all_SVAR_unconstr_constr.pdf")
       
        
 

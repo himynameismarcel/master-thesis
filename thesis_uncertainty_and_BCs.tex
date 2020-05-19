@@ -409,14 +409,14 @@ Most of all I want to thank my Mum, Dorrie Mavaddat, who has always been there f
 \selectlanguage{english}
 \begin{abstract}
 % \blindtext
-Uncertainty is a latent and generally unobservable stochastic process. Insofar, the uncertainty literature which experienced a renaissance with the publication of \citet{bloom:09} is largely trying to solve both, questions related to the measurement and \textit{types} of uncertainty and, most prominently, the role of time-varying uncertainty in business cycles. In the meantime a voluminous amount of both theoretical and empirical work has produced various uncertainty measures that, in various empirical VAR-settings, largely suggests that uncertainty exerts a negative influence on the business cycle. Departing from usual recursive schemes in VAR-settings which don't allow for the link between uncertainty and business cycles to go vice-versa by construction, \citet{ludvigsonetal:18} suggest a novel shock-restricted SVAR-approach which we replicate and implement in R for this thesis and which suggests that, first, the uncertainty literature has to distinguish between macroeconomic and financial uncertainty and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output.
+Uncertainty is a latent and generally unobservable stochastic process. Insofar, the uncertainty literature which experienced a renaissance with the publication of \citet{bloom:09} is largely trying to solve both, questions related to the measurement and \textit{types} of uncertainty and, most prominently, the role of time-varying uncertainty on and in business cycles, respectively. In the meantime a voluminous amount of both theoretical and empirical work has produced various uncertainty measures that, in various empirical VAR-settings, largely suggests that uncertainty exerts a negative influence on the business cycle. Departing from usual recursive schemes in VAR-settings which don't allow for the link between uncertainty and business cycles to go vice-versa by construction, \citet{ludvigsonetal:18} suggest a novel shock-restricted SVAR-approach which we replicate and implement in R for this thesis and which suggests that, first, the uncertainty literature has to distinguish between macroeconomic and financial uncertainty and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output.
 \end{abstract}
 
 %\quad \\[10mm]
 \begin{otherlanguage}{ngerman}
 \begin{abstract}
 % \blindtext
-Unsicherheit ist ein latenter und im Allgemeinen nicht beobachtbarer stochastischer Prozess. Insofern versucht die Literatur, die mit der Veröffentlichung von \citet{bloom:09} eine Art Renaissance erfuhr, weitgehend sowohl Fragen zur Messung und den \textit{Arten} von Unsicherheit als auch, vor allem, zur Rolle zeitlich variierender Unsicherheit in Konjunkturzyklen zu beantworten. In der Zwischenzeit hat eine umfangreiche Zahl von sowohl theoretischen als auch empirischen Arbeiten verschiedene Unsicherheitsmaße vorgeschlagen, die in verschiedenen empirischen VAR-Anwendungen weitgehend darauf hindeuten, dass Unsicherheit einen negativen Einfluss auf den Konjunkturzyklus ausübt. Abweichend von den üblichen rekursiven Ansätzen in VAR-Modellen bei denen der Zusammenhang zwischen Unsicherheit und der Konjunktur bereits per Konstruktion nicht einen umgekehrten Impuls geben kann, schlagen \citet{ludvigsonetal:18} einen neuartigen Schock-beschränkten SVAR-Ansatz vor, den wir in dieser Arbeit replizieren und in R implementieren und welcher darauf hindeutet, dass, Erstens, in der Unsicherheits-Literatur zwischen makroökonomischer und finanzieller Unsicherheit unterschieden werden muss und, Zweitens, dass eine höhere makroökonomische Unsicherheit eine endogene Reaktion auf Konjunktur-Schocks ist, während finanzielle Unsicherheit als eine wahrscheinliche Quelle für langwierige Konjunktureinbrüche darstellt.
+Unsicherheit ist ein latenter und im Allgemeinen nicht beobachtbarer stochastischer Prozess. Insofern versucht die Literatur, die mit der Veröffentlichung von \citet{bloom:09} eine Art Renaissance erfuhr, weitgehend sowohl Fragen zur Messung und den \textit{Arten} von Unsicherheit als auch, vor allem, zur Rolle zeitlich variierender Unsicherheit auf bzw. in Konjunkturzyklen zu beantworten. In der Zwischenzeit hat eine umfangreiche Zahl von sowohl theoretischen als auch empirischen Arbeiten verschiedene Unsicherheitsmaße vorgeschlagen, die in verschiedenen empirischen VAR-Anwendungen weitgehend darauf hindeuten, dass Unsicherheit einen negativen Einfluss auf den Konjunkturzyklus ausübt. Abweichend von den üblichen rekursiven Ansätzen in VAR-Modellen bei denen der Zusammenhang zwischen Unsicherheit und der Konjunktur bereits per Konstruktion nicht einen umgekehrten Impuls geben kann, schlagen \citet{ludvigsonetal:18} einen neuartigen Schock-beschränkten SVAR-Ansatz vor, den wir in dieser Arbeit replizieren und in R implementieren und welcher darauf hindeutet, dass, Erstens, in der Unsicherheits-Literatur zwischen makroökonomischer und finanzieller Unsicherheit unterschieden werden muss und, Zweitens, dass eine höhere makroökonomische Unsicherheit eine endogene Reaktion auf Konjunktur-Schocks ist, während finanzielle Unsicherheit eine wahrscheinliche Quelle für langwierige Konjunktureinbrüche darstellt.
 \end{abstract}
 \end{otherlanguage}
 
@@ -763,13 +763,26 @@ Second, uncertainty appears to be countercyclical. The measures largely show mea
          &  \multicolumn{1}{c}{VXO} &  \multicolumn{1}{c}{EPU} &  \multicolumn{1}{c}{Macro1} &  \multicolumn{1}{c}{Macro12} &  \multicolumn{1}{c}{Uf} \\ 
          \midrule
          \multicolumn{6}{l}{\textit{Distribution}}\\
-         Coeff. of Variation & 0.38 & 0.37 & 0.14 & 0.08 & 0.19 \\        Skewness (Levels) & 2.02 & 0.77 & 1.67 & 1.61 & 0.69 \\        Excess Kurtosis (Levels) & 4.17 & -1.21 & 0.23 & -0.08 & -2.57 \\        Skewness (Change) & 2.07 & 0.48 & 0.75 & -0.9 & 0.13 \\        Excess Kurtosis (Change) & 12.9 & 3.33 & 0.35 & 0.6 & 2.12 \\        Shapiro-Wilk (p-value) & 0 & 0 & 0 & 0 & 0 \\
+         Coeff. of Variation & 0.38 & 0.37 & 0.14 & 0.08 & 0.19 \\
+        Skewness (Levels) & 2.02 & 0.77 & 1.67 & 1.61 & 0.69 \\
+        Excess Kurtosis (Levels) & 4.17 & -1.21 & 0.23 & -0.08 & -2.57 \\
+        Skewness (Change) & 2.07 & 0.48 & 0.75 & -0.9 & 0.13 \\
+        Excess Kurtosis (Change) & 12.9 & 3.33 & 0.35 & 0.6 & 2.12 \\
+        Shapiro-Wilk (p-value) & 0 & 0 & 0 & 0 & 0 \\
         \midrule
         \multicolumn{6}{l}{\textit{Cyclicality}}\\
-        Downturn/Upturn ratios & 1.5 & 1.14 & 1.25 & 1.13 & 1.25 \\        Downturn/Upturn ratios & 1.59 & 1.33 & 1.72 & 1.58 & 1.15 \\        IP-corr(0) & -0.42 & -0.33 & -0.65 & -0.62 & -0.51 \\        IP-corr(-12) & -0.17 & -0.22 & -0.37 & -0.32 & -0.23 \\        IP-corr(12) & -0.06 & -0.11 & -0.2 & -0.27 & -0.15 \\        EMP-corr(0) & -0.51 & -0.34 & -0.64 & -0.58 & -0.53 \\        EMP-corr(-12) & -0.23 & -0.25 & -0.23 & -0.18 & -0.17 \\        EMP-corr(12) & -0.24 & -0.17 & -0.34 & -0.39 & -0.31 \\
+        Downturn/Upturn ratios & 1.5 & 1.14 & 1.25 & 1.13 & 1.25 \\
+        Downturn/Upturn ratios & 1.59 & 1.33 & 1.72 & 1.58 & 1.15 \\
+        IP-corr(0) & -0.42 & -0.33 & -0.65 & -0.62 & -0.51 \\
+        IP-corr(-12) & -0.17 & -0.22 & -0.37 & -0.32 & -0.23 \\
+        IP-corr(12) & -0.06 & -0.11 & -0.2 & -0.27 & -0.15 \\
+        EMP-corr(0) & -0.51 & -0.34 & -0.64 & -0.58 & -0.53 \\
+        EMP-corr(-12) & -0.23 & -0.25 & -0.23 & -0.18 & -0.17 \\
+        EMP-corr(12) & -0.24 & -0.17 & -0.34 & -0.39 & -0.31 \\
         \midrule
         \multicolumn{6}{l}{\textit{Persistence}}\\
-        AR(1) & 0.84 & 0.81 & 0.99 & 0.99 & 0.99 \\        Half Life & 4.05  & 3.26 & 57.8 & 129 & 129 \\
+        AR(1) & 0.84 & 0.81 & 0.99 & 0.99 & 0.99 \\
+        Half Life & 4.05  & 3.26 & 57.8 & 129 & 129 \\
         \midrule
         \multicolumn{6}{l}{\textit{Stationarity Tests}}\\
         Level Stationary (p-value)\tablefootnote{KPSS-test with $H_0 = \text{(trend/level) stationary}$.} & 0.05 & 0.01 & 0.09 & 0.03 & 0.03 \\        
@@ -1688,16 +1701,21 @@ Overall, the analysis of the model's residuals confirms the identification schem
 \label{sec:ImpulseResponseAnalysis}
 Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
 
-As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
+For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how the identified solution set emerges out of the entire set of tested solutions and that the interplay between both shock-constraints is necessary to arrive at largely conclusive answers for the SVAR-system. 
+
 
 \begin{figure}[!h]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.5cm -1cm, width=1\textwidth]{impulse_responses_all_SVAR.pdf}}
+   \fbox{\includegraphics[trim=8cm -1.0cm -6cm -1cm, width=1.9\textwidth]{impulse_responses_all_SVAR.pdf}}
       \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
       \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$.}   \label{fig:impulse.responses_all.SVAR}
 \end{figure}
+
+As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
+
+
 
 
 Looking at macro uncertainty, \citet{ludvigsonetal:18} find that positive shocks to real activity induce a sharp decline in macro uncertainty $U_{Mt}$. Put differently, a \textit{negative} shock to industrial production would induce a pronounced and protracted \textit{increase} in macro uncertainty as confirmed by the entirety of solutions in the identified set (which is also well away from zero). 
@@ -1711,24 +1729,26 @@ In summary, the model suggests that higher macroeconomic uncertainty is an endog
 
 
 
-\section[Variance Decomposition]{Variance Decomposition}
-\label{sec:VarianceDecomposition}
+%\section[Variance Decomposition]{Variance Decomposition}
+%\label{sec:VarianceDecomposition}
 
 
-\chapter{Model Extension/Alternative Estimations}
-\label{sec:ModelExtension}
-In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the Bloom-shock in place of $U_{Ft}$.
-
-
-\paragraph{Robustness Checks: Alternative Uncertainty Measures}
-This part provides results from a large number of robustness exercises designed to check the sensitivity of our results to various assumptions. (this sentence is formulated like this by \citet{juradoetal:15}).
+%\chapter{Model Extension/Alternative Estimations}
+%\label{sec:ModelExtension}
+%In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the Bloom-shock in place of $U_{Ft}$.
+%
+%
+%\paragraph{Robustness Checks: Alternative Uncertainty Measures}
+%This part provides results from a large number of robustness exercises designed to check the sensitivity of our results to various assumptions. (this sentence is formulated like this by \citet{juradoetal:15}).
 
 
 %\newpage
 \chapter{Conclusion}
 \label{Conclusion}
 
-At the time of writing this thesis the world is holding its breath in the wake of the Covid-19 pandemic which is both a global health and economic crisis. Governments worldwide largely chose for a lockdown-strategy to contain the spread of the virus but at the same time 
+Ein Problem ist auch das Modell selbst
+
+und wir sollten schreiben, dass wir davon ausgehen, dass die Unsicherheits-Literatur zur Analyse des Ausmaßes der Covid-19-Krise nochmal an Fahrt gewinnen wird.
 
 
 In the article ``Held Back by Uncertainty'' Bloom and his Colleagues write: '' Policymakers can help.'' --> I should build the conclusion up along these lines! \\
@@ -1738,6 +1758,14 @@ There, the authors suggest:
 \\
 \\
 Another problem for VAR-system are omitted variables (which are assumed to be in the innovations). If important variables are omitted from the system, this may lead to major distortions in the impulse responses and makes them worthless for structural interpretations (see Lütkepohl!)
+
+At the time of writing this thesis the world is holding its breath in the wake of the Covid-19 pandemic which is both a global health and economic crisis. Governments worldwide largely chose for a lockdown-strategy to contain the spread of the virus which at the same time caused an unprecedented economic collapse. Indicators such as the so-called ``short-time work'' in Germany rose to a number of approx. 650.000 companies having applied for ``short-time work'' by mid-April 2020 (for comparison: at the peak of the financial crisis 10 years ago approx. 60.000 companies were actually \textit{granted} ``short-time work'') with, on average, 18 employees per company. While this number poses the number of applications, it gives a first hint at the dimension of the economic impact. At the same time the PMI (Purchasing Manager Index) of the Eurozone (produced by Markit) plummeted from 50 to 30 (50 indicates the separation between expansion and recession) at a speed that also goes beyond what had been seen during the financial crisis. In the US throughout the month of April, 22 million new unemployment claims were filed (with 3-6 million per week) while during the financial crisis the new number of weekly unemployment claims had risen to, on average, 700.000.
+
+In the face of these developments governments worldwide have laced up supporting packages consisting of both transfers and credit guarantees in an attempt to contain the destruction of jobs and supply chains and, most importantly, a long-lasting plummeting of aggregate demand. The majority of people being faced with a loss of disposable income, the current biggest challenge is to maintain consumer and sentiment which, if successful, will also bring companies back on track while governments are slowly starting a stepwise easing of the lockdown-measures.
+
+In context to the academic uncertainty literature we have presented and discussed in this thesis, the current situation is certainly exceptional as it cannot be modeled along the lines of the models to date. It is exceptional to that effect as the economic impact is the direct result of imposed lockdown-measures rather than some sort of shock stemming from any measure that has been modeled so far. Yet, a shock that was completely outside the system (the virus) translated into unprecedented dynamics. Certainly, the literature will be influenced by this event and will have to study the inclusion of such unknown unknowns as a global health crisis to be able to explain the dynamics in uncertainty models.
+
+As such, in the spirit of \citet{keynes:37} the current situation can be regarded as uncertainty, TALEB --> black swan, etc.
 
 
 %%%%%%%%%%%%%%%%%AB HIER ENDET DER INHALT DER ARBEIT%%%%%%%%%%%%%%%%%%%
@@ -1792,6 +1820,7 @@ Another problem for VAR-system are omitted variables (which are assumed to be in
 
 
 \section{Additional Figures}
+\label{sec:additionalFigures}
 \begin{figure}[!ht]
    \centering
    \setlength\fboxsep{0pt}
@@ -1801,6 +1830,16 @@ Another problem for VAR-system are omitted variables (which are assumed to be in
       \textit{Note:} Shaded areas denote NBER recession dates. Data frequencies are monthly. The macro uncertainty series starts in July 1960, the EPU in January 1960 and the VXO in July 1962.}   \label{fig:comparison_plot_combined}
 \end{figure}
 
+
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+     \fbox{\includegraphics[trim=8cm -1.0cm -6cm -1cm, width=1.9\textwidth, clip]{impulse_responses_all_SVAR_unconstr_constr.pdf}}
+      \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
+      \textit{Note:} }   \label{fig:impulse.responses_all.SVAR_UNCONSTR}
+\end{figure}
 
 \section{Additional VAR Results}
 

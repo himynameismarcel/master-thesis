@@ -1218,36 +1218,39 @@ return.data <- SVAR.data %>%
 
     # finally we plot the impulse responses:
     impulse.responses_all.SVAR <- 
-      ggplot(data=plot_SVAR.irfs.all, aes(x=step, y=series_value)) + 
+      ggplot(data=plot_SVAR.irfs.all.CONSTR_ALL, aes(x=step, y=series_value)) + 
       geom_line(aes(colour=series_name), alpha=0.6, size=0.3) +
-      geom_line(data=plot_SVAR.irfs.maxG, aes(x=step, y=series_value),
+      geom_line(data=plot_SVAR.irfs.maxG.CONSTR_ALL, aes(x=step, y=series_value),
                 colour="black", size=2, linetype="dashed") +
       labs(color=NULL) + 
       geom_hline(yintercept=0, color = "#514e4e", 
                  size=1) +
       scale_x_continuous(name = NULL) + 
       scale_y_continuous(name = NULL) +
-      theme(axis.text=element_text(size=10),
+      theme(axis.text=element_text(size=8),
             plot.title = element_text(size=10, face="bold", hjust = 0.5),
             axis.title=element_text(size=10),
             legend.position="none",
-            #legend.text=element_text(size=14),
+            # legend.text=element_text(size=5),
             #axis.text.x=element_blank(),
             plot.margin = unit(c(1,1,1,1), "mm"),
             #panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank(),
+            aspect.ratio = 0.95,
             strip.background = element_rect(colour="black", 
                                             fill="white", 
-                                            size=1.5, 
+                                            size=0.5, 
                                             linetype="solid")) + 
       facet_wrap(impulse ~ response,
                  scales="free_y", strip.position = "top") +
-      coord_cartesian(ylim = c(-2, 2))
+      coord_cartesian(ylim = c(-2, 2)) + 
+      theme(strip.text = element_text(size = 8, margin = margin(0.7, 0.7, 0.7, 0.7, "mm")))
+      
 
     
       impulse.responses_all.SVAR
        
-      # ggsave(file="impulse_responses_all_SVAR.pdf")
+      ggsave(file="impulse_responses_all_SVAR.pdf")
       # ggsave(file="impulse_responses_all_SVAR_test.pdf")
       
        
