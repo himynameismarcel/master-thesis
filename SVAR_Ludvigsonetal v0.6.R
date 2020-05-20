@@ -81,7 +81,7 @@ return.data <- SVAR.data %>%
 ### Algorithm
 ###-------------------------------
 
-    set.seed(1)
+    set.seed(999)
     ##----------------------------
     ## STEP 1:
     ## Estimation of the reduced-form model and initialization of A_0^{-1} as the
@@ -232,7 +232,7 @@ return.data <- SVAR.data %>%
     A_0_valid <- list()
     
     ## the below has to run 1.5 million times:
-    for(k in 1:50000){
+    for(k in 1:10000){
           # k <- 3
           # print(k)
           # print(x)
@@ -1250,7 +1250,7 @@ return.data <- SVAR.data %>%
     
       impulse.responses_all.SVAR
        
-      ggsave(file="impulse_responses_all_SVAR.pdf")
+      # ggsave(file="impulse_responses_all_SVAR.pdf")
       # ggsave(file="impulse_responses_all_SVAR_test.pdf")
       
        
@@ -1345,9 +1345,8 @@ return.data <- SVAR.data %>%
                 aes(xmin=my_start, xmax=my_end, 
                     ymin=-Inf, ymax=+Inf), 
                 fill='#606060', alpha=0.3) + 
-      # geom_point(aes(x = my, y = series_value, color=series_name), 
-      #           #color="black", 
-      #           size=1.1) +
+      geom_point(aes(x = my, y = series_value),
+                size=2, color='#0072B2') +
       geom_segment(data=epsilon_t_valid.figure3, aes( 
                                              x=my, 
                                              xend=my,
@@ -1385,7 +1384,7 @@ return.data <- SVAR.data %>%
     
       time_series_epsilon_t_largeShocks
       
-      ggsave(file="time_series_epsilon_t_largeShocks.pdf")
+      #ggsave(file="time_series_epsilon_t_largeShocks.pdf")
     
     
 #######################

@@ -437,9 +437,9 @@ return.data <- SVAR.data %>%
                                levels=unique(impulse)))
 
 # remove all but one object from work-space    
-rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
-                        "plot_SVAR.irfs.maxG.CONSTR_ALL")))
-    
+# rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
+#                         "plot_SVAR.irfs.maxG.CONSTR_ALL")))
+#     
 ###--------------------------------------------------------------------------------------------
 ### Algorithm Only With CORRELATION CONSTRAINTS
 ###--------------------------------------------------------------------------------------------
@@ -863,9 +863,9 @@ plot_SVAR.irfs.all.FC_only <- plot_SVAR.irfs.all %>%
 
 
 # remove all but two object from work-space    
-rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
-                        "plot_SVAR.irfs.all.FC_only",
-                        "plot_SVAR.irfs.maxG.CONSTR_ALL")))
+# rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
+#                         "plot_SVAR.irfs.all.FC_only",
+#                         "plot_SVAR.irfs.maxG.CONSTR_ALL")))
 
 ###--------------------------------------------------------------------------------------------
 ### Algorithm Only With NO CONSTRAINTS AT ALL
@@ -1264,10 +1264,10 @@ return.data <- SVAR.data %>%
                               levels=unique(impulse)))
 
 # remove all but three objects from workspace
-rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
-                        "plot_SVAR.irfs.all.FC_only",
-                        "plot_SVAR.irfs.all.NO_CONSTR"
-                        )))
+# rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
+#                         "plot_SVAR.irfs.all.FC_only",
+#                         "plot_SVAR.irfs.all.NO_CONSTR"
+#                         )))
 
 ## before plotting, we have to add one more column to each of the data
 ## frames to be able to use that information for the aes in ggplot:
