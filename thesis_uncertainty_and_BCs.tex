@@ -458,6 +458,7 @@ Unsicherheit ist ein latenter und im Allgemeinen nicht beobachtbarer stochastisc
 %%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
+\label{introduction}
 % the below code making use of "begingroup" etc. is only necessary if I want to customize the font for a particular part of the thesis
 %\begingroup
 %\fontsize{10pt}{12pt}\selectfont
@@ -674,7 +675,7 @@ Contrary to Bloom's findings, for example, \citet{juradoetal:15} and \citet{bach
 \label{sec:uncertaintymeasuresandstylizedfacts}
 
 
-Various uncertainty measures exist (and not \textit{the one} measure) because the stochastic process which we commonly call 'uncertainty' is unobservable. \citet[p. 1182]{juradoetal:15} emphasize that ``[t]he literature on measuring uncertainty is still in its infancy'' and so far existing research has popularized various proxies or indicators of uncertainty.
+Various uncertainty measures exist because the stochastic process which we commonly call 'uncertainty' is unobservable. \citet[p. 1182]{juradoetal:15} emphasize that ``[t]he literature on measuring uncertainty is still in its infancy'' and so far existing research has popularized various proxies or indicators of uncertainty.
 
 The lack of an objective uncertainty measure hence poses a serious challenge to studies trying to quantify its macroeconomic effects: they have to come up with a reasonable uncertainty measure in the first place. \citet[p. 1178]{juradoetal:15} explain that ``[w]hile most of the measures have the advantage of being directly observable, their adequacy as proxies for uncertainty depends on how strongly they are correlated with this latent stochastic process [i.e., with unobservable uncertainty]''.\\
 \\ 
@@ -1687,7 +1688,7 @@ As shown in Table~\ref{tab:summary_stats1} in Section~\ref{sec:uncertaintymeasur
 \section{Analysis of Recovered Shocks}
 \label{sec:uncertaintyShocks}
 
-Before jumping to the resulting impulse responses of the baseline system $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ in Section \ref{sec:ImpulseResponseAnalysis}, Section~\ref{sec_uncertaintyShocks} discusses the SVAR's recovered shocks which are rarely analysed although they are a central objective of SVAR analysis (as formulated by \citealp{ludvigsonetal:17}). These shocks exhibit a few noteworthy features.\\
+Before jumping to the resulting impulse responses of the baseline system $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ in Section \ref{sec:ImpulseResponseAnalysis}, Section~\ref{sec:uncertaintyShocks} discusses the SVAR's recovered shocks which are rarely analysed although they are a central objective of SVAR analysis (as formulated by \citealp{ludvigsonetal:17}). These shocks exhibit a few noteworthy features.\\
 
 
 \begin{figure}[!h]
@@ -1769,7 +1770,7 @@ In summary, the model suggests that higher macroeconomic uncertainty is an endog
 %\newpage
 \chapter{Conclusion}
 \label{Conclusion}
-Frequently used VARs with recursive schemes in the uncertainty literature might empirically not be well grounded to capture the underlying data's DGP and the system's dynamics by ruling out endogeneity by construction. In addition, those models usually do not distinguish \textit{types} of uncertainty and using individual proxies suggest that uncertainty largely has a depressing effect on business cycles.
+Frequently used VARs with recursive schemes in the uncertainty literature might empirically not be well grounded to capture the underlying data's DGP and the system's dynamics by ruling out endogeneity by construction. In addition, those models usually do not distinguish \textit{types} of uncertainty and using individual proxies one at a time suggest that uncertainty largely has a depressing effect on business cycles.
 
 Within the class of SVAR models that also allow for contemporaneous relationships, economically grounded assumptions for point identification often seem too restrictive to defend which is why alternative identification schemes that \textit{set-identify} \citep{granzieraetal:18} SVARs seem like a promising approach. Besides sign-restrictions one strand of the literature which is being pushed by \citet{ludvigsonetal:17}, among others, goes beyond classical sign restrictions and concentrates on the model's recovered \textit{shocks} that might reveal valuable information for sensible inequality restrictions to shrink an SVAR's infinitely many solutions to a manageable solution set even without point identification. 
 
@@ -1779,15 +1780,10 @@ With respect to the particular application and the central question related to t
 
 From a statistical perspective, \citet{ludvigsonetal:18} themselves point at the challenge of proper inference within the class of \textit{set-identified} models in a frequentist view. While they mention approaches that have been suggested in the literature (\citet{granzieraetal:18} for sign-restricted SVARs that only impose restrictions on one set of impulse response function using the Bonferroni approach or \citet{gafarovetal:15} that collect the reduced-form model in a $1-\alpha$ Wald ellipsoid which is conservative), they conclude that ``[i]t is fair to say that there exists [yet] no generally agreed upon method for conducting inference in set-identified SVARs, let alone one proven to have correct frequentist coverage properties for shock-restricted SVARs of the type considered'' \citep[p. 10]{ludvigsonetal:17}. \\
 
-With regard to the particular \textit{type} it seems generally agreed that uncertainty as a latent and generally unobservable stochastic process seems to be multilayered/manifold. Hence, distinguishing between financial and macroeconomic uncertainty in empirical models seems to be the minimum amount of sophistication. One aspect that we haven't discussed any further are aspects related to \textit{policy-induced} uncertainty. This relates particularly to questions of how policies can help overcoming a recession and set counter-cyclical measures once an economy has arrived at the bottom. E.g. \citet[p. 41]{bloometal:13} and \citet{IMF:12} write that while ``[i]t is difficult for policymakers to overcome the intrinsic uncertainty economies typically face over the business cycle'', uncertainty about economic policy seems like an exacerbating factor. Hence, we propose to include economic policy uncertainty as a third layer of uncertainty into future structural models since it seems to play another role which should be distinctively separated from macroeconomic and financial uncertainty. \\
+With regard to the particular \textit{type} it seems generally agreed that uncertainty as a latent and generally unobservable stochastic process seems to be multilayered/manifold. Hence, distinguishing between financial and macroeconomic uncertainty in empirical models seems to be the minimum amount of sophistication. One aspect that we haven't touched upon, however, are aspects related to \textit{policy-induced} uncertainty. This relates particularly to questions of how policies can help overcoming a recession and set counter-cyclical measures once an economy has arrived at the bottom. E.g. \citet[p. 41]{bloometal:13} and \citet{IMF:12} write that while ``[i]t is difficult for policymakers to overcome the intrinsic uncertainty economies typically face over the business cycle'', uncertainty about economic policy seems like an exacerbating factor. Hence, we propose to include economic policy uncertainty as a third layer of uncertainty into future structural models since it seems to play another role which should be distinctively separated from macroeconomic and financial uncertainty. \\
 
-At the time of writing this thesis the world is halting in the wake of the Covid-19 pandemic which from a global health crisis simultaneously turned into an economic crisis due to the necessary lockdown measures applied by governments throughout the world. Indicators such as the so-called ``short-time work'' in Germany rose to a number of approx. 750.000 applications of companies by mid-April 2020 (for comparison: at the peak of the financial crisis 10 years ago approx. 60.000 companies were actually \textit{granted} ``short-time work''). While this number poses the number of applications, it gives a first hint at the dimension of the economic impact. At the same time the PMI (Purchasing Manager Index) of the Eurozone (produced by Markit) plummeted from 50 to 30 (50 indicates the separation between expansion and recession) at a speed that also goes beyond what had been seen during the financial crisis. In the US throughout the month of April, 15.9 million new unemployment claims were filed (with 3-6 million per week) increasing the unemployment rate which had previously prevailed at around 3.5\% for most of the previous year to 14.7\% while during the financial crisis the new number of weekly unemployment claims had risen to, on average, 700.000.
+At the time of writing this thesis the world is halting in the wake of the Covid-19 pandemic which from a global health crisis simultaneously turned into (most likely) the most severe economic decline since the Great Depression due to the necessary lockdown measures applied by governments throughout the world. In context of our uncertainty-taxonomy introduced in Section~\ref{introduction} it is difficult to decide for a classification since on the one hand this external shock might be described as the 'highly improbable' in the spirit of \citet{taleb:08} or 'strong uncertainty' (due to the absence of the ability to form ``[...] a unique, additive and reliable probability distribution'' of future events \citep[p. 622/623]{dequech:14}). On the other hand, there are also opinions arguing that the pandemic was just a trigger for developments in a system where imbalances and uncertainty was already looming. Irrespective of this classification, \citet{ludvigsonetal:20} speak of a \textit{costly disaster} and argue that while in typical economic models there is some room for ``conventional'' disasters \citep[p. 2]{ludvigsonetal:20} which are short-lived and local in nature, the impact of Covid-19 is regarded as a ``multi-period shock that simultaneously disrupts supply, demand, and productivity, [and] is almost perfectly synchronized within and across countries, and wherein health, social, and economic consequences are cataclysmic not just for the foreseeable few weeks after the crisis, but potentially for a long time period'' \citet[p. 2]{ludvigsonetal:20}. Because the likely impact of the pandemic will outshine every costly disaster in the post-war period, we expect that its aftermath will certainly profoundly influence the landscape of uncertainty-modeling in the future.
 
-In the face of these developments governments worldwide have laced up supporting packages consisting of both transfers and credit guarantees in an attempt to contain the destruction of jobs and supply chains and, most importantly, a long-lasting plummeting of aggregate demand. While many people have been or are experiencing a decline in their disposable income, the current biggest challenge is to maintain consumer sentiment through government intervention which, if successful, will also bring companies back on track while governments are slowly starting a stepwise easing of the lockdown-measures. But uncertainty about future income streams demands for governments to perform the replacements of any forgone earnings adequately and non-bureaucratically (in conjunction with an accommodative and supporting monetary policy) to prevent any deflationary tendencies and help form this recession into a V-shaped recession.
-
-In context with the academic uncertainty literature we have presented and discussed in this thesis, we regard the current situation out of scope of these models as it cannot be modeled along the lines of the frameworks we have presented in this thesis. It is exceptional to that effect as the economic impact is the direct result of imposed lockdown-measures rather than some sort of shock stemming from any measure that has been modeled in any of the studies. Yet, a shock that was completely outside of the system (the virus) translated into these unprecedented dynamics and would have to be modeled as a sort of natural disaster. Certainly, the literature will be influenced by this event and extend its state space of possible scenarios to study the inclusion of such unknown unknowns to be able to explain the dynamics in uncertainty models.
-
-As such, in the spirit of \citet{keynes:37} the current situation can be regarded as uncertainty, TALEB --> black swan, etc.
 
 
 %%%%%%%%%%%%%%%%%AB HIER ENDET DER INHALT DER ARBEIT%%%%%%%%%%%%%%%%%%%
@@ -1955,15 +1951,15 @@ Then we create separate explanations about which variables were used for which m
 
 
 
-\newgeometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
+%\newgeometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
 %the below code is to adjust the header ruler after the
 %newgeometry!
-\fancyhfoffset[E,O]{0pt}
-\section{Code}
-\label{sec:rcode}
+%\fancyhfoffset[E,O]{0pt}
+%\section{Code}
+%\label{sec:rcode}
 
-\subsection{SVAR-Framework of \citet{ludvigsonetal:18}}
-\label{sec:codeSVAR_LMN}
+%\subsection{SVAR-Framework of \citet{ludvigsonetal:18}}
+%\label{sec:codeSVAR_LMN}
 %\begin{Verbatim}[fontsize=\small]
 %halloe
 %\end{Verbatim} 
@@ -1972,16 +1968,16 @@ Then we create separate explanations about which variables were used for which m
 %halloe
 %\end{verbatim} 
 
-\begingroup
-\fontsize{9pt}{12pt}\selectfont
-\begin{verbatim}  
-##The Code will go here.
-
-
-
-
-\end{verbatim}  
-\endgroup
+%\begingroup
+%\fontsize{9pt}{12pt}\selectfont
+%\begin{verbatim}  
+%##The Code will go here.
+%
+%
+%
+%
+%\end{verbatim}  
+%\endgroup
 
 
 \restoregeometry
