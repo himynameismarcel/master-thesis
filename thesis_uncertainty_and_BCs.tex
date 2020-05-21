@@ -556,80 +556,48 @@ In the more detailed discussion of a few selected works below, \textit{search fr
 
 \section[Close-Up: Selected Works in More Detail]{Close-Up: Selected Works in More Detail}
 \label{sec:selectedworkindetail}
-%%%%\section{Analyzing Aggregate Macroeconomic Effects}
-%%%%bloom:09
-%%%%--> This option value effect in our model with serach frictions arises for a similar reason as in the literature of irreversible investment decisions under uncertainty (bernanke:83; bloom:09; bloometal:12)
-%%%%--> bornandpfeifer:14 write: Empirical studies using different proxies and identification schemes to uncover the effects of uncertainty have produced a variety of results. One group of studies reports a large impact of uncertainty about productivity on aggregate variables like GDP and employment (bloom:09, bloometal:12; alexopoulosandcohen:09); A one-standard deviation shock to uncertainty in these studies typically leads to a 1-2% drop in GDP, followed by a recovery with a considerable overshooting.
-\citet{bloom:09} was among the first to propose uncertainty shocks as a 'new' driver of business cycles and triggered much of the literature in subsequent years by building his argument particularly around the adverse effect of real-options on investment. \citet{bloom:09} himself links his work to the work of \citet{bernanke:83} and \citet{hassler:96} and in the theoretical part adds uncertainty as a stochastic process (consistent with the empirical stock market volatility index constructed from realized volatility in the S\&P 500 and the VXO) into a (large-scale) standard model of the firm (as in e.g., \citealp{abelandeberly:96}) together with a mix of labor and capital adjustment costs\footnote{Adjustment costs make it hiring/firing and investment/disinvestment decisions costly.} which, under the assumption of nonconvexity, produce a central region where firms temporarily pause their investment and hiring if business conditions are sufficiently bad (and consequently only hire and invest when the business conditions are sufficiently good). The interaction of the time-varying uncertainty (represented by the time-series constructed from realized volatility in the S\&P 500 and the VXO) with the nonconvex adjustment costs feeds into time-varying real-option effects that generate fluctuations in hiring and investment. A simulated large temporary uncertainty shock in the model (in the form of a rise in the variance of productivity and demand growth) moves the hiring/firing and investment/disinvestment thresholds outward accordingly which expands the region of inaction (the real-option value of waiting is worth more than the returns to investment and/or hiring) and leads to a rapid drop in hiring, investment, productivity and output triggered by the high real-option value to waiting. The rapid drop is, however, followed by a corresponding rebound and even an eventual overshoot in the 6-8 months into the shock as firms start to work off their piled up demand for labor and capital once the impact of the uncertainty shock subdued.\footnote{\citet{bloom:09} finds productivity growth to react similarly due to the temporary halt slowing down the reallocation of labor and capital between low and high productivity firms.}\footnote{\citet[p. 646]{bloom:09} notes that pure real-options effects should actually only lead to a convergence back to trend in the \textit{levels} without an overshoot. This medium-term overshoot occurs due to a burst of net hiring/investment promoted through more firms clustered around the hiring/investment than the firing/disinvestment threshold and only subdues in the long run (a phenomenon \citet{bloom:09} calls ``volatility overshoot''.}\footnote{A more traditional stand-alone first-moment shock conversely produces a long and persistent drop over several quarters.} 
 
-\citet{bloom:09} finds these partial equilibrium effects to be entirely consistent with empirical evidence as shown in impulse response functions of vector autoregression (VAR) estimations on actual data. In particular, using 17 identified 'exogenous shocks'\footnote{Applying Bloom's algorithm for shock-classification results in 20 events as shown in Table~\ref{tab:bloom_shocks}. Note that in his own contribution, \citet[p. 676]{bloom:09} reports 17 events of maximum stock market volatility in Table A.1and assigns each of theses event dates to actual events categorized as either 'war', 'terror', 'oil', or 'economic'. In our reproduction of Bloom's Table in Table~\ref{tab:bloom_shocks} we record a few discrepancies: we do not pick up November 1978 (OPEC II) and instead pick up October 1966, August 1982, January 1991, August 2007 and November 2007. }, in support of his theoretical model, \citet{bloom:09} estimates VARs\footnote{The estimations are run using monthly data from 06/1962-06/2008 (which excludes most of the Credit Crunch) and include: (in that order) log(S\&P500 stock market index), an uncertainty measure (either the raw stock market volatility series that Bloom constructs through sticking actual realized stock market volatility and the CBOE's VXO-data which is available as of 1986 together or various indicator variables capturing months with maximum volatility, or months capturing the first time that volatility exceeded a certain threshold; for further modifications see \citealp{bloom:09}), Federal Funds Rate, log(average hourly earnings), log(consumer price index), hours worked, log(employment), log(industrial production). Contrary to the description in \citet{bloom:09} the code shows that all variables except the stock market volatility series as a proxy for uncertainty are HP-detrended. Bloom'S results are robust to various alternative approaches including variables ordering, variable inclusion, shock definitions, shock timing, and detrending} showing that an uncertainty shock in the data (the VXO-measure) produces a short-run drop in industrial production of 1\% which lasts for about 6 months (a confirmation for the ’wait-and-see approach’) and subsequently creates a longer-run overshoot. In his setting, these results are robust to the effect of an uncertainty shock on employment and a range of alternative approaches (including variable ordering, variable inclusion, shock definitions, shock timing, and detrending). The robustness of Bloom's results also hold in a 'pseudo' general equilibrium setting by building the fall in interest rates, prices, and wages after an uncertainty shock into the simulation, the fundamental reason being that uncertainty shocks make firms temporarily insensitive to price changes (the ``cautionary effect'' which drastically reduces the responsiveness to monetary or fiscal policy following the immediate aftermath of an uncertainty shock).
- %--> I should clarify more forecefully that Bloom is a proponent of the real-options-effect! --> DONE!!!
+\citet{bloom:09} was among the first to propose uncertainty shocks as a 'new' driver of business cycles and triggered much of the literature in subsequent years by building his argument particularly around the adverse effect of real-options on investment. \citet{bloom:09} himself links his work to the work of \citet{bernanke:83} and \citet{hassler:96} and in the theoretical part adds uncertainty as a stochastic process into a (large-scale) standard model of the firm (as in e.g., \citealp{abelandeberly:96}) together with a mix of labor and capital adjustment costs\footnote{Adjustment costs make it hiring/firing and investment/disinvestment decisions costly.} which, under the assumption of nonconvexity, produce a central region where firms temporarily pause their investment and hiring if business conditions are sufficiently bad (and consequently only hire and invest when the business conditions are sufficiently good). The interaction of the time-varying uncertainty (represented by the time-series constructed from realized volatility in the S\&P 500 and the VXO) with the nonconvex adjustment costs feeds into time-varying real-option effects that generate fluctuations in hiring and investment. A simulated large temporary uncertainty shock in the model (in the form of a rise in the variance of productivity and demand growth) moves the hiring/firing and investment/disinvestment thresholds outward accordingly which expands the region of inaction (the real-option value of waiting is worth more than the returns to investment and/or hiring) and leads to a rapid drop in hiring, investment, productivity and output triggered by the high real-option value to waiting. The rapid drop is, however, followed by a corresponding rebound and even an eventual overshoot in the 6-8 months into the shock as firms start to work off their piled up demand for labor and capital once the impact of the uncertainty shock subdued.\footnote{\citet{bloom:09} finds productivity growth to react similarly due to the temporary halt slowing down the reallocation of labor and capital between low and high productivity firms.}\footnote{\citet[p. 646]{bloom:09} notes that pure real-options effects should actually only lead to a convergence back to trend in the \textit{levels} without an overshoot. This medium-term overshoot occurs due to a burst of net hiring/investment promoted through more firms clustered around the hiring/investment than the firing/disinvestment threshold and only subdues in the long run (a phenomenon \citet{bloom:09} calls ``volatility overshoot''.}\footnote{A more traditional stand-alone first-moment shock conversely produces a long and persistent drop over several quarters.} 
 
+\citet{bloom:09} finds these partial equilibrium effects to be entirely consistent with empirical evidence as shown in hise impulse response functions of vector autoregressions (VARs) on actual data. In particular, using 17 identified 'exogenous shocks', in support of his theoretical model, \citet{bloom:09} estimates VARs showing that an uncertainty shock in the data (the VXO-measure) produces a short-run drop in industrial production of 1\% which lasts for about 6 months (a confirmation for the ’wait-and-see approach’) and subsequently creates a longer-run overshoot. Details regarding the variables and ordering are summarized in Appendix~\ref{sec:VAREquations}. In Bloom's setting, these results are robust to the effect of an uncertainty shock on employment and a range of alternative approaches (including variable ordering, variable inclusion, shock definitions, shock timing, and detrending). The robustness of Bloom's results also hold in a 'pseudo' general equilibrium setting by building the fall in interest rates, prices, and wages after an uncertainty shock into the simulation, the fundamental reason being that uncertainty shocks make firms temporarily insensitive to price changes (the ``cautionary effect'' which drastically reduces the responsiveness to monetary or fiscal policy following the immediate aftermath of an uncertainty shock).\\
 
 
 \citet{gilchristetal:14} question the sole significance of the traditional ``wait-and-see'' effect to investment caused by capital adjustment frictions (as popularized by e.g. \citealp{bloom:09}) and rather see the main mechanism through which changes in uncertainty impact the macroeconomy in financial distortions. Backed by empirical micro- and macro-evidence, their quantitative general equilibrium model investigates investment dynamics for firms exposed to time-varying idiosyncratic uncertainty, two forms of adjustment frictions (partial irreversibility and nonconvex fixed capital adjustment costs) and frictions in both the debt and equity markets. Including this set of features allows them to individually address and isolate the adverse real-option effects and financial friction effects. 
-%In particular, the installed partial investment irreversibility takes effect in two roles: it is central to the capital accumulation problem and under increased uncertainty, similar as in \citet{bloom:09} broadens the region of inaction due to a higher option value of waiting; in addition, with respect to \textit{financing} of investment decisions where external funds are costly (whereby the full range of choices is available, i.e., internal funds, debt and equity), under partial irreversibility greater downside risk ...... [Hans oder Martin fragen; der Absatz auf Seite 2 ist nicht ganz klar!]. 
-Being able to turn financial distortions on and off in their model, the key variable affected throughout the transmission mechanism under financial frictions is the supply of credit: increased uncertainty amplifies the already adverse response of investment to heightened volatility triggered through a sharp and persistent increase in corporate bond credit spreads due to which firms, confronted with higher user cost of capital, radically bring down investment outlays even further and delever. Specifically, the authors attribute more than three-quarters of the adverse effect of an uncertainty shock on investment to the presence of financial distortions.\footnote{\citet{gilchristetal:14} see the dynamics in their model to be consistent with the empirical evidence developed in \citet{stockandwatson:12} who see the combination of uncertainty and credit supply shocks as the primary drivers of the slowdown during the Great Recession.}\footnote{Through the combination of partial irreversibilities and financial frictions, in their model \citet{gilchristetal:14} also identify ``capital liquidity'' shocks as a new potential source of shocks: in this scenario adverse shocks to the liquidation value of capital affect the debt capacity of firms (through haircuts on collateral).}\\
-In their empirical part, \citet{gilchristetal:14} construct a proxy for idiosyncratic uncertainty by making use of high-frequency firm-level stock market data and as part of their micro evidence show that (including a full set of control variables including a firm's leverage, profitability and other indicators of creditworthiness) their uncertainty proxy statistically significant enters 'credit-spread regressions' that model credit spreads for a sample of approximately 1,100 firms that have a significant portion of outstanding liabilities (i.e., an increase in idiosyncratic uncertainty leads to a significant increase of credit spreads). In 'investment regressions', however, after controlling for firm-individual credit spreads, the marginal effect of uncertainty on investment virtually vanishes leaving credit spreads as a statistically significant determinant for capital spending. \\
-As part of their macro-evidence the authors subsume their idiosyncratic uncertainty measure to an aggregate uncertainty measure and use structural vector autoregressions (SVARs) over the period 1963:Q3 - 2012:Q3 consisting of eight variables\footnote{Four lags of each endogenous variable are used.}\footnote{log(real business fixed investment), log(real personal consumption expenditure on durable goods), log(real personal expenditures on nondurable goods and services), log(real GDP), log(GDP deflator), federal funds rate, the 10-year BBB-Treasury credit spread and the constructed proxy for idiosyncratic uncertainty at the aggregate level.} in two different identification schemes examining the impact of two different shocks: innovations to the idiosyncratic uncertainty measure and to the credit spreads (i.e., a financial shock). The corresponding impulse response functions upon an uncertainty shock show a widening of credit spreads consistent with the micro-estimations. This influence aside, the investment component of aggregate output (business expenditures on fixed capital and consumer spending on durable goods) falls strongest with a maximum 1.5\% decline reached six quarters after the shock. A credit-spread shock (an increase of almost 30 basis points in the BBB-Treasury spread) also points at significant and long lasting economic contractions (depressing the investment component of aggregated demand \textit{and} nondurable goods consumption) while the effect on uncertainty is negligible. An alternative identification scheme (ordering credit spreads before the uncertainty proxy), however, shows far less adverse effects of uncertainty shocks on the macroeconomy whereas credit spread shocks (a financial shock) show a protracted and long-lasting effect on economic activity (GDP, business fixed investment and major categories of consumer spending) and an immediate jump in uncertainty. Interestingly, \citet[p. 14]{gilchristetal:14} see the immediate response of uncertainty to innovation in credit spreads to suggest that ``[...] fluctuations in uncertainty may arise endogenously in response to changes in broader financial conditions [..]'' which is an issue which we will pick up again in Section~\ref{sec:exoEndoJuradoetal}.
+
+Being able to turn financial distortions on and off in their model, the key variable affected throughout the transmission mechanism under financial frictions is the supply of credit: increased uncertainty amplifies the already adverse response of investment to heightened volatility triggered through a sharp and persistent increase in corporate bond credit spreads due to which firms, confronted with higher user cost of capital, radically bring down investment outlays even further and delever. Specifically, the authors attribute more than three-quarters of the adverse effect of an uncertainty shock on investment to the presence of financial distortions.\footnote{\citet{gilchristetal:14} see the dynamics in their model to be consistent with the empirical evidence developed in \citet{stockandwatson:12} who see the combination of uncertainty and credit supply shocks as the primary drivers of the slowdown during the Great Recession.}\footnote{Through the combination of partial irreversibilities and financial frictions, in their model \citet{gilchristetal:14} also identify ``capital liquidity'' shocks as a new potential source of shocks: in this scenario adverse shocks to the liquidation value of capital affect the debt capacity of firms (through haircuts on collateral).}
 
 
-%%%%bachmannandbayer:13
-%%%%-->bornandpfeifer:14 write: In contrast, a second group of studies reports little to no impact a atll (bachmannnandbayer:13; bachmannetal:13)
-\citet{bachmannandbayer:13} add to the real-options literature of e.g. \citet{bloom:09} or \citet{bloometal:12} (as mentioned by \citealp{schaal:17}) by ......
-
-
-%%%%bloometal:12
-%%%%--> bornandpfeifer:14 write: Empirical studies using different proxies and identification schemes to uncover the effects of uncertainty have produced a variety of results. One group of studies reports a large impact of uncertainty about productivity on aggregate variables like GDP and employment (bloom:09, bloometal:12; alexopoulosandcohen:09); A one-standard deviation shock to uncertainty in these studies typically leads to a 1-2% drop in GDP, followed by a recovery with a considerable overshooting.
-\citet{bloometal:12} .......deploy a measure of establishment-level volatility constructed from Census data which, using annual input-output data from the Census of Manufactures and the Annual Survey of Manufactures, present the cross-sectional interquartile range (IQR) of innovations to establishment-level TFP, estimated from an AR(1) process; (the estimation contorls for time and plant-level fixed effects and four-digit price deflators) --> mentioned in \citet{schaal:17}
-
-
-
-
-%%%%alexopoulosandcohen:15
-%%%%--> bornandpfeifer:14 write: Empirical studies using different proxies and identification schemes to uncover the effects of uncertainty have produced a variety of results. One group of studies reports a large impact of uncertainty about productivity on aggregate variables like GDP and employment (bloom:09, bloometal:12; alexopoulosandcohen:09); A one-standard deviation shock to uncertainty in these studies typically leads to a 1-2% drop in GDP, followed by a recovery with a considerable overshooting.
-\citet{alexopoulosandcohen:15}
-
-
-
-
-%%%%bornandpfeifer:14
-%%%--> the large real effect of uncertainty shocks present a challenge for standard DSGE models (as in bornandpfeifer:14)
-%%%--> leducandliu:16: We also examine the relative importance of these two channels through the lens of our model. The relatively small impact of uncertainty on real economic activity in case of absent search frictions is in line with the recent findings of born and pfeifer (2014) using a standard DSGE model without search frictions.
-\citet{bornandpfeifer:14}
-
-
-%%%%villaverdeetal:11
-\citet{villaverdeetal:11} ......
-
-%%%%schaal:17
-\citet{schaal:17} focusses his analysis on the experience of the U.S. labor market over the series of recessions since 1970 by solely looking at the real options effect to hiring (i.e. employment decisions)\footnote{Adding to literature that considers non-convex adjustment costs in labor like \citet{bloom:09}, \citet{bloometal:12} or \citet{bachmannandbayer:13}.} and explicitly models various forces at work into an equilibrium search-and-matching model\footnote{Insofar it is related to \citet{leducandliu:16} who extended the New-Keynesian DSGE framework of \citet{basuandbundick:17} by search frictions. However, in comparison to these representative agent approaches, \citet{schaal:17} states his model to be more closely related to the firm dynamics and heterogeneous agent literature of \citet{hopenhayn:92}.} of firm dynamics under time-varying uncertainty\footnote{Schaal deploys time-varying establishment-level volatility in total factor productivity (TFP) as his uncertainty measure arguing for its volatility in the data to be ``[...] an important determinant of employment decisions and labor market reallocation.'' \citep{schaal:17}} (and heterogeneity in productivity and size) that, theoretically, might leave the overall effect on unemployment to be ambiguous:\footnote{Note that in comparison to \citet{leducandliu:16} who combine nominal rigidities and search frictions (see below), \citet{schaal:17}'s search model assumes flexible prices.} First, similarly as the adverse real options effect to investment, under high uncertainty the option value of waiting increases and firms are expected to delay hiring resulting in an increase of unemployment. Second, however, separations also tend to be subject to an option value, meaning that with increasing uncertainty, firms should also hesitate to reduce their work-force since searching for new workers would be costly in case of a rise in future productivity. Third, firms might also be hit differently by uncertainty shocks causing a reallocation of the labor force to firms hit by large positive shocks that correspondingly substantially expand. \\
-The introduction of time-varying idiosyncratic shocks (i.e., at the micro-level) into the model improves the overall fit compared to other search-and-matching models measured against the benchmark of a range of business cycle moments. The model's aggregate response to time-varying idiosyncratic and aggregate productivity shocks, however, does not show any strong real options effects resulting from the sheer size of the U.S. labor market flows which leave estimated search costs too low to cause any serious irreversibilities while playing a major role in labor market flows (i.e., reallocation). Overall, the prevailing major effect is a massive increase in layoffs at firms that are unusually negatively hit by the shock accompanied by a modest rise in hiring (at firms hit positively) which is insufficient (dampened by general equilibrium and real option effects) to do counter the rise in layoffs.\\
-Finally, running macro-experiments the model shows a rather successful fit in replicating the output dynamics of the recessions from 1972-2009 with the worst fit in the rise of unemployment (only 40\% of the total actual rise in employment) in the 2007-2009 recession with a large part of the magnitude and persistence remaining unexplained.
+As part of their macro-evidence the authors subsume their idiosyncratic uncertainty measure to an aggregate uncertainty measure and use VARs over the period 1963:Q3 - 2012:Q3 consisting of eight variables in two different identification schemes (see Appendix~\ref{sec:VAREquations} for details) examining the impact of two different shocks: innovations to the idiosyncratic uncertainty measure and to the credit spreads (i.e., a financial shock). The corresponding impulse response functions upon an uncertainty shock show a widening of credit spreads consistent with the micro-estimations. This influence aside, the investment component of aggregate output (business expenditures on fixed capital and consumer spending on durable goods) falls strongest with a maximum 1.5\% decline reached six quarters after the shock. A credit-spread shock (an increase of almost 30 basis points in the BBB-Treasury spread) also points at significant and long lasting economic contractions (depressing the investment component of aggregated demand \textit{and} nondurable goods consumption) while the effect on uncertainty is negligible. An alternative identification scheme (ordering credit spreads before the uncertainty proxy), however, shows far less adverse effects of uncertainty shocks on the macroeconomy whereas credit spread shocks (a financial shock) show a protracted and long-lasting effect on economic activity (GDP, business fixed investment and major categories of consumer spending) and an immediate jump in uncertainty. Interestingly, \citet[p. 14]{gilchristetal:14} see the immediate response of uncertainty to innovation in credit spreads to suggest that ``[...] fluctuations in uncertainty may arise endogenously in response to changes in broader financial conditions [..]'' which is an issue which we will pick up again in Section~\ref{sec:exoEndoJuradoetal}.\\
 
 
 %%%%%basuandbundick:17 
 %%%--> leducandliu:16 refer to both villaverdeetal:11 and basuandbundick:17 by writing: ``First, nominal rigidities 
 %%%      help amplify the the effect of uncertainty shocks on the unemployment rate through declines in aggregate demand, as in the
 %%%      standard DSGE model without search frictions (villaverdeetal:11, basuandbundick:17).
-Based on the empirical evidence of a VAR including the VXO as a measure of uncertainty, gross domestic product (GDP), consumption, investment, hours worked, the GDP deflator, the M2 money stock, and a measure of the monetary policy stance (in that order) over the 1986-2014 sample period,\footnote{All variable apart from the monetary policy measure enter the VAR in log levels.} \citet{basuandbundick:17} argue for the resulting co-movement of output, consumption, investment, and hours worked to be a key empirical feature of an economy's (i.e., the data's) response following an uncertainty shock and hence also as a ``[...] key minimum condition that business-cycle models driven by uncertainty fluctuations should satisfy'' \citep[p. 937]{basuandbundick:17}.\footnote{At the same time, they see this feature as missing from the related work of \citet{bloom:09}, \citet{bachmannandbayer:13} or \citet{gilchristetal:14}. } Identifying the uncertainty-shock using a Cholesky decomposition with the VXO ordered first, the authors assume that uncertainty shocks can affect output and its components immediately but that other variables' shocks, however, do not influence the VXO on impact. With this ordering, their VAR generates statistically significant co-moving declines in output, consumption, investment, and hours worked with a peak response after approximately one year whereby their key stylized fact is robust to several modifications.\footnote{These modifications include: inclusions of stock prices in the VAR (as is done e.g., by \citet{bloom:09}), measurement of uncertainty using the VIX instead of the VXO, a re-ordering of the VAR placing uncertainty last or an adjustment of the sample period to exclude the Great Recession.} These insights are subsequently brought into a New Keynesian DSGE model (monopolistic, one-sector closed-economy model) where they calibrate their uncertainty shock process using fluctuations in the VXO and add nominal price rigidities (sticky prices) to replicate the transmission mechanism which was identified in the data. According to \citet{basuandbundick:17}, the resulting dynamics due to the incorporated price rigidity in a model where output is demand-determined are able to support the intuition that an increase in uncertainty which induces precautionary savings, reduces household expenditures, output and labor input and eventually the demand for capital and investment as suggested by their VAR-model.\footnote{Before introducing their model's features, \citet{basuandbundick:17} show that uncertainty shocks in standard closed economy real business cycle (RBC) (i.e., competitive, flexible prices) models produce a counterintuitive aggregate expansion. Monopolistic competition under sufficiently sticky prices changes the dynamics.}
+Based on the empirical evidence of a VAR (see Appendix~\ref{sec:VAREquations}) including the VXO as a measure of uncertainty, gross domestic product (GDP), consumption, investment, hours worked, the GDP deflator, the M2 money stock, and a measure of the monetary policy stance (in that order) over the 1986-2014 sample period,\footnote{All variable apart from the monetary policy measure enter the VAR in log levels.} \citet{basuandbundick:17} argue for the resulting co-movement of output, consumption, investment, and hours worked to be a key empirical feature of an economy's (i.e., the data's) response following an uncertainty shock and hence also as a ``[...] key minimum condition that business-cycle models driven by uncertainty fluctuations should satisfy'' \citep[p. 937]{basuandbundick:17}.\footnote{At the same time, they see this feature as missing from the related work of \citet{bloom:09}, \citet{bachmannandbayer:13} or \citet{gilchristetal:14}. } Identifying the uncertainty-shock using a Cholesky decomposition with the VXO ordered first, the authors assume that uncertainty shocks can affect output and its components immediately but that other variables' shocks, however, do not influence the VXO on impact. With this ordering, their VAR generates statistically significant co-moving declines in output, consumption, investment, and hours worked with a peak response after approximately one year whereby their key stylized fact is robust to several modifications.\footnote{These modifications include: inclusions of stock prices in the VAR (as is done e.g., by \citet{bloom:09}), measurement of uncertainty using the VIX instead of the VXO, a re-ordering of the VAR placing uncertainty last or an adjustment of the sample period to exclude the Great Recession.} These insights are subsequently brought into a New Keynesian DSGE model (monopolistic, one-sector closed-economy model) where they calibrate their uncertainty shock process using fluctuations in the VXO and add nominal price rigidities (sticky prices) to replicate the transmission mechanism which was identified in the data. According to \citet{basuandbundick:17}, the resulting dynamics due to the incorporated price rigidity in a model where output is demand-determined are able to support the intuition that an increase in uncertainty which induces precautionary savings, reduces household expenditures, output and labor input and eventually the demand for capital and investment as suggested by their VAR-model.\footnote{Before introducing their model's features, \citet{basuandbundick:17} show that uncertainty shocks in standard closed economy real business cycle (RBC) (i.e., competitive, flexible prices) models produce a counterintuitive aggregate expansion. Monopolistic competition under sufficiently sticky prices changes the dynamics.}\\
 
 %%%%%leducandliu:16
 %%%%leducandliu:16 referring to several works:
 %Stating their relation to the literature, \citet{leducandliu:16} refer to \citet{bloom:09}, \citet{bloometal:12}, \citet{juradoetal:15}, \citet{scotti:16}, \citet{bachmannetal:13} and \citet{villaverdeetal:13} when they write: ``On the empirical side, we document a new stylized fact that uncertainty acts like a negative aggregate demand shock that raises unemployment and lowers inflation. [...] Our empirical approach thus complements those in the literature, where uncertainty is measured using cross-sectional dispersions of earnings or productivity at the firm or industry levels (\citet{bloom:09}; \citet{bloometal:12}), the conditional variance of the unforecastable component in statistical models (\citet{juradoetal:15}; \citet{scotti:16}), forecast disagreements (\citet{bloom:09}; \citet{bachmannetal:13}) or the volatility of fiscal instruments estimated under time-varying volatilites (\citet{villaverdeetal:13}--> will not read!).
-Complementing the existing literature\footnote{The empirical results in, among others, \citet{bloom:09}, \citet{bloometal:12}, \citet{juradoetal:15}, \citet{scotti:16}, \citet{bachmannetal:13} and the theoretical results in \citet{bloom:09}, \citet{gilchristetal:14}, \citet{arenalloetal:11}, \citet{basuandbundick:17}, \citet{bloometal:12}, \citet{bornandpfeifer:14}.}, \citet{leducandliu:16} add to this literature by finding that uncertainty shocks produce effects similar to aggregate demand shocks. \\
-\begingroup
-    \fontsize{8pt}{12pt}\selectfont
+Complementing the existing literature\footnote{The empirical results in, among others, \citet{bloom:09}, \citet{bloometal:12}, \citet{juradoetal:15}, \citet{scotti:16}, \citet{bachmannetal:13} and the theoretical results in \citet{bloom:09}, \citet{gilchristetal:14}, \citet{arenalloetal:11}, \citet{basuandbundick:17}, \citet{bloometal:12}, \citet{bornandpfeifer:14}.}, \citet{leducandliu:16} add to this literature by finding that uncertainty shocks produce effects similar to aggregate demand shocks.
+
+%\begingroup
+%    \fontsize{8pt}{12pt}\selectfont
 %	\citet{leducandliu:16} write: ``On the theory side, we show that an uncertainty shock can generate the observed demand-like macroeconomic effects through interactions between an option-value channel stemming from search frictions and an aggregate demand channel associated with nominal rigidities. Our model complements the recent theoretical literature on the macroeconomics effects of uncertainty. This strand of literature is too vast to enumerate (see \citet{bloom:09}, \citet{gilchristetal:14}, \citet{arenalloetal:11}, \citet{basuandbundick:17}, \citet{bloometal:12}, \citet{bornandpfeifer:14} --> see \citet{bloom:14} for an overview.).
-\endgroup
-While \citet{bornandpfeifer:14} don't find convincing evidence for large real effects of policy uncertainty shocks in a standard DSGE model, to highlight aggregate demand effects (and abstracting from additional features that would also shed light on effects on investment), \citet{leducandliu:16}'s theoretical New-Keynesian DSGE framework that incorporates both search frictions (an extension vis-a-vis \citet{basuandbundick:17}) and nominal rigidities as key ingredients where the interplay of the reciprocal amplification of an option-value channel arising from search frictions in the labor market and decreases in aggregate demand stemming from sticky prices in the goods market produces a transmission mechanism of uncertainty on unemployment and inflation that is consistent with their empirical observation.\footnote{Under existing search frictions that reduce the value of a new match and cause firms to reduce hiring which drives up unemployment and ultimately reduces aggregate demand, when additionally prices are sticky, an increase in uncertainty also leads to a decline in aggregate demand which reinforces the option-value channel and generates an increase in unemployment. Under existing nominal rigidities the effect of decreasing aggregate demand is amplified when adding search frictions because the value of a new match decreases even further which ultimately pushes up the unemployment rate which in turn reduces households' income even further and aggravates the reduction in aggregate demand. This interaction considerably amplifies the fall in aggregate demand in response to uncertainty shocks in comparison to standard DSGE models that solely consider nominal rigidities and go without search frictions as in e.g. \citet{basuandbundick:17}.} Specifically, their theoretical model is guided by the empirical evidence derived from a four-variable Bayesian VAR (BVAR) on US data consisting of a measure of uncertainty, the unemployment rate, the CPI year-on-year inflation rate and a short-term interest rate (as represented by the three-month Treasury bills rate). In this setting, the authors declare the observed joint dynamics of sharply rising unemployment and decreasing inflation following an uncertainty shock to resemble features of a negative aggregate demand shock.\footnote{Adding habit formation to their model, their calibrated DSGE model comes closest to the empirical results from the VAR-model.} Contrary to the sole usage of the VIX as an uncertainty measure, \citet{leducandliu:16} report the dynamics to be robust to their alternative uncertainty measure of consumers' perceived uncertainty derived from the Thomson Reuters/University of Michigan Surveys of Consumers.\footnote{Due to data availability of the respective uncertainty measures, their estimation window accordingly covers 01/1978 - 10/2013 for the model containing the consumers' perceived uncertainty and 01/1986 - 10/2013 in case of the VIX.} Their rationale for using a consumer uncertainty measure is that, by construction of the survey, interviewees do not have (complete) information of the current month's macroeconomic data. Hence, it is assumed that survey participants will condition their answers on all previous realizations of macroeconomic indicators except time $t$.\footnote{Placing the uncertainty measure first in their Choleski ordering hence implies that on impact of a shock only unemployment, inflation and the nominal interest rate are allowed to respond. With their identification strategy \citet[p. 23]{leducandliu:16} assume that their ``[...] measured uncertainty contains \textit{some}\footnote{Author's italics.} exogenous component and does not reflect endogenous responses of other macroeconomic variables.} The resulting IRFs at impact of an uncertainty shock show a strongly persistent unemployment increase, peaking after approx. 18 months and significantly lasting for about three years. Inflation shoots in the opposite direction with a peak effect after around 20 months and staying significant for almost two years.\footnote{To accomodate the zero lower bound (ZLB) in U.S. monetary policy after 2008, \citet{leducandliu:16} report their VAR to also be robust to the usage of the two-year Treasury bond yield (that did not reach the ZLB) as an alternative indicator of the monetary policy stance. To accomodate the possibility of survey respondents' perceptions of bad economic times instead of uncertainty about the future, \citet{leducandliu:16} follow a similar approach like \citet{bakeretal:15} and add a variable for consumer sentiment as an additional control to their BVAR. The results suggest that uncertainty is indeed forward-looking.}
+% \endgroup
+While \citet{bornandpfeifer:14} don't find convincing evidence for large real effects of policy uncertainty shocks in a standard DSGE model, to highlight aggregate demand effects (and abstracting from additional features that would also shed light on effects on investment), \citet{leducandliu:16}'s theoretical New-Keynesian DSGE framework that incorporates both search frictions (an extension vis-a-vis \citet{basuandbundick:17}) and nominal rigidities as key ingredients where the interplay of the reciprocal amplification of an option-value channel arising from search frictions in the labor market and decreases in aggregate demand stemming from sticky prices in the goods market produces a transmission mechanism of uncertainty on unemployment and inflation that is consistent with their empirical observation.\footnote{Under existing search frictions that reduce the value of a new match and cause firms to reduce hiring which drives up unemployment and ultimately reduces aggregate demand, when additionally prices are sticky, an increase in uncertainty also leads to a decline in aggregate demand which reinforces the option-value channel and generates an increase in unemployment. Under existing nominal rigidities the effect of decreasing aggregate demand is amplified when adding search frictions because the value of a new match decreases even further which ultimately pushes up the unemployment rate which in turn reduces households' income even further and aggravates the reduction in aggregate demand. This interaction considerably amplifies the fall in aggregate demand in response to uncertainty shocks in comparison to standard DSGE models that solely consider nominal rigidities and go without search frictions as in e.g. \citet{basuandbundick:17}.} Specifically, their theoretical model is guided by the empirical evidence derived from a four-variable Bayesian VAR (BVAR) on US data consisting of a measure of uncertainty, the unemployment rate, the CPI year-on-year inflation rate and a short-term interest rate (as represented by the three-month Treasury bills rate); see Appendix~\ref{sec:VAREquations}. In this setting, the authors declare the observed joint dynamics of sharply rising unemployment and decreasing inflation following an uncertainty shock to resemble features of a negative aggregate demand shock.\footnote{Adding habit formation to their model, their calibrated DSGE model comes closest to the empirical results from the VAR-model.} Contrary to the sole usage of the VIX as an uncertainty measure, \citet{leducandliu:16} report the dynamics to be robust to their alternative uncertainty measure of consumers' perceived uncertainty derived from the Thomson Reuters/University of Michigan Surveys of Consumers.\footnote{Due to data availability of the respective uncertainty measures, their estimation window accordingly covers 01/1978 - 10/2013 for the model containing the consumers' perceived uncertainty and 01/1986 - 10/2013 in case of the VIX.} Their rationale for using a consumer uncertainty measure is that, by construction of the survey, interviewees do not have (complete) information of the current month's macroeconomic data. Hence, it is assumed that survey participants will condition their answers on all previous realizations of macroeconomic indicators except time $t$.\footnote{Placing the uncertainty measure first in their Choleski ordering hence implies that on impact of a shock only unemployment, inflation and the nominal interest rate are allowed to respond. With their identification strategy \citet[p. 23]{leducandliu:16} assume that their ``[...] measured uncertainty contains \textit{some}\footnote{Author's italics.} exogenous component and does not reflect endogenous responses of other macroeconomic variables.} The resulting IRFs at impact of an uncertainty shock show a strongly persistent unemployment increase, peaking after approx. 18 months and significantly lasting for about three years. Inflation shoots in the opposite direction with a peak effect after around 20 months and staying significant for almost two years.\footnote{To accomodate the zero lower bound (ZLB) in U.S. monetary policy after 2008, \citet{leducandliu:16} report their VAR to also be robust to the usage of the two-year Treasury bond yield (that did not reach the ZLB) as an alternative indicator of the monetary policy stance. To accomodate the possibility of survey respondents' perceptions of bad economic times instead of uncertainty about the future, \citet{leducandliu:16} follow a similar approach like \citet{bakeretal:15} and add a variable for consumer sentiment as an additional control to their BVAR. The results suggest that uncertainty is indeed forward-looking.}
 
 Commenting on the theoretical results of Section \ref{sec:studiedeffectsinrelatedliterature} in combination with the empirical VARs of the selected contributions described above, \citet[p. 4]{ludvigsonetal:18} argue that while the theoretical literature which proposes uncertainty as a source of lower economic growth ``[...] almost always presumes that uncertainty is an exogenous shock to the volatility of some economic fundamental'', the empirical literature, however, typically used uncertainty proxies which are strongly correlated with financial markets. According to \citet{ludvigsonetal:18} this practice makes it necessary to distinguish between the two in empirical applications to understand the nexus between real economic/financial market uncertainty and recessions. We will come back to this issue in Section~\ref{sec:exoEndoJuradoetal}.
 
 
 
-\section[Robustness of Econometric Specifications in VAR-Settings]{Robustness of Econometric Specifications in VAR-Settings\footnote{works that combine empirics with theory and establish dsge-models in conjunction with empirical analysis on a micro or macro-level; I have to include this footnote somewhere where it makes sense. A non exhaustive list of selected works includes, for example, \citet{rameyandramey:95}, \citet{aghionetal:05}, \citet{mills:00} and \citet{imbs:07} on the relationship of volatility and growth, \citet{leahyandwhited:96} and \citet{bloometal:07} on the effect of uncertainty on investment, \citet{barlevy:04} and \citet{gilchristandwilliams:05} on the effects of uncertainty on business cycles, etc.}}
+\section[Robustness of Econometric Specifications in VAR-Settings]{Robustness of Econometric Specifications in VAR-
+Settings\footnote{works that combine empirics with theory and establish dsge-models in conjunction with empirical analysis on a micro or macro-level; I have to include this footnote somewhere where it makes sense. A non exhaustive list of selected works includes, for example, \citet{rameyandramey:95}, \citet{aghionetal:05}, \citet{mills:00} and \citet{imbs:07} on the relationship of volatility and growth, \citet{leahyandwhited:96} and \citet{bloometal:07} on the effect of uncertainty on investment, \citet{barlevy:04} and \citet{gilchristandwilliams:05} on the effects of uncertainty on business cycles, etc.}}
 \label{sec:robustnessofeconspecs}
+
+
+%%%%bloometal:12
+%%%%--> bornandpfeifer:14 write: Empirical studies using different proxies and identification schemes to uncover the effects of uncertainty have produced a variety of results. One group of studies reports a large impact of uncertainty about productivity on aggregate variables like GDP and employment (bloom:09, bloometal:12; alexopoulosandcohen:09); A one-standard deviation shock to uncertainty in these studies typically leads to a 1-2% drop in GDP, followed by a recovery with a considerable overshooting.
 
 Various models have been suggested/studied in the literature each of them suggesting a slightly different set of variables to include, a different specification overall and/or ordering with which the variables enter the VAR. We will start with a replication of the baseline VAR($12$)-8\footnote{Our notation 'VAR($p$) - $v$' denotes the number of lags $p$ and the number of variables included $v$.} that \citet{bloom:09} estimated as a support of his theoretical model of the firm to disentangle responses of output and employment to heightened uncertainty in Section~\ref{sec:VAR8}
 \\
@@ -674,17 +642,17 @@ Contrary to Bloom's findings, for example, \citet{juradoetal:15} and \citet{bach
 \section{Selected Uncertainty Measures and Some Stylized Facts}
 \label{sec:uncertaintymeasuresandstylizedfacts}
 
-
-Various uncertainty measures exist because the stochastic process which we commonly call 'uncertainty' is unobservable. \citet[p. 1182]{juradoetal:15} emphasize that ``[t]he literature on measuring uncertainty is still in its infancy'' and so far existing research has popularized various proxies or indicators of uncertainty.
-
-The lack of an objective uncertainty measure hence poses a serious challenge to studies trying to quantify its macroeconomic effects: they have to come up with a reasonable uncertainty measure in the first place. \citet[p. 1178]{juradoetal:15} explain that ``[w]hile most of the measures have the advantage of being directly observable, their adequacy as proxies for uncertainty depends on how strongly they are correlated with this latent stochastic process [i.e., with unobservable uncertainty]''.\\
+\citet[p. 1178]{juradoetal:15} argue that ``[a] challenge in empirically examining the behavior of uncertainty, and its relation to macroeconomic activity, is that no objective measure of uncertainty exists'' and that ``[w]hile most of the measures have the advantage of being directly observable, their adequacy as proxies for uncertainty depends on how strongly they are correlated with this latent stochastic process [i.e., with unobservable uncertainty]''.\\
 \\ 
-Besides creating their own measure of economic uncertainty, \citet{orlikandveldkamp:14} describe commonly used proxies of uncertainty by means of the following taxonomy and refer to selected works along the way\footnote{Note that we have slightly extended the original taxonomy of \citet{orlikandveldkamp:14} by mixing it with \citet{bontempietal:16}'s taxonomy. Only the measures that link to a dedicated section will examined in more detail below.}:
+Besides creating their own measure of economic uncertainty, \citet{orlikandveldkamp:14} provide a fantastic overview of commonly used proxies in the literature to date which, according to their taxonomy, consists of
+
 \begin{itemize}
-	\item \textbf{Forecast Dispersion:} STILL HAVE TO ADD DETAILED DESCRIPTION!
-	\item \textbf{Mean-Squared Forecast Error:} STILL HAVE TO ADD DETAILED DESCRIPTION!
-	\item \textbf{Volatility and Confidence Measures}, where we find three alternative approaches:
+	\item \textbf{Forecast Dispersion}: uncertainty is defined as the conditional standard deviation of the forecast error (consisting of a common and idiosyncratic component), while dispersion only reflects the idiosyncratic component; therefore, the suitability of dispersion to accurately reflect uncertainty depends on the nature of private or public information
+	\item \textbf{Mean-Squared Forecast Error}: captures both private and common forecast errors; under the assumption of forecast errors having no common component, forecast dispersion and MSE are equal
+	\item \textbf{Volatility and Confidence Measures}, consisting of, among others, 
 		\begin{itemize}
+			\item 
+		
 			\item 'finance-based' - measures, assuming that financial volatility is a suitable indicator for aggregate macroeconomic uncertainty: 
 			\begin{itemize}
 				\item the traditional measure of uncertainty is the implied (e.g., the market volatility indices VIX/VXO) or realized volatility of stock market returns; based on these measures, \citet{bloom:09} constructs his shock-measure (henceforth called 'Bloom-shock')
@@ -1606,7 +1574,7 @@ U^t_{jt}(h) \equiv plim_{N_{y}\to\infty} \sum_{j=1}^{N_y} w_j U_{jt}^y(h) \equiv
 
 Based on the above definitions, \citet{juradoetal:15} emphasize two features that are central to their approach:
 \begin{enumerate}
-	\item they distinguish between \textit{uncertainty} in a series $y_{jt}$ and its \textit{conditional volatility} and argue that the proper measurement of uncertainty requires the removal of the entire forecastable component $\mathbb{E}[y_{jt+h}|I_t]$ before the computation of the conditional volatility; without accounting for this, the argument goes, forecastable variation is erroneously classified as ``uncertainty''. According to \citet{juradoetal:15}, this is taken into account only in very few occasions in the literature.
+	\item they distinguish between \textit{uncertainty} in a series $y_{jt}$ and its \textit{conditional volatility} and argue that the proper measurement of uncertainty requires the removal of the entire forecastable component $\mathbb{E}[y_{jt+h}|I_t]$ before the computation of the conditional volatility; without accounting for this, the argument goes, forecastable variation is erroneously classified as ``uncertainty''. According to \citet{juradoetal:15}, this is taken into account only in very few occasions in the literature.\footnote{/citet{orlikandveldkamp:14} }
 	\item they claim that macroeconomic uncertainty is ``a measure of the common variation in uncertainty across many series'' and not equal to the uncertainty in any single series $y_{jt}$; \citet{juradoetal:15} see this as an important argument because of uncertainty-based theories of the business cycle that typically require the existence of common (often countercyclical) variation in uncertainty across large numbers of series; \citet{juradoetal:15} hence put their econometric estimation of uncertainty insofar to test, as they expect to find evidence of such an aggregate uncertainty factor common to many series, if the above assumption turns out to be correct.
 \end{enumerate}
 
@@ -1665,7 +1633,7 @@ Based on the above definitions, \citet{juradoetal:15} emphasize two features tha
 The econometric approach then consists of three parts:
 \begin{enumerate}[i]
 	\item estimation of the forecastable component (conditional expectation) $\mathbb{E}[y_{jt+h}|I_t]$: this is achieved by, first, running a factor analysis on a large set of predictors (134 macro and 148 financial time series, respectively) $\{X_{it}\}, i = 1, 2, \dots, N$ whose linear span/hull comes as close as possible to $I_t$; second, making use of the formed factors, $\mathbb{E}[y_{jt+h}|I_t]$ is then approximated by means of a diffusion index forecasting model ideal for data-rich environments (the diffusion indices can then be treated as known in the subsequent steps)
-	\item with the definition of the $h$-step-ahead forecast error as $V_{jt+h}^y \equiv y_{jt+h} - \mathbb{E}[y_{jt+h}|I_t]$, \citet{juradoetal:15} estimate the conditional volatility of this forecast error, i.e., $\mathbb{E}[(V_{t+h}^y)^2|I_t]$ at time $t$ by specifying a parametric stochastic volatility model for both the one-step-ahead prediction errors in $y_{jt}$ and the analogous forecast errors for the factors (from step i above); \\
+	\item with the definition of the $h$-step-ahead forecast error as $V_{jt+h}^y \equiv y_{jt+h} - \mathbb{E}[y_{jt+h}|I_t]$, \citet{juradoetal:15} estimate the conditional volatility of this forecast error, i.e., $\mathbb{E}[(y_{jt+h} - \mathbb{E}[y_{jt+h}|I_t])^2|I_t]$ at time $t$ by specifying a parametric stochastic volatility model for both the one-step-ahead prediction errors in $y_{jt}$ and the analogous forecast errors for the factors (from step i above); \\
 	these volatility estimates are then used to recursively compute the values of $\mathbb{E}[(V_{t+h}^y|I_t]$ for $h > 1$. 
 	\item in the last step, the \textit{macroeconomic uncertainty} index $U_t^y(h)$ is constructed from the individual uncertainty measures $U_{jt}^y(h)$ where the base-case is the equally-weighted average of individual uncertainties
 \end{enumerate}
@@ -1801,42 +1769,6 @@ At the time of writing this thesis the world is halting in the wake of the Covid
 \section{Additional Tables}
 \label{sec:additionalTables}
 
-
-\begin{spacing}{.9}
-\begin{landscape}
-\centering
-    \begin{longtable}{rrrrllrr}
-    \caption[Major Stock-Market Volatility Shocks following \citet{bloom:09}.]{Major Stock-Market Volatility Shocks. Replication of Table A.1 in \citet{bloom:09}.} \\
-    \toprule
-         ID & Date Begin & Date End & Duration & Max Vol & First Vol & Date Max Vol & Date First Vol \\ \midrule
-         1 & Oct 1962 & Oct 1962 & 1 & 26 & 26 & Oct 1962 & Oct 1962 \\
-         2 & Nov 1963 & Nov 1963 & 1 & 28.7 & 28.7 & Nov 1963 & Nov 1963 \\
-         3 & Aug 1966 & Aug 1966 & 1 & 24.4 & 24.4 & Aug 1966 & Aug 1966 \\
-         4 & Oct 1966 & Oct 1966 & 1 & 23.9 & 23.9 & Oct 1966 & Oct 1966 \\
-         5 & May 1970 & May 1970 & 1 & 37.6 & 37.6 & May 1970 & May 1970 \\
-         6 & Nov 1973 & Dec 1973 & 2 & 34.1 & 28.8 & Dec 1973 & Nov 1973 \\
-         7 & Jul 1974 & Oct 1974 & 4 & 38.4 & 29.8 & Oct 1974 & Jul 1974 \\
-         8 & Mar 1980 & Mar 1980 & 1 & 29.2 & 29.2 & Mar 1980 & Mar 1980 \\
-         9 & Aug 1982 & Aug 1982 & 1 & 32.4 & 32.4 & Aug 1982 & Aug 1982 \\
-        10 & Oct 1982 & Nov 1982 & 2 & 32.8 & 32.8 & Oct 1982 & Oct 1982 \\
-        11 & Oct 1987 & Feb 1988 & 5 & 49.4 & 40.8 & Nov 1987 & Oct 1987 \\
-        12 & Aug 1990 & Oct 1990 & 3 & 30.1 & 27.8 & Oct 1990 & Aug 1990 \\
-        13 & Jan 1991 & Jan 1991 & 1 & 26.9 & 26.9 & Jan 1991 & Jan 1991 \\
-        14 & Nov 1997 & Nov 1997 & 1 & 31.6 & 31.6 & Nov 1997 & Nov 1997 \\
-        15 & Sep 1998 & Oct 1998 & 2 & 39.2 & 39.2 & Sep 1998 & Sep 1998 \\
-        16 & Sep 2001 & Oct 2001 & 2 & 42.6 & 42.6 & Sep 2001 & Sep 2001 \\
-        17 & Jul 2002 & Oct 2002 & 4 & 41.7 & 38.5 & Sep 2002 & Jul 2002 \\
-        18 & Feb 2003 & Mar 2003 & 2 & 36.5 & 36.5 & Feb 2003 & Feb 2003 \\
-        19 & Aug 2007 & Aug 2007 & 1 & 25.1 & 25.1 & Aug 2007 & Aug 2007 \\
-        20 & Nov 2007 & Nov 2007 & 1 & 26.7 & 26.7 & Nov 2007 & Nov 2007 \\
-        21 & Jan 2008 & Mar 2008 & 3 & 29 & 28.1 & Mar 2008 & Jan 2008 \\
-\bottomrule
-        \end{longtable}
-\end{landscape}
-\label{tab:bloom_shocks}
-\end{spacing}
-
-
 \section{Additional Figures}
 \label{sec:additionalFigures}
 \begin{figure}[!ht]
@@ -1859,7 +1791,8 @@ At the time of writing this thesis the world is halting in the wake of the Covid
       \textit{Note:} The set of solutions under 'No Constraints' are derived from switching off both of the constraints as introduced by \citet{ludvigsonetal:18}. 'Correlation Constraints Only' and 'Event Constraints Only' correspondingly show the set of solutions when only one of the two constraints are turned on. 'All Constraints' displays the \textit{identified set} and equals the solutions as shown in Figure~\ref{fig:impulse.responses_all.SVAR} which satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR_UNCONSTR}
 \end{figure}
 
-\section{Additional VAR Results}
+
+\section{Additional (S)VAR Results}
 
 
 
@@ -1868,54 +1801,7 @@ At the time of writing this thesis the world is halting in the wake of the Covid
 \label{DataAndCode}
 \section{Data: Sources and Description}
 \label{sec:dataAppendix}
-Table~\ref{tab:data_sources} lists all data and their sources that appear in the main text. Variables that enter the VAR and/or Local Projection estimations in Section~\ref{sec:EmpiricalAnalysis} are listed below.
-
-\section{VAR-Equations}
-\paragraph{Monthly VAR-8 following \citet{bloom:09}} Endogenous variables, in order:\\
-Then we create separate explanations about which variables were used for which model:\\
-
-\begingroup
-\begin{spacing}{0.5}
-    \fontsize{10pt}{12pt}\selectfont
-\begin{enumerate}
-	\item log($\text{S\&P500}_t$)
-	\item uncertainty (various measures)
-	\item $\text{FFR}_t$
-	\item log($\text{WAGE}_t$)
-	\item log($\text{CPI}_t$)
-	\item log($\text{HOURS}_t$)
-	\item log($\text{EMPM}_t$)	
-	\item log($\text{IP}_t$)		
-\end{enumerate}
-\end{spacing}
-\endgroup
-
-
-
-\paragraph{Monthly VAR-11 following \citet{juradoetal:15}} Endogenous variables, in order:\\
-Then we create separate explanations about which variables were used for which model:\\
-
-\begingroup
-\begin{spacing}{0.5}
-    \fontsize{10pt}{12pt}\selectfont
-\begin{enumerate}
-	\item log($\text{IP}_t$)
-	\item log($\text{EMPM}_t$)
-	\item log(real consumption --> still to be added! download from IHS!
-	\item log($\text{PCE deflator}_t$) --> still to be added! download from IHS!
-	\item log($\text{NO}_t$ $=$ $\text{NO capital}_t$ $+$ $\text{NO cons}_t$) --> two components to be added! download from IHS!
-	\item log($\text{WAGE}_t$)
-	\item log($\text{HOURS}_t$)
-	\item $\text{FFR}_t$
-	\item log($\text{S\&P500}_t$)
-	\item growth rate of $\text{M2}_t$
-	\item uncertainty (various measures)
-\end{enumerate}
-\end{spacing}
-\endgroup
-
-
-
+Table~\ref{tab:data_sources} lists all data and their sources that appear in the main text.
 \begin{table}[!h]
 \caption[Data Sources.]{Data Sources.\\
 \textit{Note:} Federal Reserve Economic Data (FRED); Chicago Board Options Exchange (CBOE); Michigan Survey of Consumers (MSoC); }
@@ -1949,6 +1835,154 @@ Then we create separate explanations about which variables were used for which m
 \end{table}
 
 
+\section{VAR-Equations and Identification Schemes}
+\label{sec:VAREquations}
+\subsubsection{Monthly VAR-8 following \citet{bloom:09}}
+The estimations use monthly data from 06/1962-06/2008 (which excludes most of the Credit Crunch) and include (in that order; see also top-panel of \ref{eq:VAR8}): log(S\&P500 stock market index), an uncertainty measure (either the raw stock market volatility series that Bloom constructs through sticking actual realized stock market volatility and the CBOE's VXO-data, available as of 1986, together or various indicator variables like the 'Bloom-shock' or indicators capturing months with maximum volatility, or months capturing the first time that volatility exceeded a certain threshold; for further modifications see \citealp{bloom:09}), Federal Funds Rate, log(average hourly earnings), log(consumer price index), hours worked, log(employment), log(industrial production). Contrary to the description in \citet{bloom:09}, the STATA-code of Bloom shows that all variables except the stock market volatility series as a proxy for uncertainty are HP-detrended. Bloom's results are robust to various alternative approaches including variables ordering, variable inclusion, shock definitions, shock timing, and detrending.\\
+
+The VARs are estimated via a recursive scheme (i.e, cholesky decomposition) based on the assumption that shocks instantaneously influence the stock market (levels and volatility), then move on to prices (wages, the consumer price index (CPI), and interest rates), and finally eventually affect quantities (hours, employment and output). In particular, \citet{bloom:09}'s rationale for including the stock-market levels as the first variable in the ordering is to ensure that the impact of stock-market levels is already controlled for when looking at the impact of volatility shocks (see \citealp[p. 630]{bloom:09}). Further, \citet{bloom:09} detrends all variables that enter the VARs using the HP-filter (\citealp{hodrickandprescott:97}) apart from the uncertainty measure(s).\footnote{In vector~\ref{eq:VAR8} all variables that enter the VAR detrended are marked with a $c$-prefix to indicate that the variable denotes the remaining cycle-component after removal of the trend.}
+
+\citet{juradoetal:15} replicate \citet{bloom:09}'s VARs in their contribution, renounce to detrend the variables however, arguing that the HP filter uses information over the entire sample which makes it difficult to interpret the timing of an observation (hence, their specification is equal to the lower part of \ref{eq:VAR8}) and report results using \citet{bloom:09}'s original detrended variables in their Appendix.
+
+\begin{equation} \label{eq:VAR8}
+\begin{split}
+\vect{y_t} &  = 
+ \begin{bmatrix} 
+ 		y_{1t} \\
+		y_{2t} \\
+		y_{3t} \\
+		y_{4t} \\
+		y_{5t} \\
+		y_{6t} \\
+		y_{7t} \\
+		y_{8t} 
+	      \end{bmatrix} = 
+ \begin{bmatrix} \text{c-log(S\&P500 Index)} \\ 
+				      \textit{uncertainty measure}\\ 
+				      \text{c-federal funds rate}\\
+				      \text{c-log(wages)}\\
+				      \text{c-log(CPI)}\\
+				      \text{c-hours}\\
+				      \text{c-log(employment)}\\
+				      \text{c-log(industrial production)}
+	      \end{bmatrix}\\\\
+\vect{y_t} & = 
+ \begin{bmatrix} 
+ 		y_{1t} \\
+		y_{2t} \\
+		y_{3t} \\
+		y_{4t} \\
+		y_{5t} \\
+		y_{6t} \\
+		y_{7t} \\
+		y_{8t} 
+	      \end{bmatrix} = 	      
+	      \begin{bmatrix} \text{log(S\&P500 Index)} \\ 
+				      \textit{uncertainty measure}\\ 
+				      \text{federal funds rate}\\
+				      \text{log(wages)}\\
+				      \text{log(CPI)}\\
+				      \text{hours}\\
+				      \text{log(employment)}\\
+				      \text{log(industrial production)}
+	      \end{bmatrix}
+\end{split}
+\end{equation}
+
+
+
+\subsubsection{Monthly VAR-11 following \citet{juradoetal:15}}
+\begin{equation} \label{eq:VAR19}
+\begin{split}
+\vect{y_t} & = 
+ \begin{bmatrix} 
+ 		y_{1t} \\
+		y_{2t} \\
+		y_{3t} \\
+		y_{4t} \\
+		y_{5t} \\
+		y_{6t} \\
+		y_{7t} \\
+		y_{8t} \\
+		y_{9t} \\
+		y_{10t} \\
+		y_{11t}
+	      \end{bmatrix} = 	      
+	      \begin{bmatrix} \text{log($\text{IP}_t$)} \\ 
+				      \text{log($\text{EMPM}_t$)}\\ 
+				      \text{log(real consumption)}\\
+				      \text{log($\text{PCE deflator}_t$)}\\
+				      \text{log($\text{NO}_t$ $=$ $\text{NO capital}_t$ $+$ $\text{NO cons}_t$)}\\
+				      \text{log($\text{WAGE}_t$)}\\
+				      \text{log($\text{HOURS}_t$)}\\
+				      \text{$\text{FFR}_t$} \\
+				      \text{log($\text{S\&P500}_t$)} \\
+				      \text{growth rate of $\text{M2}_t$} \\
+				      \text{\textit{uncertainty (various measures)}}
+	      \end{bmatrix}
+\end{split}
+\end{equation}
+
+\subsubsection{Quarterly VAR-8 following \citet{gilchristetal:14}}
+The VARs are estimated via a standard recursive ordering technique over the 1963:Q3-2012:Q3 period using four lags of each endogenous variable. Both identification schemes employ a standard recursive ordering technique.\\
+
+\textbf{Identification Scheme I:}
+Innovations in uncertainty are assumed to have an immediate impact on credit spreads and short-term interest rates, but affect economic activity and prices with a lag. Both, shocks to uncertainty and credit spreads (financial shock) are analyzed.
+\begin{equation} \label{eq:VAR20}
+\begin{split}
+\vect{y_t} & = 
+ \begin{bmatrix} 
+ 		y_{1t} \\
+		y_{2t} \\
+		y_{3t} \\
+		y_{4t} \\
+		y_{5t} \\
+		y_{6t} \\
+		y_{7t} \\
+		y_{8t} 
+	      \end{bmatrix} = 	      
+	      \begin{bmatrix} \text{log(real business fixed investment)} \\ 
+				      \text{log(real personal consumption expenditure on durable goods)}\\ 
+				      \text{log(real PCE on nondurable goods and services)}\\
+				      \text{log(real GDP)}\\ 
+				      \text{log(GDP deflator)}\\
+				      \text{\textit{proxy for uncertainty at aggregate level}}\\
+				      \text{10-year BBB-Treasury credit spread}\\
+				      \text{nominal effective federal funds rate}
+	      \end{bmatrix}
+\end{split}
+\end{equation}	
+
+\textbf{Identification Scheme II:}      
+Identification Scheme II reverses the causal ordering of the uncertainty proxy and of the variable for the 10-year BBB-Treasury credit spread to analyze the implications of uncertainty shocks conditional on the information contained in the current level of credit spreads.
+\begin{equation} \label{eq:VAR21}
+\begin{split}
+\vect{y_t} & = 
+ \begin{bmatrix} 
+ 		y_{1t} \\
+		y_{2t} \\
+		y_{3t} \\
+		y_{4t} \\
+		y_{5t} \\
+		y_{6t} \\
+		y_{7t} \\
+		y_{8t} 
+	      \end{bmatrix} = 	      
+	      \begin{bmatrix} \text{log(real business fixed investment)} \\ 
+				      \text{log(real personal consumption expenditure on durable goods)}\\ 
+				      \text{log(real PCE on nondurable goods and services)}\\
+				      \text{log(real GDP)}\\ 
+				      \text{log(GDP deflator)}\\
+				      \text{10-year BBB-Treasury credit spread}\\
+				      \text{\textit{proxy for uncertainty at aggregate level}} \\
+				      \text{nominal effective federal funds rate}
+	      \end{bmatrix}
+\end{split}
+\end{equation}
+
+\subsubsection{Monthly VAR-8 following \citet{basuandbundick:17}}
+
+\subsubsection{Monthly VAR-8 following \citet{leducandliu:16}}
 
 
 %\newgeometry{left=25mm, right=25mm, top=30mm, bottom=30mm}
