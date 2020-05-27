@@ -365,7 +365,7 @@ return.data <- SVAR.data %>%
           # to see whether the method for generating epsilon_t in the 
           # code of Ludvigson et al (2018) is the same as here
           # and indeed our test has shown that it is identical!
-          # (as a test we have overwritte A_0 with Eposs from the 
+          # (as a test we have overwritten A_0 with Eposs from the 
           # code of Ludvigson et al (2018) to see if we get the 
           # exact same values!)
           
@@ -1519,3 +1519,674 @@ return.data <- SVAR.data %>%
       
       
 
+#######################
+### Sampling Distribution following Ludvigson et al (2018)
+#######################
+
+# the number of solutions in epsilon_t_valid is
+length(epsilon_t_valid) # 80 in our case;
+      
+      
+# next, we set the number of replications to R = 100 (as a start);
+      
+      
+# so, for every solution in epilson_t_valid, we generate 100
+# samples of data on which we then again run the solution 
+# algorithm;
+# hence:
+
+# we set the number of replications R
+R <- 100
+
+# and initialize the r x m - list that will hold all the results 
+# of the computations (samplings)
+r_m <- list()
+     
+# tes
+m <- 1
+r <- 1
+ 
+for(m in 1:length(epsilon_t_valid)){
+  # we store the respective solution for epsilon_t_valid
+  epsilon_t_valid.m <- epsilon_t_valid[[m]] 
+  
+  A_0_valid.m <- A_0_valid[[m]]
+  
+  for(r in 1:R){
+    
+
+    
+    # now we are in a position to follow the bootstrapping algorithm;
+    
+    # for each element of the solution set, we want to generate R = 100
+    # samples;
+    # to create this sample, we first have to start with the structural shocks
+    # that are stored in epsilon_t_valid;
+    # to generate samples of the structural shocks from a particular solution
+    # in epsilon_t_valid in a way that ensure the events that 
+    # appear in historical data also occur in the simulated samples,
+    # random drwas are performed with replacement from the sample
+    # estimates of the shocks in epsilon_t_valid, with the exception that
+    # the values for the shocks in the specific periods that correspond
+    # to events are fixed;
+
+    # so the rth replication for the mth solution should result in a
+    # corresponding list-item that then also holds all the computations
+    # in the respective lists;
+    # the corrresponding list that then holds all computations and
+    # values was generated before the loop!
+    
+    # r_m was already initialized as list above!
+    
+    # now we randomly draw from the respective epsilon_t_valid we 
+    # are currently looking at:
+    epsilon_t_valid.m.r <- epsilon_t_valid.m[sample(nrow(epsilon_t_valid.m), 652), ]
+    # having selected the random sample, we overwrite the column yearmon
+    epsilon_t_valid.m.r$yearmon <- epsilon_t_valid.m$yearmon
+    
+    # next, we replace the respective events in the new permutation
+    # which we want to fix:
+    
+    epsilon_t_valid.m.r[epsilon_t_valid.m.r$yearmon >= "Dec 2007"
+                           & epsilon_t_valid.m.r$yearmon <= "Jun 2009", ] <- 
+                          epsilon_t_valid.m[epsilon_t_valid.m$yearmon >= "Dec 2007"
+                              & epsilon_t_valid.m$yearmon <= "Jun 2009", ]
+                    
+    
+    
+    # with the random draw of the structural shocks at our disposal,
+    # we can calculate the corresponding reduced-form errors
+    # be making use of the corresponding A_0 - matrix that
+    # corresponds to epsilon_t_valid.m (i.e., must be at the same
+    # position in the solution set of A_0_valid)
+
+    # next we calculate the reduced-form errors for the respective
+    # sample we are currently in;
+    # note that the matrix-multiplication has to be performed for every
+    # row in epsilon_t_valid.m.r;
+    # therefore, we make use of the method that we have already used
+    # above:
+    
+    # before that, we remove the yearmon-column from epsilon_t_valid.m.r
+    epsilon_t_valid.m.r_t <- epsilon_t_valid.m.r %>%
+                          dplyr::select(-yearmon)
+
+    u_m.r <- t(apply(t(epsilon_t_valid.m.r_t), 2, 
+                              function(row) inv(A_0_valid.m)%*%row))
+
+    # u_m.r now contains the calculated reduced-form errors for the
+    # respective sample we are currently in!
+    
+    # with the reduced-form errors at our disposal for the rth
+    # draw of the mth solution, we are in a position
+    # to generate new samples of the data y_t itself!
+    # this is being calculated recursively for each replication using the
+    # reduced-form notation of the VAR (see thesis-text):
+    
+    y_list_m.r <- list()
+    
+    # we calculate y_t recursively as follows:
+    # y_{t-6}:
+
+    y_list_m.r[[1]] <- u_m.r[7:dim(u_m.r)[1], ]
+    
+    # y_{t-5}:
+    y_list_m.r[[2]] <- t(
+                          cbind(diag(3), B_list[[1]]) %*%
+                        rbind(
+                          t(u_m.r[6:dim(u_m.r)[1], ]), 
+                          cbind(t(y_list_m.r[[1]]), 0)
+                          )
+                        )
+    
+    # y_{t-4}:
+    y_list_m.r[[3]] <- t(
+                        cbind(diag(3), B_list[[1]], B_list[[2]]) %*%
+                          rbind(
+                            t(u_m.r[5:dim(u_m.r)[1], ]),
+                            cbind(t(y_list_m.r[[2]]), 0),
+                            cbind(t(y_list_m.r[[1]]), 0, 0)
+                          )
+                        )
+    
+    
+    # y_{t-3}:
+    y_list_m.r[[4]] <- t(
+                        cbind(diag(3), B_list[[1]], B_list[[2]], B_list[[3]]) %*%
+                          rbind(
+                            t(u_m.r[4:dim(u_m.r)[1], ]),
+                            cbind(t(y_list_m.r[[3]]), 0),
+                            cbind(t(y_list_m.r[[2]]), 0, 0),
+                            cbind(t(y_list_m.r[[1]]), 0, 0, 0)
+                          )
+    )
+    # y_{t-2}:
+    y_list_m.r[[5]] <- t(
+                        cbind(diag(3), B_list[[1]], B_list[[2]], B_list[[3]], 
+                              B_list[[4]]) %*%
+                          rbind(
+                            t(u_m.r[3:dim(u_m.r)[1], ]),
+                            cbind(t(y_list_m.r[[4]]), 0),
+                            cbind(t(y_list_m.r[[3]]), 0, 0),
+                            cbind(t(y_list_m.r[[2]]), 0, 0, 0),
+                            cbind(t(y_list_m.r[[1]]), 0, 0, 0, 0)
+                          )
+    )
+    # y_{t-1}:
+    y_list_m.r[[6]] <- t(
+                        cbind(diag(3), B_list[[1]], B_list[[2]], B_list[[3]], 
+                              B_list[[4]], B_list[[5]]) %*%
+                          rbind(
+                            t(u_m.r[2:dim(u_m.r)[1], ]),
+                            cbind(t(y_list_m.r[[5]]), 0),
+                            cbind(t(y_list_m.r[[4]]), 0, 0),
+                            cbind(t(y_list_m.r[[3]]), 0, 0, 0),
+                            cbind(t(y_list_m.r[[2]]), 0, 0, 0, 0),
+                            cbind(t(y_list_m.r[[1]]), 0, 0, 0, 0, 0)
+                          )
+    ) 
+    # y_{t}:
+    y_list_m.r[[7]] <- t(
+                          cbind(diag(3), B_list[[1]], B_list[[2]], B_list[[3]], 
+                                B_list[[4]], B_list[[5]], B_list[[6]]) %*%
+                            rbind(
+                              t(u_m.r[1:dim(u_m.r)[1], ]),
+                              cbind(t(y_list_m.r[[6]]), 0),
+                              cbind(t(y_list_m.r[[5]]), 0, 0),
+                              cbind(t(y_list_m.r[[4]]), 0, 0, 0),
+                              cbind(t(y_list_m.r[[3]]), 0, 0, 0, 0),
+                              cbind(t(y_list_m.r[[2]]), 0, 0, 0, 0, 0),
+                              cbind(t(y_list_m.r[[1]]), 0, 0, 0, 0, 0, 0)
+                            )
+    ) 
+    
+    
+    # the list-element y_list_m.r[[7]] should now be our new sample:
+    y_list.m.r <- as_tibble(y_list_m.r[[7]])
+    names(y_list.m.r) <- c("Um", "ip", "Uf")
+    
+    # using this sample, we fit a VAR(6)-model to obtain new least-squares estimates
+    # and the varaince-covariance-matrix:
+    
+            my.var.m.r <- VAR(y_list.m.r, type = "const", p = 6)
+            Sigma_u.m.r <- summary(my.var.m.r)$covres * 627/646
+            u_t.m.r<- residuals(my.var.m.r)
+            
+            P.m.r <- t(chol(Sigma_u.m.r))
+
+            # -----------------------------------------------
+            # CORRELATION CONSTRAINTS: PRELIMINARIES
+            # -----------------------------------------------
+            # we add the lagged series as a regressor
+            return.data$S_minus_1 <- Hmisc::Lag(return.data$S, -1)
+            # and then we drop the very last observation in return.data$S:
+            return.data <- head(return.data, -1)
+            
+            
+            # next, we estimate the linear model
+            ar.1 <- lm(S_minus_1 ~ S, return.data)
+            
+            # we store the AR(1)-models residuals (reduced-form residuals):
+            u_St <- residuals(ar.1)
+            
+            # Marcel (06.05.2020):
+            # note that we get a slightly different result as compared
+            # to when we would estimate an arima(1,0,0)-model;
+            # --> I haven't yet really figured out why this is the case!
+            
+            # similar to the VAR-data itself, the returns-data started
+            # in 1960-07; with the VAR-data we lost 6 entries due to the
+            # 6 lags we had estimated, 
+            
+            # with the returns-data we only
+            # estimated an AR(1)-process, hence, the residuals start in 
+            # 1960-08 (i.e. have 657 entries, exactly as the 
+            # residuals in the Ludvigson-paper (object U);
+            
+            # the entry corresponding to 'Black Monday' in October 1987
+            # is at position 327, while in our residuals it also  at position 
+            # 327; and because Ludvigson et al (2018) only remove the first
+            # five entries for the calculation of the correlation, we accordingly
+            # have to remove the first five entires as wel!
+            # the rationale for the above, comes from the observation,
+            # that in epsilon_t, October 1987 is on position 322, and
+            # we need it to be on position 322 also in u_St!
+            # (hence, we have to remove the first 5 entries!)
+            
+            # u_St is currently too long, hence we remove the
+            # first five entries:
+            u_St <- as.ts(tail(as.zoo(u_St), -5))
+            
+            # we initialize A_0^{-1} as the lower triangular matrix P
+            # (note: we have already created P above via
+            # P <- t(chol(Sigma_u)))
+            A_0_inv <- P
+            
+            # we further initialize the necessary parameters:
+            lambda1 <- -0.05
+            lambda2 <- 2
+            lambda3 <- 0.18
+            k1 <- 4
+            k2 <- 4
+            k3 <- 2
+            
+            # we initialize a data-frame for the maxG-solutions:
+            maxG.df <- data.frame(matrix(ncol = 2, nrow = 1))
+            x <- c("maxG", "iteration")
+            colnames(maxG.df) <- x
+            # and we write the values 0 into the data.frame
+            maxG.df[1, 1] <- 0
+            
+            # date-column for the structural errors
+            dates = seq(from = as.Date("1961-01-01"), 
+                        to = as.Date("2015-04-01"), by = 'month')
+            
+            # to check how many draws actually pass all the tests,
+            # we create the object x
+            x <- 0
+            
+            n <- 3 # stands for the number of variables!
+            
+            # we further initialize a list for the matrices epsilon_t
+            # that pass all constraints
+            # and the matrices A_0 that generate those epsilon_t's that
+            # pass all the tests
+            epsilon_t_valid <- list()
+            A_0_valid <- list()
+            
+            ## the below has to run 1.5 million times:
+            for(k in 1:100000){
+              # k <- 3
+              # print(k)
+              # print(x)
+              
+              ##----------------------------
+              ## STEP 2:
+              ## rotation of P by Q (i.e., right-multiplication of P with Q;
+              ## To get a Q,
+              ## the matrix M is drawn from NID(0,1); 
+              ## note: NID stands for normally and independently distributed
+              ## Q is then taken to be the
+              ## orthonormal matrix resulting from the QR-decomposition of M
+              ##----------------------------
+              
+              # random draw of matrix M
+              # in our case n = 3:
+              # set.seed(1)
+              # n <- 3
+              M <- matrix(rnorm(n*n,mean=0,sd=1), n, n)
+              
+              # QR-decomposition of M:
+              # note: the QR factorization is based on the result that a
+              # any full rank matrix can be decomposed into a orthogonal 
+              # and upper triangular matrix;
+              # note that we only need the Q-part (out of the QR-factorization)
+              # to continue with the below part!
+              QR <- qr(M)
+              Q <- qr.Q(QR)    
+              
+              # Marcel, 06.05.2020: In their own code in the script
+              # rand_orthomat.m, Ludvigson et al. (2018) perform an operation
+              # which normalizes 
+              
+              # see: https://stackoverflow.com/questions/38426349/how-to-create-random-
+              # orthonormal-matrix-in-python-numpy/38430739#38430739
+              # and https://web.eecs.umich.edu/~rajnrao/Acta05rmt.pdf
+              # we extract the signs of the matrix R:
+              R.sign <- sign(qr.R(QR))
+              # and lastly replace the elements to the top-right of the diagonal
+              # with zeros:
+              R.sign[upper.tri(R.sign)] <- 0
+              
+              # in a last step we multiply Q with R.sign
+              Q <-Q %*% R.sign
+              
+              
+              ##########
+              ## STEP 3:
+              ## calculation of a possible impact matrix A_0^{-1} = P*Q:
+              ##########       
+              # matrix multiplication to retrieve
+              # A_0_inv = P*Q
+              # Note: A_0_inv = P (and P is the unique
+              # lower-triangular Cholesky factor)
+              A_0_inv <- A_0_inv %*% Q
+              # A_0_inv
+              
+              # Marcel (17.06.2020):
+              # On p. 4 of their paper, Ludvigson et al. (2018) write
+              # that the restrictions on the sign of A_inv_0 (i.e. 
+              # that it is assumed to be positive) follows from combining
+              # the unit effect normalization on H with the restriction 
+              # sigma_jj >= 0; hence, we too implement this assumption
+              # at this stage (we follow the same produced as above
+              # when recovering the orthogonal matrices Q):
+              A_0_inv.sign <- sign(A_0_inv)
+              # and lastly replace the elements to the top-right of the diagonal
+              # with zeros:
+              A_0_inv.sign[upper.tri(A_0_inv.sign)] <- 0
+              A_0_inv.sign[lower.tri(A_0_inv.sign)] <- 0
+              
+              # in a last step we multiply Q with R.sign
+              A_0_inv <-A_0_inv %*% A_0_inv.sign
+              
+              # note that A_0_inv is a candidate for a 
+              # possible impact matrix!
+              
+              # for our below computations we also need A_0
+              A_0 <- inv(A_0_inv)
+              
+              # Marcel, 06.05.2020:
+              # up until here our code and the code of Ludvigson et al (2018)
+              # is exactly the same; 
+              # in their code, Ludvigson et al. (2018) perform a step called 
+              # 'Step 3: give possible impact matrix positive diagonal elements';
+              # in my opinion, this step simply involves the multiplication of
+              # A_0_inv with the identity-matrix --> hence, I have skipped this
+              # step!
+              
+              ##########
+              ## STEP 4:
+              ## before actually being able to expose the structural
+              ## errors (residuals)\epsilon to the constraints, 
+              ## we need to create a matrix with the structural 
+              ## residuals implied by the respective A_0_inv which
+              ## we have randomly generated above;
+              ## for this, we take the matrix u_t which contains the
+              ## models' reduced-form residuals, and for each row
+              ## (which corresponds to a certain time 't'), multiple
+              ## the respective row with A_0_inv
+              ##########   
+              
+              # Marcel (06.06.2020): since we have made the below generation 
+              # of the possible structural errors more efficient, we do not 
+              # need to manually create epsilon_t and/or set its dimensions
+              # anymore! hence the below code is commented out!
+              # we take the no. of rows and columns from u_t
+              # n.rows <- dim(u_t)[1]
+              # n.cols <- dim(u_t)[2]
+              
+              # we initialize the matrix epsilon_t to have the
+              # same size like u_t (for this we pre-allocate the
+              # matrix and then fill it)
+              # epsilon_t <- matrix(nrow = n.rows, ncol = n.cols)
+              
+              # and then we loop through the rows of u_t,
+              # and multiply each row with A_0,
+              # and write it to epsilon_t:
+              # print(class(u_t))
+              # for(i in 1:n.rows){
+              # epsilon_t[i, ] <- A_0 %*% u_t[i, ]
+              # }
+              
+              # The above method, however, is very inefficient!
+              # Therefore we want to try out a slightly smarter
+              # procedure:
+              epsilon_t <- t(apply(t(u_t), 2, function(row) A_0%*%row))
+              
+              # Marcel, 06.06.2020: Note that we have performed a test
+              # to see whether the method for generating epsilon_t in the 
+              # code of Ludvigson et al (2018) is the same as here
+              # and indeed our test has shown that it is identical!
+              # (as a test we have overwritten A_0 with Eposs from the 
+              # code of Ludvigson et al (2018) to see if we get the 
+              # exact same values!)
+              
+              
+              # -------------------------------------------
+              # EVENT CONSTRAINTS
+              # -------------------------------------------
+              # having epsilon_t at our disposal, we are in a position
+              # to impose the EVENT CONSTRAINTS on the 
+              # structural residuals epsilon_t:
+              # EVENT CONSTRAINTS:
+              # As outlined in the text, the event constraints require that
+              # identified financial uncertainty shocks have plausible properties
+              # during two episodes of heightened financial uncertainty:
+              #     * the 1987 stock market crash
+              #     * the 2007-2009 financial crisis
+              
+              
+              # -------------------------------------------
+              # PRELIMINARIES: EVENT CONSTRAINTS
+              # -------------------------------------------
+              # all data in SVAR.data starts in 1960-07 and runs until 
+              # xx; the data.frame has 690 rows;
+              
+              # the residuals in epsilon_t have 684 rows; we lose 6
+              # data points due to the 6 lags in the VAR-model;
+              # hence, the residuals in epsilon_t start in 1961-01-01!
+              # (6 months later!)
+              
+              # Marcel (02.05.2020): The above seems to have been the case
+              # when we created this script in June 2018;
+              # When trying to re-run this script, we saw that because we 
+              # were using the replication-data from Ludvigson et al (2018),
+              # which only runs until April 2015,
+              # contrary to the above, also when re-running this script,
+              # the residuals in epsilon_t have 652 rows;
+              # and because we lose 6 data points due to the 6 lags in the VAR-model,
+              # the residuals in epsilon_t start only in 1961-01-01!
+              # accordingly, we have updated the below code!
+              
+              # with this info, we first make a data.frame out of
+              # epsilon_t
+              epsilon_t <- as.data.frame(epsilon_t)
+              
+              # add a date-column which we have created outside of the loop
+              epsilon_t$date <- dates # which has exactly length 652!
+              # and we assign sensible col-names
+              epsilon_t <- as_tibble(epsilon_t %>%
+                                       # Marcel (06.05.2020): Attention - at this position 
+                                       # I have accidently flipped the position of financial_h1 and 
+                                       # macro_h1; this also explains why my output was
+                                       # upside down!
+                                       dplyr::rename(macro_h1 = V1,
+                                                     lip  = V2,
+                                                     financial_h1 = V3))
+              # we further split the 'Date' - variable into three pieces:
+              epsilon_t <- separate(epsilon_t, "date", c("year", "month", "day"), 
+                                    sep = "-", 
+                                    remove=FALSE, convert=TRUE)
+              # and we create the column 'yearmon'
+              
+              epsilon_t$yearmon <- as.yearmon(paste0(epsilon_t$year, epsilon_t$month), 
+                                              "%Y %m")
+              # and drop the other columns which we don't need anymore
+              epsilon_t <- epsilon_t %>%
+                dplyr::select(-c(date, year, month, day))
+              
+              
+              # -------------------------------------------
+              # CORRELATION CONSTRAINTS: PRELIMINARIES
+              # -------------------------------------------
+              
+              # u_t contains the reduced-form errors of the 
+              # original VAR;
+              u_t <- as_tibble(u_t)
+              
+              
+              # Marcel (04.04.2020):
+              # next, we calculate the three sample correlations c_M, c_Y and c_F
+              # between the AR(1)-model-residuals u_St and the strucutral shocks
+              # epsilon_Mt, epsilon_Yt and epsilon_Ft of the structural VAR, 
+              # respectively;
+              
+              # also, from the detailed explanations above it should be clear that
+              # the respective series (from which we now calculate the correlation)
+              # have the same length.
+              
+              # For some reason, Ludvigson et al (2018) seem to be using
+              # the strucural errors for the calculation of the correlation;
+              # I have to figure out why, but continue for the 
+              # moment like this!
+              # --> investigate later!
+              
+              # sample correlation between reduced-form residual
+              # u_St and the strucural error epsilon_t$macro_h1:
+              c_M <- cor(u_St, epsilon_t$macro_h1)
+              
+              # sample correlation between reduced-form residual
+              # u_St aand the reduced-form error u_Yt:
+              # --> Marcel (06.06.2020): not needed for the 
+              # following calculations!
+              # c_Y <- cor(u_St, epsilon_t$lip)
+              
+              # sample correlation between reduced-form residual
+              # u_St and the structural error epsilon_t$financial_h1::
+              c_F <- cor(u_St, (epsilon_t$financial_h1))
+              # Marcel (06.06.2020): After examining the code of 
+              # Ludvigson et al (2018) step by step, I can confirm 
+              # that there is no problem with the signs for
+              # epsilon_t$financial_h1; hence I have removed the 
+              # *(-1) which I had previously implemented!
+              
+              # for FC_3 we have to calculate c_MF which is (according to the
+              # paper) defined as: c_MF^2 = c_M^2 + c_F^2
+              # hence:
+              c_MF <- sqrt(c_M * c_M + c_F * c_F)
+              
+              # after setting u_t to be a data.frame, we have
+              # to convert it to a matrix again for the 
+              # above calculations:
+              u_t <- as.matrix(u_t)
+              
+              # Marcel (06.06.2020): Note to self and also something I should
+              # mention in the thesis: in the paper of Ludvigson et al (2018),
+              # the authors write >= or <= for all the contraints; in the code 
+              # itself they have implemented everything without an = 
+              # in the contraint-statements!  
+              
+              # checking all conditions at once:
+              if(
+                # FE_1
+                (epsilon_t %>% dplyr::filter(yearmon == "Oct 1987") %>%
+                 dplyr::select(financial_h1) > k1) & 
+                # FE_2
+                (any(epsilon_t %>% filter(yearmon >= "Dec 2007" &
+                                          yearmon <= "Jun 2009") %>%
+                     dplyr::select(financial_h1) > k2)) &
+                # FE_3
+                (sum(epsilon_t %>% filter(yearmon >= "Dec 2007" &
+                                          yearmon <= "Jun 2009") %>%
+                     dplyr::select(lip) < k3) == 19) &
+                # FC_1
+                ((lambda1 - c_M) > 0 & (lambda1 - c_F) > 0) &
+                # FC_2
+                ((abs(c_F) - lambda2*abs(c_M)) > 0) &
+                # FC_3
+                (c_MF - lambda3 > 0)
+              ){
+                # once all tests are successfully passed, we add 
+                # +1 to our counter-variable x!
+                
+                x <- x + 1
+                print(x)
+                
+                
+                #------------------------
+                ## Construction of maxG-solution
+                #------------------------
+                
+                # Note: out of the pool of A_0's and epsilon_t's that
+                # 'survived' (i.e., passed all tests),
+                # we want to compute the maxG-solution;
+                # To make this procedure computationally efficient,
+                # we have decided for the following procedure:
+                
+                # For the first A_0 that ends up in the solution 
+                # set, we calculate maxG
+                
+                # we need the below to calculate and store 
+                # the max-G-solutions:
+                
+                # according to LMN(2018):
+                # (1) the first inequality is large when the financial
+                # uncertainty shock in 1987 is large:
+                k1.maxG <-  as.vector(epsilon_t %>% 
+                                        filter(yearmon == "Oct 1987") %>%
+                                        dplyr::select(financial_h1))
+                
+                # (2) the second inequality is large when the financial
+                # uncertainty shocks in the financial crisis are most
+                # extremely positive:
+                # for k2.maxG we subset epsilon_t with the expression
+                # that we used for the if-statement above:
+                k2.maxG <- as.vector(sum(epsilon_t %>% filter(
+                  yearmon >= "Dec 2007" &
+                    yearmon <= "Jun 2009" &
+                    financial_h1 > 0) %>%
+                    dplyr::select(financial_h1)))
+                
+                # (3) the third inequality is large when the real activity
+                # shocks in the Great Recession are most negative:
+                
+                # we check for industrial production
+                # for k2.maxG we subset epsilon_t with the expression
+                # that we used for the if-statement above:
+                k3.maxG <- as.vector(sum(epsilon_t %>% filter(
+                  yearmon >= "Dec 2007" &
+                    yearmon <= "Jun 2009" & lip < 0) %>%
+                    dplyr::select(lip)))  
+                
+                # (4) the fourth inequality is large when stock returns
+                # have the highest absolute(!) correlation with 
+                # epsilon_Um
+                k4.maxG <- as.vector(abs(c_M))
+                
+                # (5) the fifth inequality is large when stock returns
+                # have the highest absolute(!) correlation with 
+                # epsilon_Uf
+                k5.maxG <- as.vector(abs(c_F))   
+                
+                # (6) the sixth inequality is large when stock returns
+                # have the highest absolute(!) collective correlation
+                k6.maxG <- as.vector(abs(c_MF))
+                
+                # we bind together all values associated with maxG:
+                maxG.all <- as.vector(unlist(c(k1.maxG, k2.maxG,
+                                               k3.maxG, k4.maxG,
+                                               k5.maxG, k6.maxG)))
+                # next, we calculate the associated value for 
+                # maxG:
+                # the below is a numeric which holds the calculated
+                # maxG-value
+                maxG.value <- as.numeric(sqrt(t(maxG.all) %*% 
+                                                maxG.all))
+                
+                # then we check whether the currently stored value
+                # is smaller or larger than the new maxG-value:
+                if(maxG.value > maxG.df[1, 1]){
+                  # if yes, we replace the entry
+                  maxG.df[1, 1] <- maxG.value
+                  # and store the iteration number next to it
+                  maxG.df[1, 2] <- paste0(c("iteration_"), k)
+                }
+                
+                
+                #------------------------
+                ## identified solution set and calculation of IRFs
+                #------------------------
+                # for draws of the orthonormal matrix which gives rise to a certain
+                # A_0_inv (A_0) that passed all tests, we want to store
+                # the respective residuals and the matrix A_0
+                
+                epsilon_t_valid[[length(epsilon_t_valid)+1]] <- epsilon_t
+                # and we rename the entry to know to which
+                # iteration it belongs
+                names(epsilon_t_valid)[length(epsilon_t_valid)] <- 
+                  paste0(c("iteration_"), k)
+                
+                A_0_valid[[length(A_0_valid)+1]] <- A_0
+                # and we rename the entry to know to which
+                # iteration it belongs
+                names(A_0_valid)[length(A_0_valid)] <- 
+                  paste0(c("iteration_"), k)
+                
+              }
+              
+            }
+
+  }
+}
+      

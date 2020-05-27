@@ -22,6 +22,7 @@ library(vars)
 library(matlib)
 library(forecast)
 library(Hmisc)
+library(miscFuncs)
 
 ###-------------------------------
 ### Preliminary Explanations
@@ -631,7 +632,7 @@ return.data <- SVAR.data %>%
 
     # To be able to calculate the impulse-response functions by hand
     # and to be able to make use of the impact matrices stored in 
-    # 'A_0_valid', we first have to construct the Bi-matrices of the
+    # 'A_0_valid', we first have to construct the B-matrices of the
     # reduced-form VAR out of the coefficients that are stored in my.var 
     # which we have created above!
     
@@ -829,7 +830,17 @@ return.data <- SVAR.data %>%
           # Note that as of here we calculate Psi7 - Psi60 but the loop runs
           # from 8 to 61 because we had to store Psi0 on position 1 in the list
           # (there is no position 0 in lists!)
-          for(i in 8:61){
+          
+          # Marcel (26.05.2020):
+          # Note that for the IRF-Analysis we use 60 steps, hence in the original
+          # implementation of the below function we have let the loop run from
+          # 8:61; but for the FEVD we want a longer forecast horizon (at least
+          # until 100); therefore we let the loop run up until 101 here
+          # to be able to extract a longer forecast horizon for the FEVD;
+          # for the IRF-analysis the forecast horizon remains at h = 60!
+          
+          # for(i in 8:61){
+          for(i in 8:101){
             psi_list[[i]] <- B_block[, 1:18] %*%
                               rbind(psi_list[[i-1]], psi_list[[i-2]], 
                                     psi_list[[i-3]], psi_list[[i-4]],
@@ -875,7 +886,512 @@ return.data <- SVAR.data %>%
               names(Thetas)[length(Thetas)] <- paste0(c("A_0_"), z)
 
     }
+          
+
+    # Marcel, 25.05.2020      
+    ###-------------------------------
+    ### Calculating the Forecast Error Variance Decomposition
+    ###------------------------------- 
+          
+    # Having read a few ressources about the FEVD, we know how to
+    # calculate the FEVD for different horizons;
+    # we know that the list 'Theta' holds for each admissable A_0-matrix
+    # the corresponding calculated Thetas at various forecast horizons
+    # (here from 0 to 60);
     
+    # hence, to calculate the MSPE for all admissable solutions in the 
+    # list 'Thetas' at the various forecast horizons following Kilian/Lütkepohl
+    # or Lütkepohl, respectively, we define the following function:
+    
+    # the function takes the huge list of Thetas and the forecast 
+    # horizon h and the particular solution p we are looking at:
+    mspe.matrix <- function(Thetas, p, h){
+      # Thetas[[1]] contains all the Thetas for the first admissable
+      # solution for which we have calculated all thetas up until
+      # a forecast horizon of h = 60!
+      
+      # note that the forecast horizon h == 1 corresponds to 
+      # Theta_0 and that the expression Thetas[[1]][[1]]
+      # extracts Theta_0 for the sequence of the Thetas
+      # of the first admissable A_0!
+      mspe.mat<- matrix(data = 0, nrow = 3, ncol = 3)
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- Thetas[[p]][[i]] %*% t(Thetas[[p]][[i]])
+        mspe.mat <- mspe.mat + helper
+        # print(test)
+      }
+      
+      return(mspe.mat)
+
+    }
+          
+    # running e.g. 
+    # mspe.matrix(Thetas, 1, 1)
+    # we know that this is the 1-step ahead MSE forecast matrix; 
+    # as described in the Time Series Book of Lütkepohl, the diagonal
+    # elements of this matrix are the MSEs (forecast error variance) of the
+    # variables we are interested in!
+          
+    # if we now want to perform the forecast error variance decomposition
+    # we need a little more of matrix algebra and we are done:
+    # in particular, on the p. 64 in the book of Lötkepohl, we algorithm
+    # for calculating the respesctive denominators is described, consisting
+    # of elementary vectors;
+          
+    # so, depending on the particular forecast horizon we are looking at, we
+    # could create the following to calculate the respective decomposition:
+    
+    # this time the output will be a number, not matrix, like above!
+    # here, we have to watch out, because if h = 1 (i.e. the one-step ahead
+    # forecast), then the sum reduces to one single summand!
+    # hence:
+    
+    # we also should set up a function that calculates the contribution
+    # of a shock to the variance of the forecast error (i.e. the numerator
+    # in the fractions below!)
+          
+    # this function will then allow us to calculate the contribution of a 
+    # shock to the variance of the forecast error, depending at which
+    # horizon we are looking at:
+          
+          
+    contr.forecast.err.mat <- function(Thetas, p, h){
+      # Thetas[[1]] contains all the Thetas for the first admissable
+      # solution for which we have calculated all thetas up until
+      # a forecast horizon of h = 60!
+      
+      # note that the forecast horizon h == 1 corresponds to 
+      # Theta_0 and that the expression Thetas[[1]][[1]]
+      # extracts Theta_0 for the sequence of the Thetas
+      # of the first admissable A_0!
+      
+      # also, the output of this function is a matrix with
+      # 9 number that represent the respective contributions of innovations
+      # in variable k to the forecast error variance or MSE of the h-step 
+      # ahead forecast of variable j:
+      contr.forecast.err.matrix <- matrix(data = 0, nrow = 3, ncol = 3)
+      
+      e1 <- c(1, 0, 0) # Spaltenvektor
+      e2 <- c(0, 1, 0) # Spaltenvektor
+      e3 <- c(0, 0, 1) # Spaltenvektor
+      
+      contr.forecast.err.1.1 <- 0
+      contr.forecast.err.1.2 <- 0
+      contr.forecast.err.1.3 <- 0
+      contr.forecast.err.2.1 <- 0
+      contr.forecast.err.2.2 <- 0
+      contr.forecast.err.2.3 <- 0
+      contr.forecast.err.3.1 <- 0
+      contr.forecast.err.3.2 <- 0
+      contr.forecast.err.3.3 <- 0
+      
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.1.1 <- contr.forecast.err.1.1 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.1.2 <- contr.forecast.err.1.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.1.3 <- contr.forecast.err.1.3 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.2.1 <- contr.forecast.err.2.1 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.2.2 <- contr.forecast.err.2.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.2.3 <- contr.forecast.err.2.3 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.3.1 <- contr.forecast.err.3.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.3.2 <- contr.forecast.err.3.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.3.3 <- contr.forecast.err.3.3 + helper
+        # print(test)
+      }
+      
+      # in a last step we fill the matrix with the respective
+      # contributions:
+      
+      contr.forecast.err.matrix[1, 1] <- contr.forecast.err.1.1
+      contr.forecast.err.matrix[1, 2] <- contr.forecast.err.1.2
+      contr.forecast.err.matrix[1, 3] <- contr.forecast.err.1.3
+      contr.forecast.err.matrix[2, 1] <- contr.forecast.err.2.1
+      contr.forecast.err.matrix[2, 2] <- contr.forecast.err.2.2
+      contr.forecast.err.matrix[2, 3] <- contr.forecast.err.2.3
+      contr.forecast.err.matrix[3, 1] <- contr.forecast.err.3.1
+      contr.forecast.err.matrix[3, 2] <- contr.forecast.err.3.2
+      contr.forecast.err.matrix[3, 3] <- contr.forecast.err.3.3
+      
+      return(contr.forecast.err.matrix)
+      
+    }
+          
+    
+    # having the functions 'contr.forecast.err.mat' and 
+    # 'mspe.matrix' at our disposal and knowing that we want
+    # to calculate the FEVD for h=1, h=12 and h=60 (i.e. infty)
+    # for all Theta-sequences in Thetas, we have to embed everything
+    # into a function;
+    # in particular, the function should calculate the respective
+    # FEVD for a particular horizon for ALL Thetas in the identified
+    # set (which are stored in Thetas):
+
+
+    FEVD <- function(Thetas, h){
+      
+      # at the beginning of the function we create a data.frame which
+      # will hold the final results of the function-call:
+
+      df <- data.frame(matrix(ncol=9,nrow=0, dimnames=list(NULL, 
+                        c(paste0('prop1.1','_','horizon','_',h), 
+                          paste0('prop1.2','_','horizon','_',h),
+                          paste0('prop1.3','_','horizon','_',h),
+                          paste0('prop2.1','_','horizon','_',h),
+                          paste0('prop2.2','_','horizon','_',h),
+                          paste0('prop2.3','_','horizon','_',h),
+                          paste0('prop3.1','_','horizon','_',h),
+                          paste0('prop3.2','_','horizon','_',h),
+                          paste0('prop3.3','_','horizon','_',h)))))
+      
+      
+              # be aware that if we write h == 1 here, we technically mean
+              # a forecast horizon of h == 0;
+              # we have to choose this nomenclature, because the matrices
+              # in Thetas start at position == 1 and on position == 1
+              # is Theta_0 (which corresponds) to h == 0!
+              
+              # for the 1-step-ahead forecast we get:
+              # be aware that in Thetas[[p]][[h]]
+              # p stands for the particular solution in the identified set
+              # (i.e. each solution contains 60 Thetas from the calculation of
+              # the IRFs above!)
+              # h stands for the forecast horizon
+      
+      # within the function we want to loop through all Thetas that
+      # correspond to every solution in the identified set
+      # (currently we have 80 A_0-matrices that pass the test,
+      # hence there are also 80 sequences of Theta-matrices
+      # for the respective forecast horizons):
+      for(i in 1:length(Thetas)){
+              
+              ## forecast error variance decomposition of y_1t (aka Macro Uncertainty):
+              # prop1 is the proportion of variance of the forecast error
+              # in y_1t due to shock in macro_uncertainty:
+              prop1.1 <- contr.forecast.err.mat(Thetas, i, h)[1, 1] / 
+                mspe.matrix(Thetas, 1, h)[1, 1]
+              
+              # prop2 is the proportion of variance of the forecast error
+              # in y_1t due to shock in industrial_production:
+              prop1.2 <- contr.forecast.err.mat(Thetas, i, h)[1, 2]  /
+                mspe.matrix(Thetas, i, h)[1, 1]
+              
+              # prop3 is the proportion of variance of the forecast error
+              # in y_1t due to shock in financial_uncertainty:
+              prop1.3 <- contr.forecast.err.mat(Thetas, i, h)[1, 3] /
+                mspe.matrix(Thetas, i, h)[1, 1]
+              
+              ## forecast error variance decomposition of y_2t (aka industrial production):
+              prop2.1 <- contr.forecast.err.mat(Thetas, i, h)[2, 1] / 
+                mspe.matrix(Thetas, i, h)[2, 2]
+              
+              # prop2 is the proportion of variance of the forecast error
+              # in y_1t due to shock in industrial_production:
+              prop2.2 <- contr.forecast.err.mat(Thetas, i, h)[2, 2] /
+                mspe.matrix(Thetas, i, h)[2, 2]
+              
+              # prop3 is the proportion of variance of the forecast error
+              # in y_1t due to shock in financial_uncertainty:
+              prop2.3 <- contr.forecast.err.mat(Thetas, i, h)[2, 3] /
+                mspe.matrix(Thetas, i, h)[2, 2]
+              
+              ## forecast error variance decomposition of y_3t (aka financial uncertainty): 
+              prop3.1 <- contr.forecast.err.mat(Thetas, i, h)[3, 1] / 
+                mspe.matrix(Thetas, i, h)[3, 3]
+              
+              # prop2 is the proportion of variance of the forecast error
+              # in y_1t due to shock in industrial_production:
+              prop3.2 <- contr.forecast.err.mat(Thetas, i, h)[3, 2] /
+                mspe.matrix(Thetas, i, h)[3, 3]
+              
+              # prop3 is the proportion of variance of the forecast error
+              # in y_1t due to shock in financial_uncertainty:
+              prop3.3 <- contr.forecast.err.mat(Thetas, i, h)[3, 3] /
+                mspe.matrix(Thetas, i, h)[3, 3]
+              
+              
+              # after each run of the loop, we want to append the results
+              # to the data.frame which we have already created ablove:
+              # note that we add the results as a new row, meaning that 
+              # each row contains the FEVD at the specified forecast
+              # horizon for every solution in the identified set!
+              
+              df[nrow(df) + 1,] = c(prop1.1, prop1.2, prop1.3, 
+                                    prop2.1, prop2.2, prop2.3,
+                                    prop3.1, prop3.2, prop3.3)
+      }
+      
+      # at the end we return the filled data.frame
+      return(df)
+    }
+    
+    # now we run the above function 'FEVD' for all Thetas (80) in our
+    # Thetas-list for the respective forecast-horizons:
+    FEVD.h1 <- FEVD(Thetas, 1)
+    FEVD.h12 <- FEVD(Thetas, 12)
+    FEVD.h100 <- FEVD(Thetas, 100)
+
+    # with the results for the forecast-horizons at our disposal, we
+    # want to proceed like Ludvigson et al (2018) and calculate the ranges
+    # of the FEVD for the respective columns:
+    # finding the range translates to finding the largest at the smallest
+    # values of the respective data.frames;
+    # hence, we proceed as follows to calculate the minimum
+    # and maximum value for every column in the data.frames:
+    
+    # forecast horizon h = 1:
+    FEVD.h1.min.max <- cbind(
+                    sapply(FEVD.h1, function(x) min(as.numeric(x))),
+                    sapply(FEVD.h1, function(x) max(as.numeric(x)))
+                    )
+    # forecast horizon h = 1:
+    FEVD.h12.min.max <- cbind(
+                    sapply(FEVD.h12, function(x) min(as.numeric(x))),
+                    sapply(FEVD.h12, function(x) max(as.numeric(x)))
+    ) 
+    # forecast horizon h = 60 (infinity):
+    FEVD.h100.min.max <- cbind(
+                    sapply(FEVD.h100, function(x) min(as.numeric(x))),
+                    sapply(FEVD.h100, function(x) max(as.numeric(x)))
+    ) 
+    
+    # the format of the above matrix is perfect for further manipulation
+    # to make it look like the table in Ludvigson et al 2018:
+    
+    # so far we had combined the results across all variables in the 
+    # data-frames; now we start splitting, i.e., 
+    # for each forecast error variance decomposition of each of the three
+    # variables we now create a separate data.frame so that we can easily
+    # append the results at the respective forecast horizons:
+    
+    # FEVD.macro
+    FEVD.macro <- data.frame("U_m_Shock"=character(),
+                             "ip_Shock"=character(),
+                             "U_f_Shock"=character(),
+                             stringsAsFactors = FALSE)
+            # forecast horizon h = 1:
+            FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
+                                  format(round(FEVD.h1.min.max[1, 1], digits=2), 
+                                         nsmall = 2), ', ', 
+                                  format(round(FEVD.h1.min.max[1, 2], digits=2), 
+                                         nsmall = 2), ']'),
+              paste0('[', format(round(FEVD.h1.min.max[2, 1], digits=2), 
+                                         nsmall = 2), ', ', 
+                                  format(round(FEVD.h1.min.max[2, 2], digits=2), 
+                                         nsmall = 2), ']'),
+              paste0('[', format(round(FEVD.h1.min.max[3, 1], digits=2), 
+                                         nsmall = 2), ', ', 
+                                  format(round(FEVD.h1.min.max[3, 2], digits=2), 
+                                         nsmall = 2), ']')
+                                                    )
+            
+            # forecast horizon h = 12: 
+            FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
+                                  format(round(FEVD.h12.min.max[1, 1], digits=2), 
+                                         nsmall = 2), ', ', 
+                                  format(round(FEVD.h12.min.max[1, 2], digits=2), 
+                                         nsmall = 2), ']'),
+                           paste0('[', format(round(FEVD.h12.min.max[2, 1], digits=2), 
+                                              nsmall = 2), ', ', 
+                                  format(round(FEVD.h12.min.max[2, 2], digits=2), 
+                                         nsmall = 2), ']'),
+                           paste0('[', format(round(FEVD.h12.min.max[3, 1], digits=2), 
+                                              nsmall = 2), ', ', 
+                                  format(round(FEVD.h12.min.max[3, 2], digits=2), 
+                                         nsmall = 2), ']')
+            )
+             # forecast horizon h = 100: 
+             FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
+                                 format(round(FEVD.h100.min.max[1, 1], digits=2), 
+                                        nsmall = 2), ', ', 
+                                 format(round(FEVD.h100.min.max[1, 2], digits=2), 
+                                        nsmall = 2), ']'),
+                          paste0('[', format(round(FEVD.h100.min.max[2, 1], digits=2), 
+                                             nsmall = 2), ', ', 
+                                 format(round(FEVD.h100.min.max[2, 2], digits=2), 
+                                        nsmall = 2), ']'),
+                          paste0('[', format(round(FEVD.h100.min.max[3, 1], digits=2), 
+                                             nsmall = 2), ', ', 
+                                 format(round(FEVD.h100.min.max[3, 2], digits=2), 
+                                        nsmall = 2), ']')
+            )
+     # FEVD.ip
+     FEVD.ip <- data.frame("U_m_Shock"=character(),
+                              "ip_Shock"=character(),
+                              "U_f_Shock"=character(),
+                              stringsAsFactors = FALSE)
+             # forecast horizon h = 1:
+             FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
+                         format(round(FEVD.h1.min.max[4, 1], digits=2), 
+                                nsmall = 2), ', ', 
+                         format(round(FEVD.h1.min.max[4, 2], digits=2), 
+                                nsmall = 2), ']'),
+                  paste0('[', format(round(FEVD.h1.min.max[5, 1], digits=2), 
+                                     nsmall = 2), ', ', 
+                         format(round(FEVD.h1.min.max[5, 2], digits=2), 
+                                nsmall = 2), ']'),
+                  paste0('[', format(round(FEVD.h1.min.max[6, 1], digits=2), 
+                                     nsmall = 2), ', ', 
+                         format(round(FEVD.h1.min.max[6, 2], digits=2), 
+                                nsmall = 2), ']')
+             )
+             
+             # forecast horizon h = 12: 
+             FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
+                         format(round(FEVD.h12.min.max[4, 1], digits=2), 
+                                nsmall = 2), ', ', 
+                         format(round(FEVD.h12.min.max[4, 2], digits=2), 
+                                nsmall = 2), ']'),
+                  paste0('[', format(round(FEVD.h12.min.max[5, 1], digits=2), 
+                                     nsmall = 2), ', ', 
+                         format(round(FEVD.h12.min.max[5, 2], digits=2), 
+                                nsmall = 2), ']'),
+                  paste0('[', format(round(FEVD.h12.min.max[6, 1], digits=2), 
+                                     nsmall = 2), ', ', 
+                         format(round(FEVD.h12.min.max[6, 2], digits=2), 
+                                nsmall = 2), ']')
+             )
+                  # forecast horizon h = 100: 
+              FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
+                          format(round(FEVD.h100.min.max[4, 1], digits=2), 
+                                 nsmall = 2), ', ', 
+                          format(round(FEVD.h100.min.max[4, 2], digits=2), 
+                                 nsmall = 2), ']'),
+                   paste0('[', format(round(FEVD.h100.min.max[5, 1], digits=2), 
+                                      nsmall = 2), ', ', 
+                          format(round(FEVD.h100.min.max[5, 2], digits=2), 
+                                 nsmall = 2), ']'),
+                   paste0('[', format(round(FEVD.h100.min.max[6, 1], digits=2), 
+                                      nsmall = 2), ', ', 
+                          format(round(FEVD.h100.min.max[6, 2], digits=2), 
+                                 nsmall = 2), ']')
+                  )                
+
+              
+    # FEVD.fin
+    FEVD.fin <- data.frame("U_m_Shock"=character(),
+                          "ip_Shock"=character(),
+                          "U_f_Shock"=character(),
+                          stringsAsFactors = FALSE)
+              # forecast horizon h = 1:
+              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
+                        format(round(FEVD.h1.min.max[7, 1], digits=2), 
+                               nsmall = 2), ', ', 
+                        format(round(FEVD.h1.min.max[7, 2], digits=2), 
+                               nsmall = 2), ']'),
+                 paste0('[', format(round(FEVD.h1.min.max[8, 1], digits=2), 
+                                    nsmall = 2), ', ', 
+                        format(round(FEVD.h1.min.max[8, 2], digits=2), 
+                               nsmall = 2), ']'),
+                 paste0('[', format(round(FEVD.h1.min.max[9, 1], digits=2), 
+                                    nsmall = 2), ', ', 
+                        format(round(FEVD.h1.min.max[9, 2], digits=2), 
+                               nsmall = 2), ']')
+              )
+              
+              # forecast horizon h = 12: 
+              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
+                      format(round(FEVD.h12.min.max[7, 1], digits=2), 
+                             nsmall = 2), ', ', 
+                      format(round(FEVD.h12.min.max[7, 2], digits=2), 
+                             nsmall = 2), ']'),
+               paste0('[', format(round(FEVD.h12.min.max[8, 1], digits=2), 
+                                  nsmall = 2), ', ', 
+                      format(round(FEVD.h12.min.max[8, 2], digits=2), 
+                             nsmall = 2), ']'),
+               paste0('[', format(round(FEVD.h12.min.max[9, 1], digits=2), 
+                                  nsmall = 2), ', ', 
+                      format(round(FEVD.h12.min.max[9, 2], digits=2), 
+                             nsmall = 2), ']')
+              )
+              # forecast horizon h = 100: 
+              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
+                        format(round(FEVD.h100.min.max[7, 1], digits=2), 
+                               nsmall = 2), ', ', 
+                        format(round(FEVD.h100.min.max[7, 2], digits=2), 
+                               nsmall = 2), ']'),
+                 paste0('[', format(round(FEVD.h100.min.max[8, 1], digits=2), 
+                                    nsmall = 2), ', ', 
+                        format(round(FEVD.h100.min.max[8, 2], digits=2), 
+                               nsmall = 2), ']'),
+                 paste0('[', format(round(FEVD.h100.min.max[9, 1], digits=2), 
+                                    nsmall = 2), ', ', 
+                        format(round(FEVD.h100.min.max[9, 2], digits=2), 
+                               nsmall = 2), ']')
+              )
+    # now we combine the results by stacking the data.frames 
+    # on top of each other:
+    FEVD.all <- rbind(
+                            FEVD.macro,
+                            FEVD.ip,
+                            FEVD.fin
+    )
+     
+             
+    # and now we can finally export the table as a latex-table:
+    latextable(FEVD.all, 
+               colnames = c("Um Shock", "ip Shock", "Uf Shock"),
+               rownames = c(
+                            "1",
+                            "12",
+                            "infinity",
+                            "1",
+                            "12",
+                            "infinity",
+                            "1",
+                            "12",
+                            "infinity"))
     
     #-------------------------------------------------------------------
     # extract coefficients to create impulse-responses:
@@ -1519,3 +2035,6 @@ return.data <- SVAR.data %>%
       
       
 
+      
+
+      

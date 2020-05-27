@@ -631,7 +631,7 @@ return.data <- SVAR.data %>%
 
     # To be able to calculate the impulse-response functions by hand
     # and to be able to make use of the impact matrices stored in 
-    # 'A_0_valid', we first have to construct the Bi-matrices of the
+    # 'A_0_valid', we first have to construct the B-matrices of the
     # reduced-form VAR out of the coefficients that are stored in my.var 
     # which we have created above!
     
@@ -875,6 +875,323 @@ return.data <- SVAR.data %>%
               names(Thetas)[length(Thetas)] <- paste0(c("A_0_"), z)
 
     }
+          
+
+    # Marcel, 25.05.2020      
+    ###-------------------------------
+    ### Calculating the Forecast Error Variance Decomposition
+    ###------------------------------- 
+          
+    # Having read a few ressources about the FEVD, we know how to
+    # calculate the FEVD for different horizons;
+    # we know that the list 'Theta' holds for each admissable A_0-matrix
+    # the corresponding calculated Thetas at various forecast horizons
+    # (here from 0 to 60);
+    
+    # hence, to calculate the MSPE for all admissable solutions in the 
+    # list 'Thetas' at the various forecast horizons following Kilian/Lütkepohl
+    # or Lütkepohl, respectively, we define the following function:
+    
+    # the function takes the huge list of Thetas and the forecast 
+    # horizon h and the particular solution p we are looking at:
+    mspe.matrix <- function(Thetas, p, h){
+      # Thetas[[1]] contains all the Thetas for the first admissable
+      # solution for which we have calculated all thetas up until
+      # a forecast horizon of h = 60!
+      
+      # note that the forecast horizon h == 1 corresponds to 
+      # Theta_0 and that the expression Thetas[[1]][[1]]
+      # extracts Theta_0 for the sequence of the Thetas
+      # of the first admissable A_0!
+      mspe.mat<- matrix(data = 0, nrow = 3, ncol = 3)
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- Thetas[[p]][[i]] %*% t(Thetas[[p]][[i]])
+        mspe.mat <- mspe.mat + helper
+        # print(test)
+      }
+      
+      return(mspe.mat)
+
+    }
+          
+    # running e.g. 
+    # mspe.matrix(Thetas, 1, 1)
+    # we know that this is the 1-step ahead MSE forecast matrix; 
+    # as described in the Time Series Book of Lütkepohl, the diagonal
+    # elements of this matrix are the MSEs (forecast error variance) of the
+    # variables we are interested in!
+          
+    # if we now want to perform the forecast error variance decomposition
+    # we need a little more of matrix algebra and we are done:
+    # in particular, on the p. 64 in the book of Lötkepohl, we algorithm
+    # for calculating the respesctive denominators is described, consisting
+    # of elementary vectors;
+          
+    # so, depending on the particular forecast horizon we are looking at, we
+    # could create the following to calculate the respective decomposition:
+    
+    # this time the output will be a number, not matrix, like above!
+    # here, we have to watch out, because if h = 1 (i.e. the one-step ahead
+    # forecast), then the sum reduces to one single summand!
+    # hence:
+    
+    # we also should set up a function that calculates the contribution
+    # of a shock to the variance of the forecast error (i.e. the numerator
+    # in the fractions below!)
+          
+    # this function will then allow us to calculate the contribution of a 
+    # shock to the variance of the forecast error, depending at which
+    # horizon we are looking at:
+          
+          
+    contr.forecast.err.mat <- function(Thetas, p, h){
+      # Thetas[[1]] contains all the Thetas for the first admissable
+      # solution for which we have calculated all thetas up until
+      # a forecast horizon of h = 60!
+      
+      # note that the forecast horizon h == 1 corresponds to 
+      # Theta_0 and that the expression Thetas[[1]][[1]]
+      # extracts Theta_0 for the sequence of the Thetas
+      # of the first admissable A_0!
+      
+      # also, the output of this function is a matrix with
+      # 9 number that represent the respective contributions of innovations
+      # in variable k to the forecast error variance or MSE of the h-step 
+      # ahead forecast of variable j:
+      contr.forecast.err.matrix <- matrix(data = 0, nrow = 3, ncol = 3)
+      
+      e1 <- c(1, 0, 0) # Spaltenvektor
+      e2 <- c(0, 1, 0) # Spaltenvektor
+      e3 <- c(0, 0, 1) # Spaltenvektor
+      
+      contr.forecast.err.1.1 <- 0
+      contr.forecast.err.1.2 <- 0
+      contr.forecast.err.1.3 <- 0
+      contr.forecast.err.2.1 <- 0
+      contr.forecast.err.2.2 <- 0
+      contr.forecast.err.2.3 <- 0
+      contr.forecast.err.3.1 <- 0
+      contr.forecast.err.3.2 <- 0
+      contr.forecast.err.3.3 <- 0L
+      
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.1.1 <- contr.forecast.err.1.1 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.1.2 <- contr.forecast.err.1.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e1) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.1.3 <- contr.forecast.err.1.3 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.2.1 <- contr.forecast.err.2.1 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.2.2 <- contr.forecast.err.2.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e2) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.2.3 <- contr.forecast.err.2.3 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e1))))^2
+        contr.forecast.err.3.1 <- contr.forecast.err.3.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e2))))^2
+        contr.forecast.err.3.2 <- contr.forecast.err.3.2 + helper
+        # print(test)
+      }
+      for(i in 1:h){
+        # we loop through the Thetas
+        # print(i)
+        helper <- ((t(e3) %*% Thetas[[p]][[i]] %*% t(t(e3))))^2
+        contr.forecast.err.3.3 <- contr.forecast.err.3.3 + helper
+        # print(test)
+      }
+      
+      # in a last step we fill the matrix with the respective
+      # contributions:
+      
+      contr.forecast.err.matrix[1, 1] <- contr.forecast.err.1.1
+      contr.forecast.err.matrix[1, 2] <- contr.forecast.err.1.2
+      contr.forecast.err.matrix[1, 3] <- contr.forecast.err.1.3
+      contr.forecast.err.matrix[2, 1] <- contr.forecast.err.2.1
+      contr.forecast.err.matrix[2, 2] <- contr.forecast.err.2.2
+      contr.forecast.err.matrix[2, 3] <- contr.forecast.err.2.3
+      contr.forecast.err.matrix[3, 1] <- contr.forecast.err.3.1
+      contr.forecast.err.matrix[3, 2] <- contr.forecast.err.3.2
+      contr.forecast.err.matrix[3, 3] <- contr.forecast.err.3.3
+      
+      return(contr.forecast.err.matrix)
+      
+    }
+          
+
+    if(h == 1){
+    # be aware that if we write h == 1 here, we technically mean
+    # a forecast horizon of h == 0;
+    # we have to choose this nomenclature, because the matrices
+    # in Thetas start at position == 1 and on position == 1
+    # is Theta_0 (which corresponds) to h == 0!
+      
+        # for the 1-step-ahead forecast we get:
+        # be aware that in Thetas[[p]][[h]]
+        # p stands for the particular solution in the identified set
+        # (i.e. each solution contains 60 Thetas from the calculation of
+        # the IRFs above!)
+        # h stands for the forecast horizon
+      
+        ## forecast error variance decomposition of y_1t (aka Macro Uncertainty):
+            # prop1 is the proportion of variance of the forecast error
+            # in y_1t due to shock in macro_uncertainty:
+            prop1.1 <- contr.forecast.err.mat(Thetas, 1, 1)[1, 1] / 
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+                          
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[1, 1]
+              
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[1, 1]
+            prop1.1
+            
+            # prop2 is the proportion of variance of the forecast error
+            # in y_1t due to shock in industrial_production:
+            prop1.2 <- contr.forecast.err.mat(Thetas, 1, 1)[1, 2]  /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[1, 1]
+              
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[1, 1]
+            prop1.2
+ 
+            # prop3 is the proportion of variance of the forecast error
+            # in y_1t due to shock in financial_uncertainty:
+            prop1.3 <- contr.forecast.err.mat(Thetas, 1, 1)[1, 3] /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+                          
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[1, 1]
+              
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[1, 1]
+            prop1.3
+            
+        ## forecast error variance decomposition of y_2t (aka industrial production):
+            prop2.1 <- contr.forecast.err.mat(Thetas, 1, 1)[2, 1] / 
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[2, 2]
+              
+                          # total forecast error variance:              
+                          mspe.matrix(Thetas, 1, h)[2, 2]
+            
+            prop2.1
+            
+            # prop2 is the proportion of variance of the forecast error
+            # in y_1t due to shock in industrial_production:
+            prop2.2 <- contr.forecast.err.mat(Thetas, 1, 1)[2, 2] /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+                          
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[2, 2]
+
+                          # total forecast error variance:              
+                          mspe.matrix(Thetas, 1, h)[2, 2]
+                          
+            prop2.2
+            
+            # prop3 is the proportion of variance of the forecast error
+            # in y_1t due to shock in financial_uncertainty:
+            prop2.3 <- contr.forecast.err.mat(Thetas, 1, 1)[2, 3] /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[2, 2]
+                          
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[2, 2]
+            prop2.3   
+            
+        ## forecast error variance decomposition of y_3t (aka financial uncertainty): 
+            prop3.1 <- contr.forecast.err.mat(Thetas, 1, 1)[3, 1] / 
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[3, 3]
+                          
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[3, 3]
+            prop3.1
+            
+            # prop2 is the proportion of variance of the forecast error
+            # in y_1t due to shock in industrial_production:
+            prop3.2 <- contr.forecast.err.mat(Thetas, 1, 1)[3, 2] /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[3, 3]
+              
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[3, 3]
+            prop3.2
+  
+            # prop3 is the proportion of variance of the forecast error
+            # in y_1t due to shock in financial_uncertainty:
+            prop3.3 <- contr.forecast.err.mat(Thetas, 1, 1)[3, 3] /
+                          # we take the first diagonal element 
+                          # of the MSE-matrix (i.e. 1,1)
+              
+                          # (Thetas[[1]][[1]] %*% t(Thetas[[1]][[1]]))[3, 3]
+                          
+                          # total forecast error variance:
+                          mspe.matrix(Thetas, 1, h)[3, 3]
+            prop3.3
+      
+    }else{
+      
+      for(i in 1:h){
+        # we loop through the Thetas
+        print(i)
+        helper <- Thetas[[p]][[i]] %*% t(Thetas[[p]][[i]])
+        test <- test + helper
+        # print(test)
+      }
+    }
+
     
     
     #-------------------------------------------------------------------
@@ -1519,3 +1836,6 @@ return.data <- SVAR.data %>%
       
       
 
+      
+
+      

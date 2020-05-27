@@ -415,14 +415,14 @@ Most of all I want to thank my Mum, Dorrie Mavaddat, who has always been there f
 \selectlanguage{english}
 \begin{abstract}
 % \blindtext
-Uncertainty is a latent and generally unobservable stochastic process. Insofar, the uncertainty literature which experienced a renaissance with the publication of \citet{bloom:09} is largely trying to solve both, questions related to the measurement and \textit{types} of uncertainty and, most prominently, the role of time-varying uncertainty on and in business cycles, respectively. In the meantime a voluminous amount of both theoretical and empirical work has produced various uncertainty measures that, in various empirical VAR-settings, largely suggests that uncertainty exerts a negative influence on the business cycle. Departing from usual recursive schemes in VARs which don't allow for the link between uncertainty and business cycles to go vice-versa by construction, \citet{ludvigsonetal:18} suggest a novel shock-restricted SVAR-approach whose technicalities we discuss and replicate/implement in R for this thesis. The results indicate that, first, the uncertainty literature has to distinguish between macroeconomic and financial uncertainty and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output.
+Uncertainty is a latent and generally unobservable stochastic process. Insofar, the uncertainty literature which experienced a renaissance with the publication of \citet{bloom:09} is largely trying to solve both, questions related to the measurement and \textit{types} of uncertainty and, most prominently, the role of time-varying uncertainty on and in business cycles, respectively. In the meantime a voluminous amount of both theoretical and empirical work has produced various uncertainty measures that, in various empirical VAR-settings, largely suggests that uncertainty exerts a negative influence on the business cycle. Departing from usual recursive schemes in VARs which don't allow for the link between uncertainty and business cycles to contemporaneously go vice-versa by construction, \citet{ludvigsonetal:18} suggest a novel shock-restricted SVAR-approach whose technicalities we discuss and replicate/implement in R for this thesis. The results indicate that, first, the uncertainty literature has to distinguish between macroeconomic and financial uncertainty and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output.
 \end{abstract}
 
 %\quad \\[10mm]
 \begin{otherlanguage}{ngerman}
 \begin{abstract}
 % \blindtext
-Unsicherheit ist ein latenter und im Allgemeinen nicht beobachtbarer stochastischer Prozess. Insofern versucht die Literatur, die mit der Veröffentlichung von \citet{bloom:09} eine Art Renaissance erfuhr, weitgehend sowohl Fragen zur Messung und den \textit{Arten} von Unsicherheit als auch, vor allem, zur Rolle zeitlich variierender Unsicherheit auf bzw. in Konjunkturzyklen zu beantworten. In der Zwischenzeit hat eine umfangreiche Zahl von sowohl theoretischen als auch empirischen Arbeiten verschiedene Unsicherheitsmaße vorgeschlagen, die in verschiedenen empirischen VAR-Anwendungen weitgehend darauf hindeuten, dass Unsicherheit einen negativen Einfluss auf den Konjunkturzyklus ausübt. Abweichend von den üblichen rekursiven Ansätzen in VAR-Modellen bei denen der Zusammenhang zwischen Unsicherheit und der Konjunktur bereits per Konstruktion nicht einen umgekehrten Impuls geben kann, schlagen \citet{ludvigsonetal:18} einen neuartigen Schock-beschränkten SVAR-Ansatz vor dessen technischen Details wir in dieser Arbeit darstellen und in R replizieren/implementieren. Die Ergebnisse deuten darauf hin, dass, Erstens, in der Unsicherheits-Literatur zwischen makroökonomischer und finanzieller Unsicherheit unterschieden werden muss und, Zweitens, dass eine höhere makroökonomische Unsicherheit eine endogene Reaktion auf Konjunktur-Schocks ist, während finanzielle Unsicherheit eine wahrscheinliche Quelle für langwierige Konjunktureinbrüche darstellt.
+Unsicherheit ist ein latenter und im Allgemeinen nicht beobachtbarer stochastischer Prozess. Insofern versucht die Literatur, die mit der Veröffentlichung von \citet{bloom:09} eine Art Renaissance erfuhr, weitgehend sowohl Fragen zur Messung und den \textit{Arten} von Unsicherheit als auch, vor allem, zur Rolle zeitlich variierender Unsicherheit auf bzw. in Konjunkturzyklen zu beantworten. In der Zwischenzeit hat eine umfangreiche Zahl von sowohl theoretischen als auch empirischen Arbeiten verschiedene Unsicherheitsmaße vorgeschlagen, die in verschiedenen empirischen VAR-Anwendungen weitgehend darauf hindeuten, dass Unsicherheit einen negativen Einfluss auf den Konjunkturzyklus ausübt. Abweichend von den üblichen rekursiven Ansätzen in VAR-Modellen bei denen der Zusammenhang zwischen Unsicherheit und der Konjunktur bereits per Konstruktion nicht gleichzeitig einen umgekehrten Impuls geben kann, schlagen \citet{ludvigsonetal:18} einen neuartigen Schock-beschränkten SVAR-Ansatz vor dessen technischen Details wir in dieser Arbeit darstellen und in R replizieren/implementieren. Die Ergebnisse deuten darauf hin, dass, Erstens, in der Unsicherheits-Literatur zwischen makroökonomischer und finanzieller Unsicherheit unterschieden werden muss und, Zweitens, dass eine höhere makroökonomische Unsicherheit eine endogene Reaktion auf Konjunktur-Schocks ist, während finanzielle Unsicherheit eine wahrscheinliche Quelle für langwierige Konjunktureinbrüche darstellt.
 \end{abstract}
 \end{otherlanguage}
 
@@ -527,7 +527,7 @@ While uncertainty in theoretical and empirical applications has been dealt with 
 
 This growing body of literature covers the entire spectrum including studies examining the matter from (i) a solely theoretical, (ii) purely empirical or (iii) both perspectives in both micro- and macroeconomic analyses. In our review below we will refer to works falling into either of the three categories whereby contributions having both an empirical and theoretical component are in a slight majority.  Note, however that also purely theoretical or empirical works often pick up previous theoretical or empirical results that have been reported in the literature and thereby all the more establish a theory-empirics-nexus. Further, while the Great Recession is frequently mentioned as a reference, the implications of the results are often-times generalized without specific attribution to the Great Recession. At most, key economic features (e.g. zero lower bounds, etc.) are considered in model extensions.\footnote{An exception is \citet{schaal:17} that investigates the fit of his model to the data  ...} 
 
-Empirically, various analyses have produced seemingly unambiguous results in various identification schemes predominantly in a VAR-framework thereby deploying different uncertainty proxies in an attempt to measure the underlying latent stochastic process (since uncertainty is an intrinsically unobservable concept as formulated by \citep{bloom:14}. But as we will discuss in the following, these empirical findings result from the econometric specifications which might be problematic. Theoretically, most models stress contractionary effects of uncertainty although diametrical effects might be at work as well. Abstracting from problems revolving around the \textit{measurement} of uncertainty and empirical analyses and deferring them to Sections~\ref{sec:uncertaintymeasuresandstylizedfacts}) and \ref{sec:selectedworkindetail} first, Section~\ref{sec:studiedeffectsinrelatedliterature} below starts with an overview of the theoretical behavioural channels that have been identified in the literature, Section~\ref{sec:selectedworkindetail} subsequently presents a few contributions in greater detail including an analysis of their econometric frameworks in VAR-settings.\footnote{Besides theoretical approaches, one part of the empirical literature uses micro-data (mostly firm-level data) in an attempt to extract uncertainty effects.} Section~\ref{sec:robustnessofeconspecs} looks at the robustness of the VAR-results while Section~\ref{sec:uncertaintymeasuresandstylizedfacts} takes a brief look at stylized facts of a few selected uncertainty measures that were popularized in the literature. Section~\ref{sec:exoEndoJuradoetal} finally concludes the discussion and presents the main research question which is whether uncertainty can be seen as the source of economic fluctuations or itself endogenously responds to business cycles.
+Empirically, various analyses have produced seemingly unambiguous results in various identification schemes predominantly in a VAR-framework thereby deploying different uncertainty proxies in an attempt to measure the underlying latent stochastic process (since uncertainty is an intrinsically unobservable concept as formulated by \citep{bloom:14}. But as we will discuss in the following, these empirical findings result from the econometric specifications which might be problematic. Theoretically, most models stress contractionary effects of uncertainty although diametrical effects might be at work as well. Abstracting from problems revolving around the \textit{measurement} of uncertainty and empirical analyses and deferring them to Sections~\ref{sec:uncertaintymeasuresandstylizedfacts} and \ref{sec:selectedworkindetail} first, Section~\ref{sec:studiedeffectsinrelatedliterature} below starts with an overview of the theoretical behavioural channels that have been identified in the literature, Section~\ref{sec:selectedworkindetail} subsequently presents a few contributions in greater detail including an analysis of their econometric frameworks in VAR-settings.\footnote{Besides theoretical approaches, one part of the empirical literature uses micro-data (mostly firm-level data) in an attempt to extract uncertainty effects.} Section~\ref{sec:robustnessofeconspecs} looks at the robustness of the VAR-results while Section~\ref{sec:uncertaintymeasuresandstylizedfacts} takes a brief look at the ambiguous definition of uncertainty in the literature and stylized facts of a few selected and popular uncertainty measures. Section~\ref{sec:exoEndoJuradoetal} finally concludes the discussion and presents the main research question which is whether uncertainty can be seen as the source of economic fluctuations or itself endogenously responds to business cycles.
 
 
 \section[Theoretical Behavioural Channels, \textit{or}: The Micro-Macro-Nexus]{Theoretical Behavioural Channels, \textit{or}: The Micro-Macro-Nexus}
@@ -762,16 +762,17 @@ To account for these identified issues, \citet{ludvigsonetal:18} suggest a novel
 
 \chapter{Econometric Model}
 \label{EconometricModel}
-\citet{ludvigsonetal:18} suggest a novel identification scheme in an SVAR-context in an attempt to empirically solve the endogeneity problem inherent to widely used VAR-analyses in the uncertainty-literature. Instead of a point identification the authors formulate economically reasoned restrictions on the shocks generated by the SVAR-system to adequately shrink the set of possible solutions. This chapter hence first sets the stage by discussing the theoretical background regarding (S)VARs and the so-called identification problem in Section~\ref{sec:TheoreticalBackgroundSVARs} followed by a presentation of the econometric framework of \citet{ludvigsonetal:18} which in combination with their selected shock-restrictions leverages the global identification approach of SVARs by means of the structure of orthogonal matrices following \citet{rubioetal:10}  in Section~\ref{sec:econometricframeworkLMN}.
+\citet{ludvigsonetal:18} suggest a novel identification scheme in an SVAR-context in an attempt to empirically solve the ruled out simultaneous feedback of variables inherent to widely used VAR-analyses in the uncertainty-literature. Instead of a point identification the authors formulate economically reasoned restrictions on the shocks generated by the SVAR-system to adequately shrink the set of possible solutions. This chapter hence first sets the stage by discussing the theoretical background regarding (S)VARs and the so-called identification problem in Section~\ref{sec:TheoreticalBackgroundSVARs} followed by a presentation of the econometric framework of \citet{ludvigsonetal:18} which in combination with their selected shock-restrictions leverages the global identification approach of SVARs by means of the structure of orthogonal matrices following \citet{rubioetal:10}  in Section~\ref{sec:econometricframeworkLMN}.
 
 While the authors first considered shock-restricted structural VAR-approach in \citet{ludvigsonetal:18} in the context of an applicatino to the analysis of uncertainty and business cycles (with its first draft from March 2015; latest draft at the time of writing: August 2019; forthcoming in the American Economic Journal: Macroeconomics), the approach itself is generalized in \citet{ludvigsonetal:17} (first draft: December 2016; latest draft at the time of writing: January 2020).
 
 \section[Preliminaries: Theoretical Background on (S)VARs]{Preliminaries: Theoretical Background on (S)VARs\footnote{This entire section draws heavily from various sources including \citet{hamilton:94}, \citet{lutkepohl:05}, \citet{stockwatson:01}, \citet{villaramirez:10}, \citet{kunst:07}, \citet{whelan:16}, \citet{zivot:00}, \citet{foroni:14}.}}
-With the seminal work of \citet{sims:80} and his introduction of VARs, they are widely adopted in practice as an alternative to large scale macroeconometric models despite initial controversies with regard to their usage and interpretation \citep{canova:95, canova:95b}. Because VARs can be ``[...] consistent with many causal structures'' \citep[p. 1]{ludvigsonetal:17}, SVARs offer a richer framework by allowing the model to be endogenous but need additional assumptions for point identification of the parameters.
+With the seminal work of \citet{sims:80} and his introduction of VARs, they are widely adopted in practice as an alternative to large scale macroeconometric models despite initial controversies with regard to their usage and interpretation \citep{canova:95, canova:95b}. Because VARs can be ``[...] consistent with many causal structures'' \citep[p. 1]{ludvigsonetal:17}, SVARs offer a richer framework by allowing the model to be fully endogenous but need additional assumptions for point identification of the parameters.
 
 \label{sec:TheoreticalBackgroundSVARs}
 
 \subsection{(S)VARs and the Derivation of Impulse Responses}
+\label{sec:SVARsDerviationIRFs}
 We consider a stable (which implies stationarity) bivariate\footnote{Note that we start with a bivariate, i.e., two-equations-VAR for ease of exposition. As soon as we switch to matrix notation, the case of $n=2$ versus $n>2$ (for a multivariate VAR-system) is negligible.} dynamic stochastic simultaneous equations model in a \textit{structural} VAR (SVAR) representation for the two time series $y_{1t}$ and $y_{2t}$\footnote{In all our following notation we abstract from deterministic regressors (i.e., trend or constant) and exogenous regressors, meaning that we only consider the stochastic part of a DGP.} whereby the time paths of the two time series depend on one lag of each variable and also influence each other contemporaneously (i.e., the two variables are endogenous)\footnote{Hence, the example we start with is a bivariate SVAR($1$).} so that
 \begin{equation} \label{eq:svar1}
 \begin{split}
@@ -863,7 +864,6 @@ Abstracting from possible identification schemes for $\vect{A_0^{-1}}$ for the m
 \begin{equation} \label{eq:svar7}
 \begin{split}
  			\vect{y_t} & = \vect{\Psi_0}\vect{u_t} + \vect{\Psi_1}\vect{u_{t-1}} + \vect{\Psi_{2}}\vect{u_{t-2}} + \vect{\Psi_{3}}\vect{u_{t-3}} + \cdots = \\
-			& = \textit{(or more compactly written)} = \\
 			& = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{u_{t-k}}
 \end{split}								
 \end{equation}
@@ -873,7 +873,6 @@ The corresponding \textit{structural} moving average (SMA($\infty$); structural 
 \begin{equation} \label{eq:svar8}
 \begin{split}
  			\vect{y_t} & = \vect{\Psi_0}\vect{A_0^{-1}}\vect{\epsilon_t} + \vect{\Psi_1}\vect{A_0^{-1}}\vect{\epsilon_{t-1}} + \vect{\Psi_{2}}\vect{A_0^{-2}}\vect{\epsilon_{t-2}} + \vect{\Psi_{3}}\vect{A_0^{-1}}\vect{\epsilon_{t-3}} + \cdots = \\
-			& = \textit{(or more compactly written)} = \\
 			& = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}\vect{\epsilon_{t-k}} \\
 			& = \sum\limits_{k=0}^\infty \vect{\Theta_k}\vect{\epsilon_{t-k}}
 \end{split}								
@@ -888,10 +887,10 @@ Looking at the SMA($\infty$) representation of our bivariate system
     	y_{2t}
  	\end{bmatrix} 
 	=
-	\begin{bmatrix}
-    	\mu_1 \\
-    	\mu_2
- 	\end{bmatrix} + 
+%	\begin{bmatrix}
+%    	\mu_1 \\
+%    	\mu_2
+% 	\end{bmatrix} + 
 	\begin{bmatrix}
     	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
     	\theta_{21}^{(0)} & \theta_{22}^{(0)}
@@ -910,7 +909,7 @@ Looking at the SMA($\infty$) representation of our bivariate system
  	\end{bmatrix} + \cdots 
 \end{split}								
 \end{equation}
-we see that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
+shows that the elements of the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, are the dynamic multipliers/impulse responses of $y_{1t}$ and $y_{2t}$ to changes in $\epsilon_{1t}$ and $\epsilon_{2t}$.\\
 
 Generalizing the above SMA($\infty$) representation to time $t+s$
 \begin{equation} \label{eq:svar10}
@@ -920,10 +919,10 @@ Generalizing the above SMA($\infty$) representation to time $t+s$
     	y_{2t+s}
  	\end{bmatrix} 
 	=
-	\begin{bmatrix}
-    	\mu_1 \\
-    	\mu_2
- 	\end{bmatrix} + 
+%	\begin{bmatrix}
+%    	\mu_1 \\
+%    	\mu_2
+% 	\end{bmatrix} + 
 	\begin{bmatrix}
     	\theta_{11}^{(0)} & \theta_{12}^{(0)}\\
     	\theta_{21}^{(0)} & \theta_{22}^{(0)}
@@ -945,7 +944,9 @@ Generalizing the above SMA($\infty$) representation to time $t+s$
 or more compactly to 
 \begin{equation} \label{eq:svar8_1}
 \begin{split}
- 		\vect{y_{t+s}} = \vect{\mu} + \vect{\Theta_0}\vect{\epsilon_{t+s}} + \cdots + \vect{\Theta_s}\vect{\epsilon_{t}} + \cdots
+ 		\vect{y_{t+s}} = 
+%		\vect{\mu} + 
+		\vect{\Theta_0}\vect{\epsilon_{t+s}} + \cdots + \vect{\Theta_s}\vect{\epsilon_{t}} + \cdots
 \end{split}								
 \end{equation}
 shows that the $\vect{\Theta}$ - matrices consisting of the MA-coefficients hold the structural dynamic multipliers (the impulse responses). In our bivariate example, these impulse responses are
@@ -972,9 +973,62 @@ is the \textit{impulse-response function} that describes the response of $y_{i, 
 
 If we assume contemporaneous relationships among the endogenous variables, the regressors in the SVAR representation are correlated with the error term and hence would result in biased OLS estimates.\footnote{If $\vect{A_0} = \vect{I_n}$ then this is not the case.} Therefore, in econometric applications the VAR in its reduced form representation is being estimated from the data. While the reduced-form VAR is the one being estimated, it is a purely econometric model without any theoretical component and does not say anything about the structure of the economy and hence the reduced-form error terms $\vect{u_t}$ cannot be interpreted as structural shocks.\footnote{Note that in the estimated covariance matrix for $\vect{\hat{\Sigma}_u}$ the respective errors are usually correlated so that shocks to one variable are usually accompanied with a response to other variables.} Rather, the goal is to get back to the structural representation with a diagonal covariance matrix and economic meaning.\footnote{In practice, the error series in reduced-form VARs are usually correlated while in a structural setting correlated reduced-form shocks are broken down into uncorrelated structural shocks that allow a clearer assessment of effects within a model.} Without imposing any further restrictions, however, the parameters in the SVAR, i.e., models with contemporaneous relationships,\footnote{In a model without contemporaneous relationship no identification issues would emerge.} are not identified, i.e., given values of the reduced form parameters $\vect{B_1}$ and $\vect{\Sigma_u}$, it is not possible to uniquely solve for the structural parameters $\vect{A_0}$, $\vect{A_1}$ and $\vect{\Sigma_\epsilon}$. In particular, the knowledge of the impact matrix $\vect{A_0^{-1}}$ would allow to recover $\vect{A_1}$ via $\vect{A_1} = \vect{A_0}\vect{B_1}$ and the structural errors via $\vect{\epsilon_t} = \vect{A_0}\vect{u_t}$ and subsequently the variance covariance matrix of the structural errors $\vect{\Sigma_\epsilon}$.\footnote{In the bivariate case we consider here, at least 1 restriction on the parameters of the SVAR is required to enable the identification of all structural parameters. }
 
-\subsection{Structural VARs and the Identification Problem}
+
+\subsection[Forecast Error Variance Decomposition]{Forecast Error Variance Decomposition\footnote{This chapter draws from, among others, \citet{lutkepohl:10}, \citet{lutkepohl:05}, \citet{lutkepohlkilian:17}, \citet{zivot:00} and \citet{sims:11}.}}
+\label{sec:FEVDTheory}
+Besides the impulse response analysis, 'variance decomposition' (more precisely: 'forecast error variance decomposition'; FEVD) is another frequently used tool in the analysis-toolkit of (S)VARs. As aptly formulated by \citet{zivot:00}, the idea behind this decomposition is to derive the proportion of variability of the forecast errors for the $h$-step-ahead prediction of the (S)VARs variables (based on information at time $t$) that can be attributed to the respective structural shocks. In other words, the analysis allows to quantify the importance of each a system's shocks in explaining the variation in each of the system's variables.  The computation of the FEVD can be derived from the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, which are the dynamic multipliers/impulse responses of the (S)VARs variables to changes in the respective shocks (and which were derived in Section~\ref{sec:SVARsDerviationIRFs}).
+
+In particular, the following holds:\\
+For an (S)VAR-process as outlined in Section~\ref{sec:SVARsDerviationIRFs}, the error of the optimal $h$-step-ahead forecast is given by 
+\begin{equation} \label{eq:FVED1}
+\begin{split}
+ 		\vect{y}_{t+h} - \vect{y}_t(h) = \sum\limits_{k=0}^{h-1} \vect{\Theta}_k\vect{\epsilon}_{t+h-k}
+\end{split}								
+\end{equation}
+With the elements of the $\vect{\Theta_k}$ matrices denoted as $\theta_{ij}^{(k)}$, the $h$-step-ahead forecast error for the $n$-th component (i.e., the $n$-th variable) of the system $\vect{y}_{t}$ is given by 
+\begin{equation} \label{eq:FVED2}
+\begin{split}
+ 		y_{n, t+h} - y_{n, t}(h) & = \sum\limits_{k=0}^{h-1} (\theta_{n1}^{(k)}\epsilon_{1, t+h-k} + \cdots + \theta_{nM}^{(k)}\epsilon_{M, t+h-k})\\
+						& = \sum\limits_{m=1}^{M} (\theta_{nm}^{(0)}\epsilon_{m, t+h} + \cdots + \theta_{nm}^{(h-1)}\epsilon_{m, t+1}),
+\end{split}								
+\end{equation}
+meaning that the forecast error of the $n$-th component potentially can consist of all innovations. With the innovations $\epsilon_{m,t}$ being uncorrelated and having unit variances, the MSE of $y_{n, t}(h)$ can be conveniently expressed as
+\begin{equation} \label{eq:FVED3}
+\begin{split}
+ 		\mathbb{E}(y_{n, t+h} - y_{n, t}(h))^2 & =  \sum\limits_{m=1}^{M} \left((\theta_{nm}^{(0)} )^2+ \cdots + (\theta_{nm}^{(h-1)})^2\right) \\
+		& =  \sum\limits_{k=0}^{h-1} (\vect{e}_n^'\vect{\Theta_k}\vect{e}_m)^2
+\end{split}								
+\end{equation}
+where the last expression is said to be the contribution of innovations in variable $m$ to the forecast error variance (or MSE) of the $h$-step-ahead forecast of variable $n$ and the vector $\vect{e}_m$ is the $k$-the column of the identity matrix.
+
+Defining the $h$-step-ahead forecast MSE matrix as
+\begin{equation} \label{eq:FVED4}
+\begin{split}
+ 		\text{MSE}[\vect{y}_t(h)] = \sum\limits_{k=0}^{h-1} \vect{\Theta}_k\vect{\Theta}_k^',
+\end{split}								
+\end{equation}
+the diagonal elements are
+\begin{equation} \label{eq:FVED5}
+\begin{split}
+ 		\text{MSE}[y_{n,t}(h)] = \sum\limits_{k=0}^{h-1}\sum\limits_{m=1}^{M}\left(\theta_{nm}^{(0)}\right)^2
+\end{split}								
+\end{equation}
+The respective proportions of the $h$-step-ahead forecast error variance of variable $n$ which is accounted for by the $\epsilon_{mt}$ innovations in the variable $k$ is the ratio
+\begin{equation} \label{eq:FVED6}
+\begin{split}
+ 		\rho_{nm,h} = \frac{\sum\limits_{k=0}^{h-1} (\vect{e}_n^'\vect{\Theta_k}\vect{e}_m)^2}{\text{MSE}[y_{n,t}(h)]}
+\end{split}								
+\end{equation}
+
+Further, in a stationary model, the limit of the FEVD (i.e., as $h \rightarrow \infty$) is the FVED of $y_t$ because the forecast error covariance matrix (or MSPE) converges to the unconditional covariance matrix of $y_t$ \citep{lutkepohlkilian:17}. 
+
+
+\section[Preliminaries: Theoretical Background on (S)VARs]{Preliminaries: Theoretical Background on (S)VARs\footnote{This entire section draws heavily from various sources including \citet{hamilton:94}, \citet{lutkepohl:05}, \citet{stockwatson:01}, \citet{villaramirez:10}, \citet{kunst:07}, \citet{whelan:16}, \citet{zivot:00}, \citet{foroni:14}.}}
+
+
+\subsection{SVARs and the Identification Problem}
 \label{sec:strcuturalVARsIdentification}
-As explained in the previous section, the identification of $\vect{A_0^{-1}}$ is needed to seamlessly connect the estimated reduced-form VAR with the structural VAR that is of actual interest.
+As explained in Section~\ref{sec:TheoreticalBackgroundSVARs}, the identification of $\vect{A_0^{-1}}$ is needed to seamlessly connect the estimated reduced-form VAR with the structural VAR that is of actual interest.
 
 The usual strategy is to first estimate the reduced-form system as in Equation~\ref{eq:svar5}. In the most simple setting of a VAR($1$)-model this amounts to estimating $n^2 + \frac{n(n+1)}{2}$ parameters ($n^2$ for the coefficient matrix $\vect{B_1}$ and $\frac{n(n+1)}{2}$ for the variance covariance-matrix of the reduced-form errors). 
 
@@ -1214,7 +1268,7 @@ Let $\widetilde{\vect{M}}$ be an $n\times n$ matrix with each element having an 
 
 \citet{ludvigsonetal:18} make use of this theorem\footnote{This is not immediately obvious from the outline in \citet{ludvigsonetal:18}. We became aware of this due to the Matlab-code of their baseline specification (see footnote \ref{ftn:MatlabCodeFootnote}).} because typically the $\vect{QR}$-decomposition of a Gaussian Matrix $\vect{M}$ does not guarantee to result in a uniformly distributed orthogonal matrix if the diagonal elements of $\vect{R}$ are not positive (see e.g. \citealp{edelman:05}).
 
-\subsection{Model Setup}
+\subsection{Setup of Baseline Model}
 \label{sec:modelSetup}
 \citet{ludvigsonetal:18} assume the following reduced-form finite order VAR representation and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
 	\begin{equation} \label{eq:svar_ludvig1}
@@ -1240,10 +1294,10 @@ by making use of the $\text{vec}$\footnote{The $vec$-operator takes an $(n \time
 with
 	\begin{equation} \label{eq:svar_ludvig3}
 	\begin{split}
-		\vect{\epsilon}_t & \thicksim (\vect{0}, \vect{\Sigma}_\epsilon), \vect{\Sigma}_\epsilon = \mathbb{E}[\vect{\epsilon}_t\vect{\epsilon}_\tau^'] = \vect{I}_n\footnote{The structural shocks are hence mean zero with unit variance, serially and mutually uncorrelated.}
+		\vect{\epsilon}_t & \thicksim (\vect{0}, \vect{\Sigma}_\epsilon), \vect{\Sigma}_\epsilon = \mathbb{E}[\vect{\epsilon}_t\vect{\epsilon}_\tau^'] = \vect{I}_n
 	\end{split}								
 	\end{equation}	
-and the matrix $\vect{\Omega}$ being a diagonal matrix with the variance of the shocks in the diagonal entries and the unit effect normalization that $H_{jj} = 1$ for all $j$.
+meaning that the structural shocks are mean zero with unit variance, serially and mutually uncorrelated, and the matrix $\vect{\Omega}$ is a diagonal matrix with the variance of the shocks in the diagonal entries and the unit effect normalization that $H_{jj} = 1$ for all $j$.
 	\begin{equation} \label{eq:svar_ludvi4}
 	\begin{split}
 		\text{diag}(\vect{H}) = 1, \vect{\Omega} = \begin{bmatrix}
@@ -1527,7 +1581,7 @@ Overall, the combination of event and correlation constraints drastically reduce
 
 \citet{ludvigsonetal:18} consider i$\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ as the baseline-SVAR-system where $U_{Mt}$ was already mentioned in Section~\ref{sec:uncertaintymeasuresandstylizedfacts}. As a measure of $Y_t$ the log of real industrial production, $ip_t$ is, used. \\
 
-The construction of the uncertainty measures $U_{Mt}$ and $U_{Ft}$ follows the framework \citet{juradoetal:15}. Especially in contrast to stock market volatility and/or cross-sectional dispersion measures frequently deployed in uncertainty studies (see also Section~\ref{sec:uncertaintymeasuresandstylizedfacts}), \citet{juradoetal:15} have designed a computationally and data-intensive approach by making use of a rich set of time series, computing the conditional volatility (common variation) of the unforecastable component of the future value of each of these series and finally aggregating these conditional volatilities into one composite index.\footnote{Note that, apart from practical issues, \citet[p. 1191]{juradoetal:15} themselves explain the reliance on (most likely revised) ``historical'' data (instead of ``real time'' data) with their goal of forming the ``[...] most historically accurate estimates of uncertainty at any given point in time in [their] sample''.}\\
+The construction of the uncertainty measures $U_{Mt}$ and $U_{Ft}$ follows the framework \citet{juradoetal:15}. Especially in contrast to stock market volatility and/or cross-sectional dispersion measures frequently deployed in uncertainty studies (see also Section~\ref{sec:uncertaintymeasuresandstylizedfacts}), \citet{juradoetal:15} have designed a computationally and data-intensive approach by making use of a rich set of time series to measure a common component in the time-varying volatilities of forecast errors across a large number of macroeconomic time series.\footnote{Note that, apart from practical issues, \citet[p. 1191]{juradoetal:15} themselves explain the reliance on (most likely revised) ``historical'' data (instead of ``real time'' data) with their goal of forming the ``[...] most historically accurate estimates of uncertainty at any given point in time in [their] sample''.}\\
 \\
 To set their approach apart from other commonly used uncertainty measures, \citet[p. 1178]{juradoetal:15} argue that ``[...] what matters for economic decision making is not whether particular economic indicators have become more or less variable or disperse \textit{per se}, but rather whether the economy has become more or less \textit{predictable}; that is, less ore more uncertain.''\\
 \\
@@ -1535,7 +1589,7 @@ To formalize the rationale behind their approach, they define the $h$-period ahe
 \begin{equation} \label{eq:juradoetal_1}
 U^t_{jt}(h) \equiv \sqrt{\mathbb{E}\Big[(y_{jt+h} - \mathbb{E}[y_{jt+h}|I_t])^2|I_t\Big]},
 \end{equation}
-where the expectation $\mathbb{E}(\cdot|I_t)$ is taken with respect to information $I_t$ available to economic agents at time $t$. Hence, if the expectation today (conditional on all available information) of the squared error in forecasting $y_{jt+h}$ rises, uncertainty in the variable increases. The individual uncertainties at each date are then aggregated into a \textit{macroeconomic uncertainty} index by using aggregation weights $w_j$ as follows:
+where the expectation $\mathbb{E}(\cdot|I_t)$ is taken with respect to information $I_t$ available to economic agents at time $t$. Hence, if the expectation today (conditional on all available information) of the squared error in forecasting $y_{jt+h}$ (i.e. $\mathbb{E}\Big[(y_{jt+h} - \mathbb{E}[y_{jt+h}|I_t])^2|I_t\Big]$) rises, uncertainty in the variable increases. The individual uncertainties at each date are then aggregated into a \textit{macroeconomic uncertainty} index by using aggregation weights $w_j$ as follows:
 \begin{equation} \label{eq:juradoetal_2}
 U^t_{jt}(h) \equiv plim_{N_{y}\to\infty} \sum_{j=1}^{N_y} w_j U_{jt}^y(h) \equiv \mathbb{E}_w \Big[U_{jt}^y(h)\Big]
 \end{equation}
@@ -1631,7 +1685,7 @@ Before jumping to the resulting impulse responses of the baseline system $\vect{
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -1cm, width=1\textwidth]{time_series_epsilon_t_maxG.pdf}}
+   \fbox{\includegraphics[trim=0.0cm -2.0cm -0.0cm -00cm, width=1\textwidth]{time_series_epsilon_t_maxG.pdf}}
       \caption[Standardized Structural Shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Standardized Structural Shocks from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
       \textit{Note:}  The horizontal line corresponds to 3 standard deviations above/below the unconditional mean of each series. The shocks $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ for maxG solution are reported, where $\vect{u}_t$ holds the residuals from VAR(6) of ($U_{Macro}, IPM, U_{Fin}$). The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. Grey shaded areas denote NBER recession dates in the US}   \label{fig:ludvigsonetal_timeseries_e_shocks}
 \end{figure}
@@ -1662,19 +1716,21 @@ Overall, the analysis of the model's residuals confirms the identification schem
 \label{sec:ImpulseResponseAnalysis}
 Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
 
-For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
-
-
 \begin{figure}[!h]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-   \fbox{\includegraphics[trim=8cm -1.0cm -6cm -1cm, width=1.9\textwidth]{impulse_responses_all_SVAR.pdf}}
+   \fbox{\includegraphics[trim=8cm -1.0cm -6cm -0.5cm, width=1.9\textwidth]{impulse_responses_all_SVAR.pdf}}
       \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
       \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR}
 \end{figure}
 
-As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
+For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
+
+
+
+
+As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. This Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
 
 
 
@@ -1686,7 +1742,58 @@ Lastly, interestingly, the SVAR-system (at least for the majority of the solutio
 In summary, the model suggests that higher macroeconomic uncertainty is an endogenous response to shocks to aggregate output while \textit{financial uncertainty} can be seen as a likely source for protracted declines in aggregate output.\footnote{\citet{ludvigsonetal:18} also run their algorithms for a pre-crisis sample for which they report less conclusive answers. In their conclusion this result shows that the 2007-2009 financial crisis was an ``[...] important rare event that can help distinguish the transmission of financial versus real uncertainty shocks'' \citet[p. 25]{ludvigsonetal:18}. We have not repeated this exercise here.}
 
 
+\section{Inference: Bootstrapping/Monte-Carlo}
+\label{sec:EstimatorProperties}
+As discussed in \citet{ludvigsonetal:18}, while for point-identified models inference can be done both via frequentist confidence intervals or Bayesian credible regions, for \textit{set-identified} SVARs ``no consistent point estimate is available'' \citep{ludvigsonetal:18}. While they mention approaches that have been suggested in the literature (\citet{granzieraetal:18} for sign-restricted SVARs that only impose restrictions on one set of impulse response function using the Bonferroni approach or \citet{gafarovetal:15} that collect the reduced-form model in a $1-\alpha$ Wald ellipsoid which is conservative) and with reference to \citet{lutkepohlkilian:17} who show that existing frequentist confidence sets for set-identified models tend to be too large, they conclude that ``[i]t is fair to say that there exists [yet] no generally agreed upon method for conducting inference in set-identified SVARs, let alone one proven to have correct frequentist coverage properties for shock-restricted SVARs of the type considered'' \citep[p. 10]{ludvigsonetal:17}.
 
+To take into account the sampling error and for studying the properties of the estimator, \citet{ludvigsonetal:18} bootstrap from the shocks of the $\vect{\epsilon}_t(\vect{A_0}^{maxG})$ - solution for their baseline-system from Section~\ref{Results}. 
+
+\section[Invalidity of Recursive Identification Schemes]{Invalidity of Recursive Identification Schemes}
+\label{sec:ValidityRecursiveSchemes}
+\citet{ludvigsonetal:18} argue that recursive schemes in VAR-settings are ill-equipped to properly study the dynamic effects. Accordingly, their suggested and estimated model from Section~\ref{sec:modelSetup} can be tested to see whether it supports a recursive structure because a-priori it does not rule out such a structure. 
+
+\section[Forecast Error Variance Decomposition]{Forecast Error Variance Decomposition}
+\label{sec:FEVD}
+
+As formulated in \citet{lutkepohlkilian:17}, another frequently studied property of (S)VAR models is how much of the forecast error variance (alternatively also called prediction mean squared error; MSPE) of a time series variable is accounted for by each structural shock. Based on the derivations in Section~\ref{sec:FEVDTheory} and in line with \citet{ludvigsonetal:18}, Table~\ref{tab:FEVD_all} below reports the fraction of the respective $h$-step-ahead forecast error variance which for each of the system's variable can be attributed to the respective shocks $\epsilon_{Mt}$, $\epsilon_{ip}$ and $\epsilon_{Ft}$ for the forecast horizons $h=1$, $h=12$ and $h=\infty$ as well as $h_max$ which denotes the forecast horizon where the respective fraction is maximized.
+
+
+\begin{table}[!h]
+\tiny
+\centering
+\caption[Forecast Error Variance Decomposition from SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.]{Forecast Error Variance Decomposition SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.\\
+\textit{Note:} Each panel shows the fraction of the $h$-step-ahead forecast-error variance of the variable given in the panel title that is explained by the shock named in the column heading. The row denoted "$h = h_max$" reports the maximum fraction of forecast error variance explained across all VAR forecast horizons $h$. The numbers in brackets represent the ranges for these numbers across all solutions in the identified set. The data are monthly and span the period 1960:07-2015:04.}
+\scalebox{1}{  % blows up or reduces the table in its entirety
+\renewcommand{\arraystretch}{1.5} % stretches vertically
+\resizebox{\textwidth}{!}{%
+    \begin{tabular}{l *{4}{d{-1}} }
+        \toprule
+        %below multicolumn is necessary so that the effect of dcolumn is not also applied on the column headers!
+	&  \multicolumn{3}{c}{Fraction variation in $U_m$} \\
+         \midrule
+         \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
+        1 & [0.00, 0.51] & [0.45, 0.80] & [0.04, 0.29] \\        12 & [0.01, 0.47] & [0.37, 0.62] & [0.16, 0.49] \\        infinity & [0.01, 0.51] & [0.36, 0.66] & [0.13, 0.42] \\
+        \midrule
+        	&  \multicolumn{3}{c}{Fraction variation in $ip$} \\
+         \midrule
+         \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
+        1 & [0.33, 0.96] & [0.00, 0.62] & [0.01, 0.11] \\        12 & [0.07, 0.60] & [0.07, 0.71] & [0.20, 0.41] \\        infinity & [0.02, 0.20] & [0.24, 0.69] & [0.28, 0.60] \\
+        \midrule
+        	&  \multicolumn{3}{c}{Fraction variation in $U_f$} \\
+         \midrule
+         \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
+        1 & [0.00, 0.12] & [0.01, 0.10] & [0.82, 0.97] \\        12 & [0.00, 0.01] & [0.00, 0.04] & [0.84, 0.96] \\        infinity & [0.00, 0.00] & [0.02, 0.05] & [0.81, 0.92] \\
+        \bottomrule
+    \end{tabular}
+    }
+}
+\label{tab:FEVD_all}
+\end{table}
+
+
+Following \citet{ludvigsonetal:18}, the results in Table~\ref{tab:FEVD_all} report \textit{ranges} for the proportions of the forecast error variances because the computations are performed for every solution which is part of the identified set. The results show that shocks in real activity have pronounced (negative) effects on macroeconomic uncertainty (top panel) while they exert minimal effects on financial uncertainty (bottom panel). \citet{ludvigsonetal:18} state that, surprisingly, shocks to macro uncertainty explain a large proportion of industrial production (and in Section~\ref{sec:ImpulseResponseAnalysis} suggested that they increase real activity in the short run).
+
+Contrary to macro uncertainty or real activity, shocks to financial uncertainty exhibit the largest impact on themselves while they also shock a large negative effect on production for longer horizons. From this observation \citet[p. 28]{ludvigsonetal:19} conclude that $U_{Ft}$ suggest to be ``[...] the most important exogenous impulse in the system.''
 
 
 
@@ -1694,31 +1801,33 @@ In summary, the model suggests that higher macroeconomic uncertainty is an endog
 %\label{sec:VarianceDecomposition}
 
 
-%\chapter{Model Extension/Alternative Estimations}
-%\label{sec:ModelExtension}
-%In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the Bloom-shock in place of $U_{Ft}$.
-%
-%
+\chapter{Model Extension/Alternative Estimations}
+\label{sec:ModelExtension}
+In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the 'Bloom-shock' (see \citealp{bloom:09}) in place of $U_{Ft}$. \citet{ludvigsonetal:18} themselves declare that their approach of analyzing shocks during selected historical episodes to identify solutions is equivalent to ``[...] creating dummy variables from the timing of specific events, and then putting restrictions on their correlation with the identified shocks'' \citep{ludvigsonetal:18}. Since \citet{ludvigsonetal:18} did not include this approach as an alternative into their robustness checks, we replace their variable for financial uncertainty $U_F$ with the Bloom-shocks (see Appendix~\ref{sec:} for the timing of the respective shocks). 
+
+
 %\paragraph{Robustness Checks: Alternative Uncertainty Measures}
 %This part provides results from a large number of robustness exercises designed to check the sensitivity of our results to various assumptions. (this sentence is formulated like this by \citet{juradoetal:15}).
+
+
 
 
 %\newpage
 \chapter{Conclusion}
 \label{Conclusion}
-Frequently used VARs with recursive schemes in the uncertainty literature might empirically not be well grounded to capture the underlying data's DGP and the system's dynamics by ruling out endogeneity by construction. In addition, those models usually do not distinguish \textit{types} of uncertainty and using individual proxies one at a time suggest that uncertainty largely has a depressing effect on business cycles.
+Frequently used VARs with recursive schemes in the uncertainty literature might empirically not be well grounded to capture the underlying data's DGP and the system's dynamics by ruling out simultaneous feedback between the variables. In addition, those models usually do not distinguish \textit{types} of uncertainty and using individual proxies one at a time suggest that uncertainty largely has a depressing effect on business cycles.
 
 Within the class of SVAR models that also allow for contemporaneous relationships, economically grounded assumptions for point identification often seem too restrictive to defend which is why alternative identification schemes that \textit{set-identify} \citep{granzieraetal:18} SVARs seem like a promising approach. Besides sign-restrictions one strand of the literature which is being pushed by \citet{ludvigsonetal:17}, among others, goes beyond classical sign restrictions and concentrates on the model's recovered \textit{shocks} that might reveal valuable information for sensible inequality restrictions to shrink an SVAR's infinitely many solutions to a manageable solution set even without point identification. 
 
 While in the presented application of the shock-restricted SVAR-approach of \citet{ludvigsonetal:18} the authors have formulated a-priori shock-restrictions, \citet{ludvigsonetal:17} formulate that writing an SVAR first as a VAR which provides $n(n+1)/2$ restrictions from the covariance structure and subsequent analysis of the unrestricted model's residuals might prove useful to support evidence for the confirmation of historically relevant episodes even \textit{before} any identifying restrictions are imposed.
 
-With respect to the particular application and the central question related to the role of uncertainty in business cycles, the novel approach of \citet{ludvigsonetal:18} questions frequently cited results of the uncertainty-literature to date: the results of the baseline 3-variable SVAR(6)-system indicate that, first, the uncertainty literature should distinguish between macroeconomic and financial uncertainty and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output. While these initial results are certainly debatable, the above conclusions should serve as a first indication that empirical applications in the uncertainty literature have to be cautious with overly restrictive modeling assumptions that might result in precipitous conclusions.\footnote{Another problem for VAR-system are omitted variables (which are assumed to be in the innovations). If important variables are omitted from the system, this may lead to major distortions in the impulse responses and makes them worthless for structural interpretations (see e.g. \citet{lutkepohl:05}).} \\
+With respect to the particular application and the central question related to the role of uncertainty in business cycles, the novel approach of \citet{ludvigsonetal:18} questions frequently cited results of the uncertainty-literature to date: the results of the baseline 3-variable SVAR(6)-system indicate that, first, the uncertainty literature should distinguish between macroeconomic and financial uncertainty and their different roles in business cycles and, second, that higher macroeconomic uncertainty is an endogenous \textit{response} to shocks to aggregate output while financial uncertainty can be seen as a likely source for protracted declines in aggregate output. While these initial results are certainly a first start, the above conclusions should serve as a first indication that empirical applications in the uncertainty literature have to be cautious with overly restrictive modeling assumptions that might result in precipitous conclusions.\footnote{Another problem for VAR-system are omitted variables (which are assumed to be in the innovations). If important variables are omitted from the system, this may lead to major distortions in the impulse responses and makes them worthless for structural interpretations (see e.g. \citet{lutkepohl:05}).} \\
 
 From a statistical perspective, \citet{ludvigsonetal:18} themselves point at the challenge of proper inference within the class of \textit{set-identified} models in a frequentist view. While they mention approaches that have been suggested in the literature (\citet{granzieraetal:18} for sign-restricted SVARs that only impose restrictions on one set of impulse response function using the Bonferroni approach or \citet{gafarovetal:15} that collect the reduced-form model in a $1-\alpha$ Wald ellipsoid which is conservative), they conclude that ``[i]t is fair to say that there exists [yet] no generally agreed upon method for conducting inference in set-identified SVARs, let alone one proven to have correct frequentist coverage properties for shock-restricted SVARs of the type considered'' \citep[p. 10]{ludvigsonetal:17}. \\
 
 With regard to the particular \textit{type} it seems generally agreed that uncertainty as a latent and generally unobservable stochastic process seems to be multilayered/manifold. Hence, distinguishing between financial and macroeconomic uncertainty in empirical models seems to be the minimum amount of sophistication. One aspect that we haven't touched upon, however, are aspects related to \textit{policy-induced} uncertainty. This relates particularly to questions of how policies can help overcoming a recession and set counter-cyclical measures once an economy has arrived at the bottom. E.g. \citet[p. 41]{bloometal:13} and \citet{IMF:12} write that while ``[i]t is difficult for policymakers to overcome the intrinsic uncertainty economies typically face over the business cycle'', uncertainty about economic policy seems like an exacerbating factor. Hence, we propose to include economic policy uncertainty as a third layer of uncertainty into future structural models since it seems to play another role which should be distinctively separated from macroeconomic and financial uncertainty. \\
 
-At the time of writing this thesis the world is halting in the wake of the Covid-19 pandemic which from a global health crisis simultaneously turned into (most likely) the most severe economic decline since the Great Depression due to the necessary lockdown measures applied by governments throughout the world. In context of our uncertainty-taxonomy introduced in Section~\ref{introduction} it is difficult to decide for a classification since on the one hand this external shock might be described as the 'highly improbable' in the spirit of \citet{taleb:08} or 'strong uncertainty' (due to the absence of the ability to form ``[...] a unique, additive and reliable probability distribution'' of future events \citep[p. 622/623]{dequech:14}). On the other hand, there are also opinions arguing that the pandemic was just a trigger for developments in a system where imbalances and uncertainty was already looming. Irrespective of this classification, \citet{ludvigsonetal:20} speak of a \textit{costly disaster} and argue that while in typical economic models there is some room for ``conventional'' disasters \citep[p. 2]{ludvigsonetal:20} which are short-lived and local in nature, the impact of Covid-19 is regarded as a ``multi-period shock that simultaneously disrupts supply, demand, and productivity, [and] is almost perfectly synchronized within and across countries, and wherein health, social, and economic consequences are cataclysmic not just for the foreseeable few weeks after the crisis, but potentially for a long time period'' \citet[p. 2]{ludvigsonetal:20}. Because the likely impact of the pandemic will outshine every costly disaster in the post-war period, we expect that its aftermath will certainly profoundly influence the landscape of uncertainty-modeling in the future.
+Lastly, at the time of writing this thesis the world is halting in the wake of the Covid-19 pandemic which from a global health crisis simultaneously turned into (most likely) the most severe economic decline since the Great Depression due to the necessary lockdown measures applied by governments throughout the world. In context of our uncertainty-taxonomy introduced in Section~\ref{introduction} it is difficult to decide for a classification since on the one hand this external shock might be described as the 'highly improbable' in the spirit of \citet{taleb:08} or 'strong uncertainty' (due to the absence of the ability to form ``[...] a unique, additive and reliable probability distribution'' of future events \citep[p. 622/623]{dequech:14}). On the other hand, there are also opinions arguing that the pandemic was just a trigger for developments in a system where imbalances and uncertainty was already looming. Irrespective of this classification, \citet{ludvigsonetal:20} speak of a \textit{costly disaster} and argue that while in typical economic models there is some room for ``conventional'' disasters \citep[p. 2]{ludvigsonetal:20} which are short-lived and local in nature, the impact of Covid-19 is regarded as a ``multi-period shock that simultaneously disrupts supply, demand, and productivity, [and] is almost perfectly synchronized within and across countries, and wherein health, social, and economic consequences are cataclysmic not just for the foreseeable few weeks after the crisis, but potentially for a long time period'' \citet[p. 2]{ludvigsonetal:20}. Because the likely impact of the pandemic will outshine every costly disaster in the post-war period, we expect that its aftermath will certainly profoundly influence the landscape of uncertainty-modeling in the future.
 
 
 
