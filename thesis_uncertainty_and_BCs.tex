@@ -976,10 +976,10 @@ If we assume contemporaneous relationships among the endogenous variables, the r
 
 \subsection[Forecast Error Variance Decomposition]{Forecast Error Variance Decomposition\footnote{This chapter draws from, among others, \citet{lutkepohl:10}, \citet{lutkepohl:05}, \citet{lutkepohlkilian:17}, \citet{zivot:00} and \citet{sims:11}.}}
 \label{sec:FEVDTheory}
-Besides the impulse response analysis, 'variance decomposition' (more precisely: 'forecast error variance decomposition'; FEVD) is another frequently used tool in the analysis-toolkit of (S)VARs. As aptly formulated by \citet{zivot:00}, the idea behind this decomposition is to derive the proportion of variability of the forecast errors for the $h$-step-ahead prediction of the (S)VARs variables (based on information at time $t$) that can be attributed to the respective structural shocks. In other words, the analysis allows to quantify the importance of each a system's shocks in explaining the variation in each of the system's variables.  The computation of the FEVD can be derived from the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, which are the dynamic multipliers/impulse responses of the (S)VARs variables to changes in the respective shocks (and which were derived in Section~\ref{sec:SVARsDerviationIRFs}).
+Besides the impulse response analysis, 'variance decomposition' (more precisely: 'forecast error variance decomposition'; FEVD) is another frequently used tool in the analysis-toolkit of (S)VARs. As aptly formulated by \citet{zivot:00}, the idea behind this decomposition is to derive the proportion of variability of the forecast errors for the $h$-step-ahead prediction of the (S)VARs variables (based on information at time $t$) that can be attributed to the respective structural shocks. In other words, the analysis allows to quantify the importance of each shock in a system in explaining the variation in each of the system's variables.  The computation of the FEVD can be directly derived from the $\vect{\Theta_k}$ matrices, $\theta_{ij}^{(k)}$, which are the dynamic multipliers/impulse responses of the SVARs variables to changes in the respective shocks (and which were derived in Section~\ref{sec:SVARsDerviationIRFs}).
 
 In particular, the following holds:\\
-For an (S)VAR-process as outlined in Section~\ref{sec:SVARsDerviationIRFs}, the error of the optimal $h$-step-ahead forecast is given by 
+For an (S)VAR-process as outlined in Section~\ref{sec:SVARsDerviationIRFs}, the error of the optimal $h$-step-ahead forecast computed at time $t$ for the time $t+h$ for the system is given by 
 \begin{equation} \label{eq:FVED1}
 \begin{split}
  		\vect{y}_{t+h} - \vect{y}_t(h) = \sum\limits_{k=0}^{h-1} \vect{\Theta}_k\vect{\epsilon}_{t+h-k}
@@ -1013,7 +1013,7 @@ the diagonal elements are
  		\text{MSE}[y_{n,t}(h)] = \sum\limits_{k=0}^{h-1}\sum\limits_{m=1}^{M}\left(\theta_{nm}^{(0)}\right)^2
 \end{split}								
 \end{equation}
-The respective proportions of the $h$-step-ahead forecast error variance of variable $n$ which is accounted for by the $\epsilon_{mt}$ innovations in the variable $k$ is the ratio
+The respective proportions $\rho_{nm,h}$ of the $h$-step-ahead forecast error variance of variable $n$ which is accounted for by the $\epsilon_{mt}$ innovations in the variable $k$ is the ratio
 \begin{equation} \label{eq:FVED6}
 \begin{split}
  		\rho_{nm,h} = \frac{\sum\limits_{k=0}^{h-1} (\vect{e}_n^'\vect{\Theta_k}\vect{e}_m)^2}{\text{MSE}[y_{n,t}(h)]}
@@ -1265,7 +1265,7 @@ Let $\widetilde{\vect{M}}$ be an $n\times n$ matrix with each element having an 
 
 \citet{ludvigsonetal:18} make use of this theorem\footnote{This is not immediately obvious from the outline in \citet{ludvigsonetal:18}. We became aware of this due to the Matlab-code of their baseline specification (see footnote \ref{ftn:MatlabCodeFootnote}).} because typically the $\vect{QR}$-decomposition of a Gaussian Matrix $\vect{M}$ does not guarantee to result in a uniformly distributed orthogonal matrix if the diagonal elements of $\vect{R}$ are not positive (see e.g. \citealp{edelman:05}).
 
-\subsection{Setup of Baseline Model}
+\subsection{Baseline Model}
 \label{sec:modelSetup}
 \citet{ludvigsonetal:18} assume the following reduced-form finite order VAR representation and corresponding infinite MA representation given by\footnote{Note that we adapt the notation of \citet{ludvigsonetal:18} in their original contribution to be consistent with our own notation so far.} 
 	\begin{equation} \label{eq:svar_ludvig1}
@@ -1672,6 +1672,9 @@ As shown in Table~\ref{tab:summary_stats1} in Section~\ref{sec:uncertaintymeasur
 \chapter{Results}
 \label{Results}
 
+The complete set of analyses and computations/algorithms for the generation of the results presented in Section~\ref{Results} were conducted in R and follow \citet{ludvigsonetal:18}. Section~\ref{sec:uncertaintyShocks} starts with a preliminary analyses of the behavior of the shocks that are left in the identified set (i.e., passed all shock-restrictions) both for the entire set and, particularly, for the $maxG$-solution and Section~\ref{sec:ImpulseResponseAnalysis} displays and discusses the impulse response analysis. Because there is yet no generally agreed upon method for computing confidence intervals for shock-restricted SVARs in the literature, Section~\ref{sec:EstimatorProperties} relies on bootstrapping/Monte-Carlo following the suggestion of \citet{ludvigsonetal:19} to be able to perform inference in this frequentist setting and, lastly, Section~\ref{sec:FEVD} builds on the IFR-analysis by reporting the results for the forecast error variance decomposition computed over the solutions in the identified set.
+
+
 \section{Analysis of Recovered Shocks}
 \label{sec:uncertaintyShocks}
 
@@ -1711,7 +1714,6 @@ Overall, the analysis of the model's residuals confirms the identification schem
 
 \section[Impulse Response Analysis]{Impulse Response Analysis}
 \label{sec:ImpulseResponseAnalysis}
-Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
 
 \begin{figure}[!h]
    \centering
@@ -1721,6 +1723,10 @@ Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.
       \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
       \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR}
 \end{figure}
+
+Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
+
+
 
 For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
 
@@ -1739,7 +1745,7 @@ Lastly, interestingly, the SVAR-system (at least for the majority of the solutio
 In summary, the model suggests that higher macroeconomic uncertainty is an endogenous response to shocks to aggregate output while \textit{financial uncertainty} can be seen as a likely source for protracted declines in aggregate output.\footnote{\citet{ludvigsonetal:18} also run their algorithms for a pre-crisis sample for which they report less conclusive answers. In their conclusion this result shows that the 2007-2009 financial crisis was an ``[...] important rare event that can help distinguish the transmission of financial versus real uncertainty shocks'' \citet[p. 25]{ludvigsonetal:18}. We have not repeated this exercise here.}
 
 
-\section{Inference: Bootstrapping/Monte-Carlo}
+\section{Inference for IRFs: Bootstrapping/Monte-Carlo}
 \label{sec:EstimatorProperties}
 As discussed in \citet{ludvigsonetal:18}, while for point-identified models inference can be done both via frequentist confidence intervals or Bayesian credible regions, for \textit{set-identified} SVARs ``no consistent point estimate is available'' \citep{ludvigsonetal:18}. While they mention approaches that have been suggested in the literature (\citet{granzieraetal:18} for sign-restricted SVARs that only impose restrictions on one set of impulse response function using the Bonferroni approach or \citet{gafarovetal:15} that collect the reduced-form model in a $1-\alpha$ Wald ellipsoid which is conservative) and with reference to \citet{lutkepohlkilian:17} who show that existing frequentist confidence sets for set-identified models tend to be too large, they conclude that ``[i]t is fair to say that there exists [yet] no generally agreed upon method for conducting inference in set-identified SVARs, let alone one proven to have correct frequentist coverage properties for shock-restricted SVARs of the type considered'' \citep[p. 10]{ludvigsonetal:17}.
 
@@ -1752,16 +1758,13 @@ To take into account the sampling error and for studying the properties of the e
 \section[Forecast Error Variance Decomposition]{Forecast Error Variance Decomposition}
 \label{sec:FEVD}
 
-As formulated in \citet{lutkepohlkilian:17}, another frequently studied property of (S)VAR models is how much of the forecast error variance (alternatively also called prediction mean squared error; MSPE) of a time series variable is accounted for by each structural shock. Based on the derivations in Section~\ref{sec:FEVDTheory} and in line with \citet{ludvigsonetal:18}, Table~\ref{tab:FEVD_all} below reports the fraction of the respective $h$-step-ahead forecast error variance which for each of the system's variable can be attributed to the respective shocks $\epsilon_{Mt}$, $\epsilon_{ip}$ and $\epsilon_{Ft}$ for the forecast horizons $h=1$, $h=12$ and $h=\infty$ as well as $h_max$ which denotes the forecast horizon where the respective fraction is maximized.
-
-
 \begin{table}[!h]
 \tiny
 \centering
 \caption[Forecast Error Variance Decomposition from SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.]{Forecast Error Variance Decomposition SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.\\
 \textit{Note:} Each panel shows the fraction of the $h$-step-ahead forecast-error variance of the variable given in the panel title that is explained by the shock named in the column heading. The row denoted "$h = h_max$" reports the maximum fraction of forecast error variance explained across all VAR forecast horizons $h$. The numbers in brackets represent the ranges for these numbers across all solutions in the identified set. The data are monthly and span the period 1960:07-2015:04.}
 \scalebox{1}{  % blows up or reduces the table in its entirety
-\renewcommand{\arraystretch}{1.5} % stretches vertically
+\renewcommand{\arraystretch}{1.2} % stretches vertically
 \resizebox{\textwidth}{!}{%
     \begin{tabular}{l *{4}{d{-1}} }
         \toprule
@@ -1769,17 +1772,17 @@ As formulated in \citet{lutkepohlkilian:17}, another frequently studied property
 	&  \multicolumn{3}{c}{Fraction variation in $U_m$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
-        1 & [0.00, 0.51] & [0.45, 0.80] & [0.04, 0.29] \\        12 & [0.01, 0.47] & [0.37, 0.62] & [0.16, 0.49] \\        infinity & [0.01, 0.51] & [0.36, 0.66] & [0.13, 0.42] \\
+        1 & [0.00, 0.51] & [0.45, 0.80] & [0.04, 0.29] \\        12 & [0.01, 0.47] & [0.37, 0.62] & [0.16, 0.49] \\        $\infty$ & [0.01, 0.51] & [0.36, 0.66] & [0.13, 0.42] \\
         \midrule
         	&  \multicolumn{3}{c}{Fraction variation in $ip$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
-        1 & [0.33, 0.96] & [0.00, 0.62] & [0.01, 0.11] \\        12 & [0.07, 0.60] & [0.07, 0.71] & [0.20, 0.41] \\        infinity & [0.02, 0.20] & [0.24, 0.69] & [0.28, 0.60] \\
+        1 & [0.33, 0.96] & [0.00, 0.62] & [0.01, 0.11] \\        12 & [0.07, 0.60] & [0.07, 0.71] & [0.20, 0.41] \\        $\infty$ & [0.02, 0.20] & [0.24, 0.69] & [0.28, 0.60] \\
         \midrule
         	&  \multicolumn{3}{c}{Fraction variation in $U_f$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
-        1 & [0.00, 0.12] & [0.01, 0.10] & [0.82, 0.97] \\        12 & [0.00, 0.01] & [0.00, 0.04] & [0.84, 0.96] \\        infinity & [0.00, 0.00] & [0.02, 0.05] & [0.81, 0.92] \\
+        1 & [0.00, 0.12] & [0.01, 0.10] & [0.82, 0.97] \\        12 & [0.00, 0.01] & [0.00, 0.04] & [0.84, 0.96] \\        $\infty$ & [0.00, 0.00] & [0.02, 0.05] & [0.81, 0.92] \\
         \bottomrule
     \end{tabular}
     }
@@ -1787,8 +1790,17 @@ As formulated in \citet{lutkepohlkilian:17}, another frequently studied property
 \label{tab:FEVD_all}
 \end{table}
 
+As formulated in \citet{lutkepohlkilian:17}, another frequently studied property of (S)VAR models is how much of the forecast error variance (alternatively also called prediction mean squared error; MSPE) of a time series variable is accounted for by each structural shock. Based on the derivations in Section~\ref{sec:FEVDTheory} and in line with \citet{ludvigsonetal:18}, Table~\ref{tab:FEVD_all} below reports the computed fraction of the respective $h$-step-ahead forecast error variances which for each of the system's variable can be attributed to the respective shocks $\epsilon_{Mt}$, $\epsilon_{ip}$ and $\epsilon_{Ft}$ for the forecast horizons $h=1$, $h=12$ and $h=\infty$ as well as $h_{max}$ which denotes the forecast horizon where the respective fraction is maximized.
 
-Following \citet{ludvigsonetal:18}, the results in Table~\ref{tab:FEVD_all} report \textit{ranges} for the proportions of the forecast error variances because the computations are performed for every solution which is part of the identified set. The results show that shocks in real activity have pronounced (negative) effects on macroeconomic uncertainty (top panel) while they exert minimal effects on financial uncertainty (bottom panel). \citet{ludvigsonetal:18} state that, surprisingly, shocks to macro uncertainty explain a large proportion of industrial production (and in Section~\ref{sec:ImpulseResponseAnalysis} suggested that they increase real activity in the short run).
+
+
+
+
+
+
+
+
+Following \citet{ludvigsonetal:18}, the results in Table~\ref{tab:FEVD_all} report \textit{ranges} for the proportions of the forecast error variances because the computations are performed for every solution in the identified set. The results show that shocks in real activity have pronounced (negative) effects on macroeconomic uncertainty (top panel) while they exert minimal effects on financial uncertainty (bottom panel). \citet{ludvigsonetal:18} state that, surprisingly, shocks to macro uncertainty explain a large proportion of industrial production (and in Section~\ref{sec:ImpulseResponseAnalysis} suggested that they increase real activity in the short run).
 
 Contrary to macro uncertainty or real activity, shocks to financial uncertainty exhibit the largest impact on themselves while they also shock a large negative effect on production for longer horizons. From this observation \citet[p. 28]{ludvigsonetal:19} conclude that $U_{Ft}$ suggest to be ``[...] the most important exogenous impulse in the system.''
 
@@ -1798,9 +1810,9 @@ Contrary to macro uncertainty or real activity, shocks to financial uncertainty 
 %\label{sec:VarianceDecomposition}
 
 
-\chapter{Model Extension/Alternative Estimations}
-\label{sec:ModelExtension}
-In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the 'Bloom-shock' (see \citealp{bloom:09}) in place of $U_{Ft}$. \citet{ludvigsonetal:18} themselves declare that their approach of analyzing shocks during selected historical episodes to identify solutions is equivalent to ``[...] creating dummy variables from the timing of specific events, and then putting restrictions on their correlation with the identified shocks'' \citep{ludvigsonetal:18}. Since \citet{ludvigsonetal:18} did not include this approach as an alternative into their robustness checks, we replace their variable for financial uncertainty $U_F$ with the Bloom-shocks (see Appendix~\ref{sec:} for the timing of the respective shocks). 
+%\chapter{Model Extension/Alternative Estimations}
+%\label{sec:ModelExtension}
+%In comparison to the baseline-SVAR-system of \citet{ludvigsonetal:18}, here we consider an additional system that uses the 'Bloom-shock' (see \citealp{bloom:09}) in place of $U_{Ft}$. \citet{ludvigsonetal:18} themselves declare that their approach of analyzing shocks during selected historical episodes to identify solutions is equivalent to ``[...] creating dummy variables from the timing of specific events, and then putting restrictions on their correlation with the identified shocks'' \citep{ludvigsonetal:18}. Since \citet{ludvigsonetal:18} did not include this approach as an alternative into their robustness checks, we replace their variable for financial uncertainty $U_F$ with the Bloom-shocks (see Appendix~\ref{sec:} for the timing of the respective shocks). 
 
 
 %\paragraph{Robustness Checks: Alternative Uncertainty Measures}
