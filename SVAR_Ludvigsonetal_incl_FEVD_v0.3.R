@@ -1085,15 +1085,15 @@ return.data <- SVAR.data %>%
       # will hold the final results of the function-call:
 
       df <- data.frame(matrix(ncol=9,nrow=0, dimnames=list(NULL, 
-                        c(paste0('prop1.1','_','horizon','_',h), 
-                          paste0('prop1.2','_','horizon','_',h),
-                          paste0('prop1.3','_','horizon','_',h),
-                          paste0('prop2.1','_','horizon','_',h),
-                          paste0('prop2.2','_','horizon','_',h),
-                          paste0('prop2.3','_','horizon','_',h),
-                          paste0('prop3.1','_','horizon','_',h),
-                          paste0('prop3.2','_','horizon','_',h),
-                          paste0('prop3.3','_','horizon','_',h)))))
+                        c(paste0('prop1.1_horizon_',h), 
+                          paste0('prop1.2_horizon_',h),
+                          paste0('prop1.3_horizon_',h),
+                          paste0('prop2.1_horizon_',h),
+                          paste0('prop2.2_horizon_',h),
+                          paste0('prop2.3_horizon_',h),
+                          paste0('prop3.1_horizon_',h),
+                          paste0('prop3.2_horizon_',h),
+                          paste0('prop3.3_horizon_',h)))))
       
       
               # be aware that if we write h == 1 here, we technically mean
@@ -1105,7 +1105,8 @@ return.data <- SVAR.data %>%
               # for the 1-step-ahead forecast we get:
               # be aware that in Thetas[[p]][[h]]
               # p stands for the particular solution in the identified set
-              # (i.e. each solution contains 200 Thetas!)
+              # (i.e. each solution contains 200 Thetas (because the forecast
+              # horizon is 200 long!)
               # h stands for the forecast horizon
       
       # within the function we want to loop through all Thetas that
@@ -1177,9 +1178,42 @@ return.data <- SVAR.data %>%
     
     # now we run the above function 'FEVD' for all Thetas (80) in our
     # Thetas-list for the respective forecast-horizons:
-    FEVD.h1 <- FEVD(Thetas, 1)
-    FEVD.h12 <- FEVD(Thetas, 12)
-    FEVD.h100 <- FEVD(Thetas, 100)
+    # Marcel (29.05.2020): Because we actually want to transform the below
+    # and create a loop that loops from 1:201 (the maximum forecast horizon
+    # for which we have calculated the Thetas);
+    
+    # so instead of separate calls to the function FEVD, we loop from 1:201
+    # and store the results (which are data.frames) in a list:
+    # FEVD.h1 <- FEVD(Thetas, 1)
+    # FEVD.h12 <- FEVD(Thetas, 12)
+    # FEVD.h100 <- FEVD(Thetas, 100)
+    FEVD.list <- list()
+    for(h in 1:length(Thetas[[1]])){
+      # the loop runs for each forecast horizon from h=1 to H=201!
+      
+      # we calculate the FEVD for all forecast horizons across all Thetas;
+      # so the list FEVD.list will in the end hold a list of 200 data.frames
+      # (because we have calculated the Thetas up until a forecast horizon of
+      # 200!)
+      # and each data.frame will hold the respective calculated FEVD for
+      # all 9 constellations (Because we have 3 variables in the system)
+      # for each corresponding A_0-solution! so if we have e.g. 80 A_0-solutions,
+      # each data.frame will hold 9 columns (for the respective proportions, i.e.
+      # the FEVDs) and the number of rows will be equal to the number of 
+      # A-0-solutions (i.e. the number of different Thetas)!
+      calculate.FEVD <- FEVD(Thetas, h)
+      # 'h' stands for the forecast horizon!
+      
+      FEVD.list[[h]] <- calculate.FEVD
+      names(FEVD.list)[length(FEVD.list)] <- paste0('forecast_horizon_', h)
+    }
+    
+    # if we now as a quick test run
+    FEVD.list[[1]]
+    # we see that we have calculated the respective proportions 8
+    # times because our solution set contains 8 A-0s and hence
+    # a difference Theta-sequences for each forecast horizon!
+
 
     # with the results for the forecast-horizons at our disposal, we
     # want to proceed like Ludvigson et al (2018) and calculate the ranges
@@ -1189,21 +1223,36 @@ return.data <- SVAR.data %>%
     # hence, we proceed as follows to calculate the minimum
     # and maximum value for every column in the data.frames:
     
-    # forecast horizon h = 1:
-    FEVD.h1.min.max <- cbind(
-                    sapply(FEVD.h1, function(x) min(as.numeric(x))),
-                    sapply(FEVD.h1, function(x) max(as.numeric(x)))
-                    )
-    # forecast horizon h = 1:
-    FEVD.h12.min.max <- cbind(
-                    sapply(FEVD.h12, function(x) min(as.numeric(x))),
-                    sapply(FEVD.h12, function(x) max(as.numeric(x)))
-    ) 
-    # forecast horizon h = 60 (infinity):
-    FEVD.h100.min.max <- cbind(
-                    sapply(FEVD.h100, function(x) min(as.numeric(x))),
-                    sapply(FEVD.h100, function(x) max(as.numeric(x)))
-    ) 
+    # instead of performing the below function manually step by 
+    # step for each forecast horizon, we should rather loop through 
+    # all lists in FEVD.list and calculate the respective data.frames:
+    
+    # so, the below lops through all data.farmes in FEVD.list, and overwrites
+    # the presentation of the information in the data.frames 
+    
+    # we create a new list to hold the results of the below loop:
+    FEVD.min.max.list <- list()
+    for(h in 1:length(FEVD.list)){
+        # we create a data.frame in the desired shape
+        FEVD.min.max <- cbind(
+          sapply(FEVD.list[[h]], function(x) min(as.numeric(x))),
+          sapply(FEVD.list[[h]], function(x) max(as.numeric(x)))
+        )
+        # and then we add it to our list:
+        FEVD.min.max.list[[h]] <- FEVD.min.max
+        # and give it the desired name:
+        names(FEVD.min.max.list)[length(FEVD.min.max.list)] <- paste0('forecast_horizon_', h)
+    }
+    
+    # having a look at
+    FEVD.min.max.list[[1]]
+    # we see that across all possible solutions for the proportions,
+    # we have calculated the min and max value (i.e. instead of 
+    # 8 different possibilities for the respective solutions because
+    # we had 8 different A-0-solutions in our set), now we are only
+    # left with ONE particular solution (i.e. min and max) for each 
+    # proportion!
+    
     
     # the format of the above matrix is perfect for further manipulation
     # to make it look like the table in Ludvigson et al 2018:
@@ -1214,161 +1263,173 @@ return.data <- SVAR.data %>%
     # variables we now create a separate data.frame so that we can easily
     # append the results at the respective forecast horizons:
     
+    # but because we want to add all solutions in the list FEVD.min.max 
+    # to all the data.frames that we create below, we create three 
+    # loops that loop through FEVD.min.max.list and extract the respective
+    # data that we need at each stage (i.e. the min and the max)!
+    
     # FEVD.macro
-    FEVD.macro <- data.frame("U_m_Shock"=character(),
-                             "ip_Shock"=character(),
-                             "U_f_Shock"=character(),
+    FEVD.macro <- data.frame("U_m_Shock_min"=numeric(),
+                             "U_m_Shock_max"=numeric(),
+                             "ip_Shock_min"=numeric(),
+                             "ip_Shock_max"=numeric(),
+                             "U_f_Shock_min"=numeric(),
+                             "U_f_Shock_max"=numeric(),
                              stringsAsFactors = FALSE)
-            # forecast horizon h = 1:
-            FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
-                                  format(round(FEVD.h1.min.max[1, 1], digits=2), 
-                                         nsmall = 2), ', ', 
-                                  format(round(FEVD.h1.min.max[1, 2], digits=2), 
-                                         nsmall = 2), ']'),
-              paste0('[', format(round(FEVD.h1.min.max[2, 1], digits=2), 
-                                         nsmall = 2), ', ', 
-                                  format(round(FEVD.h1.min.max[2, 2], digits=2), 
-                                         nsmall = 2), ']'),
-              paste0('[', format(round(FEVD.h1.min.max[3, 1], digits=2), 
-                                         nsmall = 2), ', ', 
-                                  format(round(FEVD.h1.min.max[3, 2], digits=2), 
-                                         nsmall = 2), ']')
-                                                    )
-            
-            # forecast horizon h = 12: 
-            FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
-                                  format(round(FEVD.h12.min.max[1, 1], digits=2), 
-                                         nsmall = 2), ', ', 
-                                  format(round(FEVD.h12.min.max[1, 2], digits=2), 
-                                         nsmall = 2), ']'),
-                           paste0('[', format(round(FEVD.h12.min.max[2, 1], digits=2), 
-                                              nsmall = 2), ', ', 
-                                  format(round(FEVD.h12.min.max[2, 2], digits=2), 
-                                         nsmall = 2), ']'),
-                           paste0('[', format(round(FEVD.h12.min.max[3, 1], digits=2), 
-                                              nsmall = 2), ', ', 
-                                  format(round(FEVD.h12.min.max[3, 2], digits=2), 
-                                         nsmall = 2), ']')
-            )
-             # forecast horizon h = 100: 
-             FEVD.macro[nrow(FEVD.macro) + 1,] <- c(paste0('[', 
-                                 format(round(FEVD.h100.min.max[1, 1], digits=2), 
-                                        nsmall = 2), ', ', 
-                                 format(round(FEVD.h100.min.max[1, 2], digits=2), 
-                                        nsmall = 2), ']'),
-                          paste0('[', format(round(FEVD.h100.min.max[2, 1], digits=2), 
-                                             nsmall = 2), ', ', 
-                                 format(round(FEVD.h100.min.max[2, 2], digits=2), 
-                                        nsmall = 2), ']'),
-                          paste0('[', format(round(FEVD.h100.min.max[3, 1], digits=2), 
-                                             nsmall = 2), ', ', 
-                                 format(round(FEVD.h100.min.max[3, 2], digits=2), 
-                                        nsmall = 2), ']')
-            )
-     # FEVD.ip
-     FEVD.ip <- data.frame("U_m_Shock"=character(),
-                              "ip_Shock"=character(),
-                              "U_f_Shock"=character(),
-                              stringsAsFactors = FALSE)
-             # forecast horizon h = 1:
-             FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
-                         format(round(FEVD.h1.min.max[4, 1], digits=2), 
-                                nsmall = 2), ', ', 
-                         format(round(FEVD.h1.min.max[4, 2], digits=2), 
-                                nsmall = 2), ']'),
-                  paste0('[', format(round(FEVD.h1.min.max[5, 1], digits=2), 
-                                     nsmall = 2), ', ', 
-                         format(round(FEVD.h1.min.max[5, 2], digits=2), 
-                                nsmall = 2), ']'),
-                  paste0('[', format(round(FEVD.h1.min.max[6, 1], digits=2), 
-                                     nsmall = 2), ', ', 
-                         format(round(FEVD.h1.min.max[6, 2], digits=2), 
-                                nsmall = 2), ']')
-             )
-             
-             # forecast horizon h = 12: 
-             FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
-                         format(round(FEVD.h12.min.max[4, 1], digits=2), 
-                                nsmall = 2), ', ', 
-                         format(round(FEVD.h12.min.max[4, 2], digits=2), 
-                                nsmall = 2), ']'),
-                  paste0('[', format(round(FEVD.h12.min.max[5, 1], digits=2), 
-                                     nsmall = 2), ', ', 
-                         format(round(FEVD.h12.min.max[5, 2], digits=2), 
-                                nsmall = 2), ']'),
-                  paste0('[', format(round(FEVD.h12.min.max[6, 1], digits=2), 
-                                     nsmall = 2), ', ', 
-                         format(round(FEVD.h12.min.max[6, 2], digits=2), 
-                                nsmall = 2), ']')
-             )
-                  # forecast horizon h = 100: 
-              FEVD.ip[nrow(FEVD.ip) + 1,] <- c(paste0('[', 
-                          format(round(FEVD.h100.min.max[4, 1], digits=2), 
-                                 nsmall = 2), ', ', 
-                          format(round(FEVD.h100.min.max[4, 2], digits=2), 
-                                 nsmall = 2), ']'),
-                   paste0('[', format(round(FEVD.h100.min.max[5, 1], digits=2), 
-                                      nsmall = 2), ', ', 
-                          format(round(FEVD.h100.min.max[5, 2], digits=2), 
-                                 nsmall = 2), ']'),
-                   paste0('[', format(round(FEVD.h100.min.max[6, 1], digits=2), 
-                                      nsmall = 2), ', ', 
-                          format(round(FEVD.h100.min.max[6, 2], digits=2), 
-                                 nsmall = 2), ']')
-                  )                
-
-              
+    # looping through FEVD.min.max.list (to get all forecast-horizons
+    # into the data.frame FEVD.macro);
+    # we need to split the min and max for the respective shocks to be 
+    # able to easily calculate the maximum afterwards (like in 
+    # Ludvigson et al, 2018):
+    for(h in 1:length(FEVD.min.max.list)){
+      FEVD.macro[nrow(FEVD.macro) + 1,] <- c(FEVD.min.max.list[[h]][1, 1], 
+                                             FEVD.min.max.list[[h]][1, 2],
+                                             FEVD.min.max.list[[h]][2, 1],
+                                             FEVD.min.max.list[[h]][2, 2],
+                                             FEVD.min.max.list[[h]][3, 1],
+                                             FEVD.min.max.list[[h]][3, 2]
+      )
+    }
+    
+    # then we do the same for industrial production and financial_uncertainty:
+    # FEVD.ip
+    FEVD.ip <- data.frame("U_m_Shock_min"=numeric(),
+                             "U_m_Shock_max"=numeric(),
+                             "ip_Shock_min"=numeric(),
+                             "ip_Shock_max"=numeric(),
+                             "U_f_Shock_min"=numeric(),
+                             "U_f_Shock_max"=numeric(),
+                             stringsAsFactors = FALSE)
+    # looping through FEVD.min.max.list (to get all forecast-horizons
+    # into the data.frame FEVD.macro);
+    # we need to split the min and max for the respective shocks to be 
+    # able to easily calculate the maximum afterwards (like in 
+    # Ludvigson et al, 2018):
+    for(h in 1:length(FEVD.min.max.list)){
+      FEVD.ip[nrow(FEVD.ip) + 1,] <- c(FEVD.min.max.list[[h]][4, 1], 
+                                       FEVD.min.max.list[[h]][4, 2],
+                                       FEVD.min.max.list[[h]][5, 1],
+                                       FEVD.min.max.list[[h]][5, 2],
+                                       FEVD.min.max.list[[h]][6, 1],
+                                       FEVD.min.max.list[[h]][6, 2]
+      )
+    }
+    
     # FEVD.fin
-    FEVD.fin <- data.frame("U_m_Shock"=character(),
-                          "ip_Shock"=character(),
-                          "U_f_Shock"=character(),
+    FEVD.fin <- data.frame("U_m_Shock_min"=numeric(),
+                          "U_m_Shock_max"=numeric(),
+                          "ip_Shock_min"=numeric(),
+                          "ip_Shock_max"=numeric(),
+                          "U_f_Shock_min"=numeric(),
+                          "U_f_Shock_max"=numeric(),
                           stringsAsFactors = FALSE)
-              # forecast horizon h = 1:
-              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
-                        format(round(FEVD.h1.min.max[7, 1], digits=2), 
-                               nsmall = 2), ', ', 
-                        format(round(FEVD.h1.min.max[7, 2], digits=2), 
-                               nsmall = 2), ']'),
-                 paste0('[', format(round(FEVD.h1.min.max[8, 1], digits=2), 
-                                    nsmall = 2), ', ', 
-                        format(round(FEVD.h1.min.max[8, 2], digits=2), 
-                               nsmall = 2), ']'),
-                 paste0('[', format(round(FEVD.h1.min.max[9, 1], digits=2), 
-                                    nsmall = 2), ', ', 
-                        format(round(FEVD.h1.min.max[9, 2], digits=2), 
-                               nsmall = 2), ']')
-              )
-              
-              # forecast horizon h = 12: 
-              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
-                      format(round(FEVD.h12.min.max[7, 1], digits=2), 
-                             nsmall = 2), ', ', 
-                      format(round(FEVD.h12.min.max[7, 2], digits=2), 
-                             nsmall = 2), ']'),
-               paste0('[', format(round(FEVD.h12.min.max[8, 1], digits=2), 
-                                  nsmall = 2), ', ', 
-                      format(round(FEVD.h12.min.max[8, 2], digits=2), 
-                             nsmall = 2), ']'),
-               paste0('[', format(round(FEVD.h12.min.max[9, 1], digits=2), 
-                                  nsmall = 2), ', ', 
-                      format(round(FEVD.h12.min.max[9, 2], digits=2), 
-                             nsmall = 2), ']')
-              )
-              # forecast horizon h = 100: 
-              FEVD.fin[nrow(FEVD.fin) + 1,] <- c(paste0('[', 
-                        format(round(FEVD.h100.min.max[7, 1], digits=2), 
-                               nsmall = 2), ', ', 
-                        format(round(FEVD.h100.min.max[7, 2], digits=2), 
-                               nsmall = 2), ']'),
-                 paste0('[', format(round(FEVD.h100.min.max[8, 1], digits=2), 
-                                    nsmall = 2), ', ', 
-                        format(round(FEVD.h100.min.max[8, 2], digits=2), 
-                               nsmall = 2), ']'),
-                 paste0('[', format(round(FEVD.h100.min.max[9, 1], digits=2), 
-                                    nsmall = 2), ', ', 
-                        format(round(FEVD.h100.min.max[9, 2], digits=2), 
-                               nsmall = 2), ']')
-              )
+    # looping through FEVD.min.max.list (to get all forecast-horizons
+    # into the data.frame FEVD.macro);
+    # we need to split the min and max for the respective shocks to be 
+    # able to easily calculate the maximum afterwards (like in 
+    # Ludvigson et al, 2018):
+    for(h in 1:length(FEVD.min.max.list)){
+      FEVD.fin[nrow(FEVD.fin) + 1,] <- c(FEVD.min.max.list[[h]][7, 1], 
+                                       FEVD.min.max.list[[h]][7, 2],
+                                       FEVD.min.max.list[[h]][8, 1],
+                                       FEVD.min.max.list[[h]][8, 2],
+                                       FEVD.min.max.list[[h]][9, 1],
+                                       FEVD.min.max.list[[h]][9, 2]
+      )
+    }
+    
+    # the below code has to be transformed into a function so that we 
+    # can use it on FEVD.macro, FEVD.ip, and FEVD.fin:
+    extract.table.FEVD <- function(df){
+          # we want to know at which forecast horizon the respective FEVD
+          # are maximized; therfore we add a column:
+          df$h <- seq.int(nrow(df))
+          
+          # now we want to calculate the maximum (for which we use dplyr again):
+          df <- df %>%
+            mutate(U_m_Shock.range = abs(U_m_Shock_min - U_m_Shock_max),
+                   ip_Shock.range = abs(ip_Shock_min - ip_Shock_max),
+                   U_f_Shock.range = abs(U_f_Shock_min - U_f_Shock_max)
+            ) %>%
+            # and then we re-order the columns:
+            dplyr::select(U_m_Shock_min, U_m_Shock_max, U_m_Shock.range,
+                          ip_Shock_min, ip_Shock_max, ip_Shock.range,
+                          U_f_Shock_min, U_f_Shock_max, U_f_Shock.range, h) 
+          
+          # next we take the rows where for U_m shock, ip-Shock and Uf_shock the
+          # respective values are maximized:
+          helper.max <- cbind(df %>% filter(U_m_Shock.range == 
+                                              max(U_m_Shock.range)) %>% 
+                                      dplyr::select(U_m_Shock_min, U_m_Shock_max, h),
+                              df %>% filter(ip_Shock.range == 
+                                              max(ip_Shock.range)) %>% 
+                                      dplyr::select(ip_Shock_min, ip_Shock_max, h),
+                              df %>% filter(U_f_Shock.range == max(U_f_Shock.range)) %>%
+                                      dplyr::select(U_f_Shock_min, U_f_Shock_max, h)  
+          )
+          # because the names for h are not unique, we use a different way than the dplyr-way:
+          names(helper.max) <- c("U_m_Shock_min", "U_m_Shock_max", "h_U_m",
+                                       "ip_Shock_min", "ip_Shock_max", "h_ip",
+                                       "U_f_Shock_min", "U_f_Shock_max", "h_U_f")
+          # because below we want to stack the data on top of each other, we have to
+          # glue the forecast horizons into one particular column:
+          helper.max <- transform(helper.max,
+                                        h=paste0(h_U_m,'_', h_ip,'_', h_U_f))
+          # we transform the column 'h' to  character:
+          helper.max$h <- as.character(helper.max$h)
+          
+          helper.max <- helper.max %>%
+            dplyr::select(U_m_Shock_min, U_m_Shock_max, 
+                          ip_Shock_min, ip_Shock_max,
+                          U_f_Shock_min, U_f_Shock_max, 
+                          h)
+          
+          # helper.min.max contains the respective maximum according to the definition of 
+          # Ludvigson et al (2018):
+          # in a last step, we collect the numbers we want for the respective forecast
+          # horizons:
+          df.selection <- df[c(1:5, 12, 201), c(1, 2, 4, 5, 7, 8, 10)]
+          df.selection[nrow(df.selection)+1, ] <- helper.max    
+          
+          # in the very last step, we create the ranges as characters:
+          df.selection.final <- data.frame("U_m_Shock"=character(),
+                                 "ip_Shock"=character(),
+                                 "U_f_Shock"=character(),
+                                 "h"=character(),
+                                 stringsAsFactors = FALSE)
+          # the most efficient approach would be to loop through the rows
+          # in df.selection:
+          for(i in 1:nrow(df.selection)){
+            helper <- c(paste0('[', 
+                                      format(round(df.selection[i, 1], digits=2), 
+                                             nsmall = 2), ', ', 
+                                      format(round(df.selection[i, 2], digits=2), 
+                                             nsmall = 2), ']'),
+                               paste0('[', format(round(df.selection[i, 3], digits=2), 
+                                                  nsmall = 2), ', ', 
+                                      format(round(df.selection[i, 4], digits=2), 
+                                             nsmall = 2), ']'),
+                               paste0('[', format(round(df.selection[i, 5], digits=2), 
+                                                  nsmall = 2), ', ', 
+                                      format(round(df.selection[i, 6], digits=2), 
+                                             nsmall = 2), ']'),
+                        # lastly we add the colum that gives us the respective horizon
+                        # we are looking at:
+                        df.selection[i, 7])
+            # and then we add helper to the data.frame df.selection.final:
+            df.selection.final[nrow(df.selection.final) + 1,] <- helper
+          }
+         
+          return(df.selection.final)
+    }
+    
+
+    # now we can run the above function on all three data.frames
+    # FEVD.macro, FEVD.ip and FEVD.fin and hopefully it works:
+    FEVD.macro <- extract.table.FEVD(FEVD.macro)
+    FEVD.ip <- extract.table.FEVD(FEVD.ip)
+    FEVD.fin <- extract.table.FEVD(FEVD.fin)
+
     # now we combine the results by stacking the data.frames 
     # on top of each other:
     FEVD.all <- rbind(
@@ -1380,17 +1441,32 @@ return.data <- SVAR.data %>%
              
     # and now we can finally export the table as a latex-table:
     latextable(FEVD.all, 
-               colnames = c("Um Shock", "ip Shock", "Uf Shock"),
+               colnames = c("Um Shock", "ip Shock", "Uf Shock", "h"),
                rownames = c(
                             "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
                             "12",
                             "infinity",
+                            "h_max",
                             "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
                             "12",
                             "infinity",
+                            "h_max",
                             "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
                             "12",
-                            "infinity"))
+                            "infinity",
+                            "h_max"))
     
     #-------------------------------------------------------------------
     # extract coefficients to create impulse-responses:
