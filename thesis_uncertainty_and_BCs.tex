@@ -1764,10 +1764,10 @@ To take into account the sampling error and for studying the properties of the e
 \tiny
 \centering
 \caption[Forecast Error Variance Decomposition from SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.]{Forecast Error Variance Decomposition SVAR $(U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$.\\
-\textit{Note:} Each panel shows the fraction of the $h$-step-ahead forecast-error variance of the variable given in the panel title that is explained by the shock named in the column heading. The row denoted "$h = h_max$" reports the maximum fraction of forecast error variance explained across all VAR forecast horizons $h$. The numbers in brackets represent the ranges for these numbers across all solutions in the identified set. The data are monthly and span the period 1960:07-2015:04.}
+\textit{Note:} Each panel shows the fraction of the $h$-step-ahead forecast-error variance of the variable given in the panel title that is explained by the shock named in the column heading. The row denoted "$h = h_{max}$" reports the maximum fraction of forecast error variance explained across all VAR forecast horizons $h$ whereby the index reports the respective forecast horizon for which the FEVD is maximized. $\infty$ computationally represents the forecast horizon $h=200$. The numbers in brackets represent the ranges for these numbers across all solutions in the identified set. The data are monthly and span the period 1960:07-2015:04.}
 
 
-\scalebox{1}{  % blows up or reduces the table in its entirety
+\scalebox{0.7}{  % blows up or reduces the table in its entirety
 \renewcommand{\arraystretch}{0.9} % stretches vertically
 \resizebox{\textwidth}{!}{%
     \begin{tabular}{l *{4}{d{-0.6}} }
@@ -1776,26 +1776,23 @@ To take into account the sampling error and for studying the properties of the e
 	&  \multicolumn{3}{c}{Fraction variation in $U_m$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{c}{$U_m$ Shock} &  \multicolumn{1}{c}{$ip$ Shock} &  \multicolumn{1}{c}{$U_F$ Shock}\\ 
-        1 & [0.00, 0.24] & [0.62, 0.80] & [0.11, 0.22] \\
-        2 & [0.00, 0.19] & [0.64, 0.76] & [0.14, 0.26] \\
-        3 & [0.00, 0.18] & [0.63, 0.74] & [0.16, 0.28] \\        4 & [0.00, 0.17] & [0.61, 0.71] & [0.18, 0.31] \\        5 & [0.00, 0.17] & [0.59, 0.69] & [0.20, 0.33] \\
-        12 & [0.01, 0.20] & [0.49, 0.61] & [0.28, 0.41] \\
+       1 & [0.00, 0.51] & [0.45, 0.80] & [0.04, 0.29] \\        2 & [0.00, 0.45] & [0.48, 0.78] & [0.06, 0.34] \\        3 & [0.00, 0.44] & [0.48, 0.76] & [0.07, 0.36] \\        4 & [0.00, 0.44] & [0.46, 0.74] & [0.09, 0.39] \\        5 & [0.00, 0.43] & [0.45, 0.71] & [0.11, 0.42] \\        12 & [0.01, 0.47] & [0.37, 0.62] & [0.16, 0.49] \\
         $\infty$ & [0.01, 0.23] & [0.50, 0.65] & [0.23, 0.36] \\
-        $h_{max}$ & [0.00, 0.24]_1 & [0.62, 0.80]_1 & [0.27, 0.41]_{10} \\
+        $h_{max}$ & [0.00, 0.51]_1 & [0.45, 0.80]_1 & [0.16, 0.49]_{12}  \\
         \midrule
         	&  \multicolumn{3}{c}{Fraction variation in $ip$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
-        1 & [0.61, 0.96] & [0.00, 0.37] & [0.01, 0.11] \\        2 & [0.59, 0.95] & [0.00, 0.39] & [0.01, 0.11] \\        3 & [0.55, 0.93] & [0.01, 0.42] & [0.01, 0.12] \\        4 & [0.52, 0.91] & [0.02, 0.44] & [0.03, 0.15] \\        5 & [0.48, 0.87] & [0.02, 0.46] & [0.04, 0.18] \\        12 & [0.24, 0.60] & [0.09, 0.53] & [0.20, 0.41] \\
-        $\infty$ & [0.02, 0.20] & [0.24, 0.69] & [0.28, 0.60] \\
-        $h_{max}$ & [0.43, 0.83]_6 & [0.05, 0.50]_7 & [0.33, 0.56]_{29}  \\
+        1 & [0.33, 0.96] & [0.00, 0.62] & [0.01, 0.11] \\        2 & [0.32, 0.95] & [0.00, 0.64] & [0.01, 0.11] \\        3 & [0.28, 0.93] & [0.01, 0.67] & [0.01, 0.12] \\        4 & [0.25, 0.91] & [0.01, 0.69] & [0.03, 0.15] \\        5 & [0.22, 0.87] & [0.02, 0.71] & [0.04, 0.18] \\        12 & [0.07, 0.60] & [0.07, 0.71] & [0.20, 0.41] \\
+        $\infty$ & [0.01, 0.17] & [0.27, 0.70] & [0.26, 0.59] \\
+        $h_{max}$ & [0.22, 0.87]_5 & [0.03, 0.72]_6 & [0.26, 0.59]_{201}  \\
         \midrule
         	&  \multicolumn{3}{c}{Fraction variation in $U_f$} \\
          \midrule
          \multicolumn{1}{l}{$h$}  &  \multicolumn{1}{r}{$U_m$ Shock} &  \multicolumn{1}{r}{$ip$ Shock} &  \multicolumn{1}{r}{$U_F$ Shock}\\ 
-        1 & [0.01, 0.12] & [0.02, 0.08] & [0.83, 0.97] \\        2 & [0.00, 0.05] & [0.01, 0.06] & [0.87, 0.99] \\        3 & [0.00, 0.04] & [0.01, 0.05] & [0.88, 0.99] \\        4 & [0.00, 0.04] & [0.01, 0.05] & [0.88, 0.99] \\        5 & [0.00, 0.03] & [0.01, 0.04] & [0.87, 0.98] \\        12 & [0.00, 0.01] & [0.00, 0.03] & [0.84, 0.96] \\
-        $\infty$ & [0.00, 0.00] & [0.02, 0.04] & [0.81, 0.92] \\
-        $h_{max}$ & [0.01, 0.12]_1 & [0.02, 0.08]_1 & [0.83, 0.97]_1 \\
+        1 & [0.00, 0.12] & [0.01, 0.10] & [0.82, 0.97] \\        2 & [0.00, 0.05] & [0.00, 0.07] & [0.86, 0.99] \\        3 & [0.00, 0.04] & [0.00, 0.07] & [0.87, 0.99] \\        4 & [0.00, 0.04] & [0.00, 0.06] & [0.87, 0.99] \\        5 & [0.00, 0.03] & [0.00, 0.06] & [0.87, 0.98] \\        12 & [0.00, 0.01] & [0.00, 0.04] & [0.84, 0.96] \\
+        $\infty$ & [0.00, 0.00] & [0.02, 0.05] & [0.81, 0.92] \\
+        $h_{max}$ & [0.00, 0.12]_1 & [0.01, 0.10]_1 & [0.82, 0.97]_1 \\
         \bottomrule
     \end{tabular}
     }
