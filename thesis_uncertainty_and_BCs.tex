@@ -1552,7 +1552,7 @@ With respect to the introduced constraints, the inequalities will be large for t
 \citet{ludvigsonetal:17} point out that their shock-restricted approach in the first place deals with the issue of identification while the issue of inference is yet to be solved. However, to get a sense of the sampling distribution, \citet{ludvigsonetal:17} perform a a Monte Carlo simulation by bootstrapping from the set of shocks $\vect{\epsilon_t}({\vect{A_0}})$ in the \textit{identified set}.
 
 
-\subsection{Solution Algorithm}
+\subsection{Solution Algorithm and Implementation}
 \label{sec:solutionAlgorithm}
 As indicated above, a decisive part of the solution algorithm is the construction of the unconstrained solution set $\hatt{\mathcal{A}}_0$ and the derivation of the identified set $\overline{\vect{\mathcal{A}}}_0$. \\
 \\
@@ -1572,7 +1572,7 @@ Throughout this exercise we noticed that the authors had computed the variance c
 
 With the identified set of solutions collected into $\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})$ at disposal, the code recursively calculates the coefficients $\vect{\Psi_k}$ (i.e. the MA-weights) of the estimated reduced-form VAR as outlined in Equation~\ref{eq:svar7} from which we subsequently derive the set of SMA-coefficients $\vect{\Theta_k}$ for every respective $\vect{A_{0}^{-1}}$ in the solution set by multiplying all coefficient matrices $\vect{\Psi_k}$ with $\vect{A_{0}^{-1}}$ at every forecast horizon (here: up until 60 steps ahead) as outlined in Equation~\ref{eq:svar8}.
 
-Overall, the combination of event and correlation constraints drastically reduces that possible solution set by about 99\%.
+Overall, the combination of event and correlation constraints drastically reduces that possible solution set by about 99\%. HIER NOCH EIN PAAR MEHR WORTE ÜBER DIE R-IMPLEMENTIERUNG VERLIEREN!
 
 
 \chapter{Data}
@@ -1717,6 +1717,10 @@ Overall, the analysis of the model's residuals confirms the identification schem
 \section[Impulse Response Analysis]{Impulse Response Analysis}
 \label{sec:ImpulseResponseAnalysis}
 
+
+Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
+
+
 \begin{figure}[!h]
    \centering
    \setlength\fboxsep{0pt}
@@ -1726,26 +1730,38 @@ Overall, the analysis of the model's residuals confirms the identification schem
       \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR}
 \end{figure}
 
-Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $A_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $A_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set. The impulse responses are computed for 60 steps ahead. For the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
+For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. As formulated by \citet{ludvigsonetal:19}, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} shows that the covariance restrictions without event and correlation-constraints produce ambiguous results which is due to the problem of under-identification which was discussed in Section~\ref{sec:strcuturalVARsIdentification}. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
 
-
-
-For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
-
-
-
-
-As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. This Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
+As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
 
 
 
 
 Looking at macro uncertainty, \citet{ludvigsonetal:18} find that positive shocks to real activity induce a sharp decline in macro uncertainty $U_{Mt}$. Put differently, a \textit{negative} shock to industrial production would induce a pronounced and protracted \textit{increase} in macro uncertainty as confirmed by the entirety of solutions in the identified set (which is also well away from zero). 
 
-Lastly, interestingly, the SVAR-system (at least for the majority of the solution set as well as the maxG-solution) results in an \textit{increase} in production in response to a macro uncertainty shock $e_{M}$ which \citet{ludvigsonetal:18} see to be consistent with the growth options theory (first row, second column). For the majority of solutions this effect even persists for the long run. Independently of the duration of this effect, the results do not support the empirical evidence of many other empirical applications that point at shocks to macro uncertainty reducing real activity. Instead, as the discussion in the previous paragraph showed, the effect seems to go from real activity shocks to an increase in macro uncertainty and hence weaken the often stated causal nexus between macro uncertainty being a compounding factor in recessions. 
+Lastly, interestingly, the SVAR-system (at least for the majority of the solution set as well as the maxG-solution) results in an \textit{increase} in production in response to a macro uncertainty shock $e_{M}$ which \citet{ludvigsonetal:18} see to be consistent with the growth options theory (first row, second column). For some solutions this effect even persists for the long run, while for others the positive effect at impact turns into a negative effect for longer horizons. Independently of the duration of this effect, the results do not support the empirical evidence of many other empirical applications that point at shocks to macro uncertainty reducing real activity. Instead, as the discussion in the previous paragraph showed, the effect seems to go from real activity shocks to an increase in macro uncertainty and hence weaken the often stated causal nexus between macro uncertainty being a compounding factor in recessions. 
 
 In summary, the model suggests that higher macroeconomic uncertainty is an endogenous response to shocks to aggregate output while \textit{financial uncertainty} can be seen as a likely source for protracted declines in aggregate output.\footnote{\citet{ludvigsonetal:18} also run their algorithms for a pre-crisis sample for which they report less conclusive answers. In their conclusion this result shows that the 2007-2009 financial crisis was an ``[...] important rare event that can help distinguish the transmission of financial versus real uncertainty shocks'' \citet[p. 25]{ludvigsonetal:18}. We have not repeated this exercise here.}
 
+
+As analysed by \citet{ludvigsonetal:19}, the opposite effects of macro and financial uncertainty on industrial production at impact can be read off the off-diagonal elements of the estimated $\vect{A}_0^{-1}$-matrices that are part of the identified set. In particular, the elements $A_{0_{YM}}^{-1}$ (which is the response of $ip$ to a macro-uncertainty shock) and $A_{0_{YF}}^{-1}$ (which consequently is the response of $ip$ to a financial uncertainty shock) drive these responses. 
+
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+     \fbox{\includegraphics[trim=-0.3cm 1cm -0.3cm 2cm, width=1\textwidth, clip]{distribution_impact_matrices_type1.pdf}}
+      \caption[Distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$.]{Distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$.\\
+      \textit{Note:} Histograms for all values of $A_{0_{YM}}^{-1}$ (left panel) and $A_{0_{YF}}^{-1}$ (right panel) in an identified set under the following different restriction-regimes: 'No Constraints' (i.e. only covariance restrictions), 'Event Constraints Only' and 'All Constraints' (i.e. all event- and correlation contraints simulateneously).}   \label{fig:distribution_impact_matrices_type1}
+\end{figure}
+\begin{figure}[!h]
+   \centering
+   \setlength\fboxsep{0pt}
+   \setlength\fboxrule{0pt}
+     \fbox{\includegraphics[trim=-0.3cm 1cm -0.3cm 2cm, width=1\textwidth, clip]{distribution_impact_matrices_type2.pdf}}
+      \caption[Distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$.]{Distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$.\\
+      \textit{Note:} Histograms for all values of $A_{0_{YM}}^{-1}$ (left panel) and $A_{0_{YF}}^{-1}$ (right panel) in an identified set under the following different restriction-regimes: 'No Constraints' (i.e. only covariance restrictions), 'Event Constraints \textbf{without Lehman Event}' and 'All Constraints' (i.e. all event- and correlation contraints simulateneously).}   \label{fig:distribution_impact_matrices_type2}
+\end{figure}
 
 \section{Inference for IRFs: Bootstrapping/Monte-Carlo}
 \label{sec:EstimatorProperties}
@@ -1756,6 +1772,9 @@ To take into account the sampling error and for studying the properties of the e
 \section[Invalidity of Recursive Identification Schemes]{Invalidity of Recursive Identification Schemes}
 \label{sec:ValidityRecursiveSchemes}
 \citet{ludvigsonetal:18} argue that recursive schemes in VAR-settings are ill-equipped to properly study the dynamic effects. Accordingly, their suggested and estimated model from Section~\ref{sec:modelSetup} can be tested to see whether it supports a recursive structure because a-priori it does not rule out such a structure. 
+\\
+\\
+aus ludigsonetal:19: Third, an inspection of our identiÖed solution sets shows that the admissible SVARs reflect a non-zero contemporaneous correlation between UF t and Yt as well as between UM t and Yt, something that is inconsistent with any recursive ordering. Tests of the validity of a recursive structure are easily rejected by the data.
 
 \section[Forecast Error Variance Decomposition]{Forecast Error Variance Decomposition}
 \label{sec:FEVD}

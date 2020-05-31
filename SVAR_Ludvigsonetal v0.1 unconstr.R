@@ -1327,7 +1327,7 @@ plot_SVAR.irfs.all.CONSTR_ALL <- plot_SVAR.irfs.all.CONSTR_ALL %>%
     
       impulse.responses_all.SVAR.COMPLETE
        
-      ggsave(file="impulse_responses_all_SVAR_unconstr_constr.pdf")
+      ## ggsave(file="impulse_responses_all_SVAR_unconstr_constr.pdf")
       
        
 
