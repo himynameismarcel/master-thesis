@@ -202,8 +202,8 @@ return.data <- SVAR.data %>%
     
 
 # having created A_0_validFE_CONSTR, we want to extract to sets of
-# values: these are A_0_YM (which is the elemtn [2, 1]) and
-# A_0_YF (Which is the element [2, 3]);
+# values: these are A_0_YM (which is the elemtn [1, 2]) and
+# A_0_YF (Which is the element [3, 2]);
 # to be able to extract these values, we have to run through the list
 # and copy out the respective values and store them in a vector:
 
@@ -215,7 +215,7 @@ A_0_valid.FE_CONSTR.YF <- do.call(rbind,
                                   lapply(A_0_valid.FE_CONSTR, function(x) x[2,3]))
 colnames(A_0_valid.FE_CONSTR.YF) <- "YF"
 # lastly, we create a new matrix where we add these two column vectors together:
-A_0_valid.FE_CONSTR <- as_tibble(cbind(A_0_valid.FE_CONSTR.YM, A_0_valid.FE_CONSTR.YF))
+A_0_valid.FE_CONSTR.comb <- as_tibble(cbind(A_0_valid.FE_CONSTR.YM, A_0_valid.FE_CONSTR.YF))
     
 
 ###--------------------------------------------------------------------------------------------
@@ -418,8 +418,13 @@ A_0_valid.ALL_CONSTR.YF <- do.call(rbind,
                                   lapply(A_0_valid.ALL_CONSTR, function(x) x[2,3]))
 colnames(A_0_valid.ALL_CONSTR.YF) <- "YF"
 # lastly, we create a new matrix where we add these two column vectors together:
-A_0_valid.ALL_CONSTR <- as_tibble(cbind(A_0_valid.ALL_CONSTR.YM, A_0_valid.ALL_CONSTR.YF))
+A_0_valid.ALL_CONSTR.comb <- as_tibble(cbind(A_0_valid.ALL_CONSTR.YM, A_0_valid.ALL_CONSTR.YF))
 
+
+# extracting the miminum values for YM And YF:
+A_0_valid.ALL_CONSTR.comb %>%
+              mutate(min1 = min(YM),
+                     min2 = min(YF))
 
 
 ###--------------------------------------------------------------------------------------------
@@ -595,7 +600,7 @@ return.data <- SVAR.data %>%
                                       lapply(A_0_valid.NO_CONSTR, function(x) x[2,3]))
     colnames(A_0_valid.NO_CONSTR.YF) <- "YF"
     # lastly, we create a new matrix where we add these two column vectors together:
-    A_0_valid.NO_CONSTR <- as_tibble(cbind(A_0_valid.NO_CONSTR.YM, A_0_valid.NO_CONSTR.YF))
+    A_0_valid.NO_CONSTR.comb <- as_tibble(cbind(A_0_valid.NO_CONSTR.YM, A_0_valid.NO_CONSTR.YF))
     
     
  
@@ -605,7 +610,7 @@ return.data <- SVAR.data %>%
 ###--------------------------------------------------------------------------------------------
     
     # to be able to use facet, we have to reshape all data.frames:
-    A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR   %>%
+    A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR.comb   %>%
                             gather(series, data)
     # and ultimately we add another column called NO_CONSTR
     # and muliply the data-series with 100:
@@ -613,39 +618,18 @@ return.data <- SVAR.data %>%
                             mutate(TYPE_CONSTR = "EVENT CONSTRAINTS ONLY") %>%
                             mutate(data = data*100)
     
-    A_0_valid.NO_CONSTR.tidy <- A_0_valid.NO_CONSTR   %>%
+    A_0_valid.NO_CONSTR.tidy <- A_0_valid.NO_CONSTR.comb   %>%
                             gather(series, data)   
     A_0_valid.NO_CONSTR.tidy <- A_0_valid.NO_CONSTR.tidy %>%
                             mutate(TYPE_CONSTR = "NO CONSTRAINTS") %>%
                             mutate(data = data*100)    
     
-    A_0_valid.ALL_CONSTR.tidy <- A_0_valid.ALL_CONSTR   %>%
+    A_0_valid.ALL_CONSTR.tidy <- A_0_valid.ALL_CONSTR.comb   %>%
                             gather(series, data)
     A_0_valid.ALL_CONSTR.tidy <- A_0_valid.ALL_CONSTR.tidy %>%
                             mutate(TYPE_CONSTR = "ALL CONSTRAINTS") %>%
                             mutate(data = data*100)       
-    
-    # in a last step we stack all data.frames on top of each other:
-    A_0_valid.tidy.all <- rbind(
-                            A_0_valid.FE_CONSTR.tidy,
-                            A_0_valid.NO_CONSTR.tidy,
-                            A_0_valid.ALL_CONSTR.tidy
-    )
-    
-    
-    ggplot(data=A_0_valid.tidy.all) + 
-      geom_histogram(aes(x=data, y=(..count..)/sum(..count..),
-                         fill=TYPE_CONSTR),
-                     color="black", binwidth=0.3) + 
-      # geom_histogram(data=A_0_valid.FE_CONSTR, 
-      #                aes(x=data, y=(..count..)/sum(..count..)),
-      #                color="black", fill="#c92222", alpha = 0.8, 
-      #                binwidth=0.0004) +
-      #   geom_histogram(data=A_0_valid.ALL_CONSTR, 
-      #                  aes(x=data, y=(..count..)/sum(..count..)),
-      #                  color="white", fill="black", alpha = 0.8,
-      #                  binwidth=0.0003)   +
-      facet_wrap(~series, scales = "free_x")
+  
     
 
     
@@ -682,6 +666,66 @@ return.data <- SVAR.data %>%
       theme(legend.position = "top",aspect.ratio=0.5) +
       facet_wrap(.~series)
 
-      ggsave(file="distribution_impact_matrices_type1.pdf")
+      # ggsave(file="distribution_impact_matrices_type1.pdf")
+
+
+
+      
+###
+# Analysis of Recursive Schemes
+###
+      
+# having created A_0_validALL_CONSTR, we want to extract to sets of
+# values: these are A_0_YM (which is the elemtn [2, 1]) and
+# A_0_YF (Which is the element [2, 3]);
+# to be able to extract these values, we have to run through the list
+# and copy out the respective values and store them in a vector:
+
+A_0_valid.ALL_CONSTR.FM <- do.call(rbind, 
+                                   lapply(A_0_valid.ALL_CONSTR, function(x) x[3,1]))
+colnames(A_0_valid.ALL_CONSTR.FM) <- "FM"
+
+A_0_valid.ALL_CONSTR.MY <- do.call(rbind, 
+                                   lapply(A_0_valid.ALL_CONSTR, function(x) x[1,2]))
+colnames(A_0_valid.ALL_CONSTR.MY) <- "MY"
+
+
+# lastly, we create a new matrix where we add these two column vectors together:
+A_0_valid.ALL_CONSTR.comb.recurs <- as_tibble(cbind(A_0_valid.ALL_CONSTR.FM, 
+                                                    A_0_valid.ALL_CONSTR.MY))
+
+# extracting the minimum values
+A_0_valid.ALL_CONSTR.comb.recurs %>%
+  mutate(min1 = min(FM),
+         min2 = min(MY))
+
+
+# to be able to plot the data, we have to reshape it:
+A_0_valid.ALL_CONSTR.tidy.recurs <- A_0_valid.ALL_CONSTR.comb.recurs   %>%
+                            gather(series, data)
+A_0_valid.ALL_CONSTR.tidy.recurs <- A_0_valid.ALL_CONSTR.tidy.recurs %>%
+                            mutate(TYPE_CONSTR = "ALL CONSTRAINTS") %>%
+                            mutate(data = data*100)  
+
+
+
+
+# plot
+ggplot(data=A_0_valid.ALL_CONSTR.tidy.recurs) + 
+  geom_histogram(aes(x=data, y=(..count..)/sum(..count..),
+                     fill="#288cc9"),
+                 color="black", 
+                 alpha = 0.8,
+                 binwidth=0.1) + 
+  scale_y_continuous(name = NULL) +
+  scale_x_continuous(name = NULL) + 
+  # very useful blog-post about how to include and color 
+  # a legend:
+  # https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
+  theme(legend.position = "none",aspect.ratio=0.5) +
+  facet_wrap(.~series)
+
+ggsave(file="distribution_impact_matrices_type3.pdf")
+
 
 

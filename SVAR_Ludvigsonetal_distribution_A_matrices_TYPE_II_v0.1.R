@@ -188,10 +188,10 @@ return.data <- SVAR.data %>%
                   # Marcel, 30.05.2020
                   # in a last step we rename the object A_0_valid so that we can
                   # differentiate it from the other sets created above:
-                  A_0_valid.FE_CONSTR <- A_0_valid
+                  A_0_valid.FE_CONSTR.II <- A_0_valid
                   # in a last step, we take the inverse of A_0_valid_no_constr
                   # to have the actual A_0_inv-matrices again:
-                  A_0_valid.FE_CONSTR <- lapply(A_0_valid.FE_CONSTR, inv)
+                  A_0_valid.FE_CONSTR.II <- lapply(A_0_valid.FE_CONSTR.II, inv)
             
           }
           
@@ -205,14 +205,14 @@ return.data <- SVAR.data %>%
 # and copy out the respective values and store them in a vector:
 
 A_0_valid.FE_CONSTR.YM <- do.call(rbind, 
-                                  lapply(A_0_valid.FE_CONSTR, function(x) x[2,1]))
+                                  lapply(A_0_valid.FE_CONSTR.II, function(x) x[1,2]))
 colnames(A_0_valid.FE_CONSTR.YM) <- "YM"
 
 A_0_valid.FE_CONSTR.YF <- do.call(rbind, 
-                                  lapply(A_0_valid.FE_CONSTR, function(x) x[2,3]))
+                                  lapply(A_0_valid.FE_CONSTR.II, function(x) x[3,2]))
 colnames(A_0_valid.FE_CONSTR.YF) <- "YF"
 # lastly, we create a new matrix where we add these two column vectors together:
-A_0_valid.FE_CONSTR <- as_tibble(cbind(A_0_valid.FE_CONSTR.YM, A_0_valid.FE_CONSTR.YF))
+A_0_valid.FE_CONSTR.comb <- as_tibble(cbind(A_0_valid.FE_CONSTR.YM, A_0_valid.FE_CONSTR.YF))
     
     
  
@@ -222,23 +222,14 @@ A_0_valid.FE_CONSTR <- as_tibble(cbind(A_0_valid.FE_CONSTR.YM, A_0_valid.FE_CONS
 ###--------------------------------------------------------------------------------------------
     
     # to be able to use facet, we have to reshape all data.frames:
-    A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR   %>%
+    A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR.comb   %>%
                             gather(series, data)
     # and ultimately we add another column called NO_CONSTR
     # and muliply the data-series with 100:
     A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR.tidy %>%
                             mutate(TYPE_CONSTR = "EVENT CONSTRAINTS ONLY") %>%
                             mutate(data = data*100)
-    
-    
-    # in a last step we stack all data.frames on top of each other:
-    A_0_valid.tidy.all <- rbind(
-                            A_0_valid.FE_CONSTR.tidy,
-                            A_0_valid.NO_CONSTR.tidy,
-                            A_0_valid.ALL_CONSTR.tidy
-    )
-    
-    
+
     
     ggplot(data=A_0_valid.NO_CONSTR.tidy) + 
       geom_histogram(aes(x=data, y=(..count..)/sum(..count..),
