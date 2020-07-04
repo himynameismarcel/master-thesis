@@ -51,6 +51,7 @@
 % the below code allows the adjustment 
 
 \usepackage{amsmath, amssymb, amstext} %für Mathematik
+\usepackage{arydshln} % damit man eine strich-punktierte Linie zwischen ein Matrix einbauen kann
 \usepackage{mathstyle} %mehr Infos: http://www.ctan.org/pkg/mathstyle
 \usepackage{blindtext} %to be able to place blindtext at certain locations
 \usepackage[left=35mm, right=35mm, top=50mm, bottom=35mm]{geometry}%Seitenränder anpassen
@@ -384,6 +385,26 @@
 
 
 %----------------------------------------------------------- Beginn Widmung Alle ------------------------------------------------------------------------
+\newpage
+\thispagestyle{empty} %bewirk, dass die Striche oben wegfallen und, dass die Seitenzahl wegfällt.
+\newgeometry{left=30mm, right=30mm, top=50mm, bottom=50mm}
+It has been more than 8.5 years now that I finished and handed in my diploma thesis and decided to continue with the Master's programme in "Applied Economics" at the University of Innsbruck. Back in 2011 I could have never imagined how much more I would learn again during the upcoming years and how many wonderful individuals would cross my way, become close friends and make the time throughout the Master's programme a unique period in my life. In particular I want to thank Christian Aichmüller, Judith Santer, Nathan Harrold, Alban Zeiger, Rudolf Hakenschmidt, Katrin Findeisen, Sabrina Ronacher, Caro Poullain, Silvia Hribik and Bettina Lubach. \\ 
+\\
+With regard to my studies, I used the time to broaden my knowledge in Econometrics and Mathematics and Statistics, more generally. In this respect I want to thank, in particular, Prof. Dr. Achim Zeileis, whose classes in Microeconometrics and Time Series Analysis I've been allowed to attend, Prof. Michael Pfaffermayr that introduced us to the more advanced parts of econometric theory, Prof. Dr. Janette Walde that introduced us to Mathematics for Economists and Prof. Dr. Peter Wagner, who I met while attending classes at the Technical Faculty of our university. His courses in Mathematics 1 \& 2 and Probability Theory and Statistics opened a door for me that had been closed way too long.\\
+I also had the chance to train my critical thinking in countless conversations with my fellow students that gave me very valuable insights on the Economics-discipline itself and the work we have ahead to advance in this field that is prone to so much controversy in academia and public discussions. I, especially, want to point out my dear friend Alban Zeiger that introduced me (and my fellow students) to the fantastic work of Heiner Flassbeck and his platform flassbeck-economics (which later changed its name into Makroskop). I definitely hope that we all can contribute to this mission that is ahead of us.\\
+\\
+Beginning with the summer term 2012 I also got the opportunity to gain my first teaching experiences by holding two seminars within the Bachelor's course "Public Economics" here at our university. This is all due to my friend Dr. Martin Gächter that had supported and accompanied me through many years already and I was sitting in his very office when suddenly a colleague dropped by, mentioning that the department of Public Finance is seeking teaching assistants for their seminars. And well, the rest is history.
+\newpage
+\thispagestyle{empty} %bewirk, dass die Striche oben wegfallen und, dass die Seitenzahl wegfällt.
+I am very much indebted to Prof. Dr. Engelbert Theurl and Prof. Dr. Rupert Sausgruber for trusting me and giving me the opportunity to prove my teaching abilities. It was a great chance for me that changed the course of many things to come. I am also indebted to my dear friend Christian Aichmüller that immediately thought of me when a tutoring position in Microeconomics opened up as well. The subsequent collaboration with Dr. Christoph Hauser was very fruitful and pleasant.\\
+\\
+The reason for me sitting down to write this thesis with a couple of years in between the last courses I had taken for this Master's degree are my eagerness to study Mathematics (which I did for two semesters from 2014 until 2015) and the amazing opportunity to join the Austrian National Bank's Economic Studies Division as of July 2015 as a research assistant for half a year. I want to thank everyone that was part of my journey at the OeNB, in particular Esther Segalla, who was the driving force behind me getting this internship. Beyond that I want to thank Martin Summer, Markus Knell, Helmut Elsinger, Helmut Stix, Graziella Hofbaur-Berlakovic, Walter Waschiczek, Dominik Stelzeneder, Lisa Kothmayr, Jun Chao Zhan, Anna-Camilla Drahonsky, Robert Köck and Ruth Fulterer as well as the amazing people I met at the Strudlhofgasse student home (in particular, Lisa Schweitzer, Ilka Lindner, Hamed Barzegar and Pascal Schwerin).  \\
+\\
+I could have never imagined that my next step after this would be the European Central Bank which I joined in April 2016 and where I stayed for almost two years in the DG-Statistics. This time was incredibly challenging and enriching both from a professional and a personal perspective due to my colleagues and the many great friendships I could make throughout this time. I want to mention in particular Francesca Gnecchi, Rocco Incardona, Matteo Paolo Pirone, Taja Sečnik, Simon Gollier, Laura Battalia, Nicolas Lemercier, Sara Thijs, Mattia Duma, Jörg Reddig, Sandrine Corvoisier, Peter Neudorfer, Riccardo Bonci, Gianluca Pallante, Jean-Marc Israel, Branchi Mariagnese, Marta Lopez Villa, Antonio Colangelo, Orestes Collazo Brananova, Catherine Ahsbahs, Alejandro Pica, Romana Peronaci, Alexandra-Iulia Chindea, Ioanna Kanioura, Julie Van Eeckhout, Me-Lie Yeh, Gemma Agostoni, Zeno Benetti, Damjan Strbac, Olgerd Unger, Darjan Divkovic, Bernadette Lauro, Krishanu Saha, Valeria Martone, Mirko de Giovanni, Sotirios Dimitrios Anagnostidis, Lyubomir Dilov, Nina Berghoff, Angelo Saponara, Johannes Micheler, Jürgen Herr and Sami Laiso.\\
+\\
+Soon after the ECB, I joined the amazing QAS-Team at EY Germany and, at the time of writing, am closing my second year. I will forever be grateful for the opportunity Dr. Bernhard Hein and Dr. Martin Dörr have given me to join their family at EY. I met wonderful people and learned an incredible amount about credit risk, market risk and the many challenges of banking in the 21st century. Thank you all! And here's to many more years!
+
+
 \newpage
 \thispagestyle{empty} %bewirk, dass die Striche oben wegfallen und, dass die Seitenzahl wegfällt.
 
@@ -1314,7 +1335,7 @@ Ultimately, the goal is to study the dynamic effects of the structural shocks (i
  			\sum\limits_{k=0}^\infty \vect{\Theta_k} = \sum\limits_{k=0}^\infty \vect{\Psi_k}\vect{A_0^{-1}}
 \end{split}								
 \end{equation}
-on $\vect{y_t}$. The authors point out that with autoregressive parameters $\vect{B_j}$ being consistently estimated under regularity conditions, the sample residuals $\hatt{\vect{u_t}}(\hatt{\phi})$  are consistent estimates of the reduced-form errors $\vect{u_t}$ and the estimation problem reduces to uniquely identify the impact matrix $\vect{A_0^{-1}}$ from $\hatt{\phi}$. However, at this stage, the model is under-identified because there are more parameters to be estimated in $\vect{A_0^{-1}}$ while the covariance structure provides less restrictions.\footnote{For the case with $n=3$ variables which we will consider below, there are nine parameters to be estimated in $\vect{A_0^{-1}}$ while the covariance structure only provides six restrictions.}
+on $\vect{y_t}$. The authors point out that with autoregressive parameters $\vect{B_j}$ being consistently estimated under regularity conditions, the sample residuals $\hatt{\vect{u_t}}(\hatt{\phi})$  are consistent estimates of the reduced-form errors $\vect{u_t}$ and the estimation problem reduces to uniquely identify the impact matrix $\vect{A_0^{-1}}$ from $\hatt{\phi}$. However, at this stage, the model is under-identified because there are more parameters to be estimated in $\vect{A_0^{-1}}$ while the (reduced-form) covariance structure of $\hatt{\vect{u}}_t$ provides less restrictions in the form $FZ(\vect{A_0^{-1}}) \equiv \text{vech}(\hatt{\Sigma}_u) - \text{vech}(\vect{A_0^{-1}} (\vect{A_0^{-1}})') = \vect{0}$.\footnote{For the case with $n=3$ variables which we will consider below, there are nine parameters to be estimated in $\vect{A_0^{-1}}$ while the covariance structure only provides six restrictions.}
 
 Central to the framework of \citet{ludvigsonetal:18} is then the following: \\
 By definition they have set $\vect{\Sigma}_u = \vect{P}\vect{P}^'$ with $\vect{P}$ being the unique lower-triangular Cholesky factor. By introducing a set $\mathbb{Q}_n$ of $(n \times n)$ orthonormal matrices,\footnote{Note that \citet{rubioetal:10} were referring only to \textit{orthogonal}, not \textit{orthonormal} matrices. Orthonormality implies orthogonality, i.e., orthonormality is stronger by demanding for each basis vector spanning the respective space to have length 1.} any $\vect{A}_0^{-1} = \vect{P}\vect{Q}$ is 'observationally equivalent' (see the explanations in Section~\ref{sec:observationalEquivalence}) given $\vect{\Sigma}_u$ and hence consistent with the reduced form variance-covariance matrix $\vect{\Sigma}_u = \vect{A}_0^{-1}\vect{A}_0^{-1'}$ for any given $\vect{Q} = (q_1, q_2, \dots, q_n) \in \mathbb{Q}_n$. \citet{ludvigsonetal:18} define this set of observationally equivalent $\vect{A}_0^{-1}$ as 
@@ -1326,7 +1347,7 @@ By definition they have set $\vect{\Sigma}_u = \vect{P}\vect{P}^'$ with $\vect{P
 whereby the only restriction that can be imposed at this stage follows from combining the unit effect normalization on $\vect{H}$ with $\sigma_{jj} \leq 0$ so that a unit change in the structural shock $j$ may be interpreted as a standard deviation increase in variable $j$ (i.e. reduced-form covariance restrictions). Taking this into account, $\mathcal{A}_0$ becomes
 \begin{equation} \label{eq:svar_ludvi7}
 \begin{split}
- 			\vect{\mathcal{A}}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad \text{diag}(\vect{A}_0^{-1}) \geq 0\},
+ 			\vect{\mathcal{A}}_0 = \{\vect{A}_0^{-1} = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \text{diag}(\vect{Q}; \phi) \geq 0, FZ(\vect{Q}; \phi) = \vect{0}\},
 \end{split}								
 \end{equation}
 which is referred to as the \textit{unconstrained set}, while due to the covariance restrictions it is technically not completely unconstrained \citep{ludvigsonetal:19}.
@@ -1339,7 +1360,7 @@ By collecting the reduced form innovations $\vect{u}_t$ into $\phi$, \ref{eq:sva
 \end{equation}
 Without any further restrictions, $\hatt{\mathcal{A}}_0(\phi)$ contains infinitely many solutions. \citet{ludvigsonetal:18} hence introduce additional restrictions that go beyond classical sign restrictions, or more generally inequality restrictions (which tend to place these restrictions on the impulse response functions and/or $\vect{A}_0^{-1}$ itself) in an attempt to yield a smaller solution set denoted as $\overline{\mathcal{A}_0}(\phi)$.\\
 \\
-Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the novel restrictions that \citet{ludvigsonetal:18} define to create a credible identification scheme involve the \textit{identified structural shocks} $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})$. Thereby the set $\hatt{\mathcal{A}}_0(\phi)$ is diminished accordingly.
+Denoting the collection of zero restrictions imposed on the model as $FZ(\vect{Q}; \phi)$ as in \citet{rubioetal:10}, the novel restrictions that \citet{ludvigsonetal:18} define to create a credible identification scheme involve the \textit{identified structural shocks} $\vect{\epsilon}_t$ either on their own by defining event constraints $FE(\vect{Q}; \phi; \vect{y}_t, \tau^*, \overline{k})$ or in combination with external variables as component correlation constraints denoted $FC(\vect{Q}; \phi, \vect{y}_t, \vect{S})$. Thereby the set $\hatt{\mathcal{A}}_0(\phi)$ is diminished accordingly.
 
 \citet{ludvigsonetal:18} also contrast their non-Bayesian approach to work which has been done on sign-restricted SVARs in a Bayesian context that also draws random orthogonal matrices $\vect{Q}$ in the course of the $\vect{QR}$-decomposition (see Sections~\ref{sec:solutionAlgorithm} and \ref{sec:observationalEquivalence}) and clarify that these approaches focus on restrictions placed on the sign of IRFs while their approach concentrates on restrictions on the generated shocks. In addition, the authors explain that their approach is frequentist and follows the moment inequality framework of \citet{andrewsandsoares:10} where moment conditions are given by the ``[...] inequalities from the event and correlation constraints, and equalities provided by the covariance structure'' \citet[p. 11]{ludvigsonetal:18}. The $\vect{QR}$-decomposition in their approach is rather of technical nature to generate possible candidates for $\vect{A_0}$.
 
@@ -1401,58 +1422,92 @@ Writing down
 where the values of $u_{1t}$ and $u_{2t}$ are given since data is given for time $t$ in the span $[\tau_1, \tau_2]$. The above example shows that a restriction on the behavior of $\epsilon_{1t}$ at a specific time $t$ results in a non-linear restriction on $\vect{A}_0^{-1}$ and, equivalently, on $\vect{Q}$.
 \\
 \\
-With the stage set according to the above explanations, \citet{ludvigsonetal:18} require $\vect{\epsilon}_t$ to satisfy three event constraints which they parameterize by $\overline{\vect{k}} = (\overline{k}_1, \overline{k}_2, \overline{k}_3)'$\footnote{The bounds will be set below.}, $\overline{\vect{\tau}} = (\overline{\tau}_1, \overline{\tau}_2, \overline{\tau}_3)' = (1987:10, [2007:12, 2009:06], [2007:12, 2009:06])$ and $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty and collect the constraints into a system of inequalities
+With the stage set according to the above explanations, \citet{ludvigsonetal:19} require any $\vect{\epsilon}_t = \vect{A}_0 \vect{u_t}$ formed from $\vect{A_0}^{-1} \in \hatt{\mathcal{A}}_0$ to satisfy six event constraints which they parameterize by 
+\begin{equation}
+\begin{split}
+\overline{\vect{k}} & = (\overline{k}_1, \overline{k}_2, \overline{k}_3, \overline{k}_4)', \\
+\overline{\vect{\tau}} & = \begin{bmatrix}
+			\overline{\tau}_1 \\
+			\overline{\tau}_2 \\
+			\overline{\tau}_3 \\
+			\overline{\tau}_4 \\
+			\overline{\tau}_5 \\
+			\overline{\tau}_6
+			\end{bmatrix} = 
+			\begin{bmatrix}
+			$1987:10$ \\
+			$2008:09$ \\
+			$1970:12$ \\
+			$[2007:12, 2009:06]$ \\
+			$1979:10$ \\
+			$[2011:07, 2011:08]$
+			\end{bmatrix}
+\end{split}
+\end{equation}
+ and $\vect{y}_t = (U_{Mt}, IPM_{t}, U_{Ft})$ where $U_{Mt}$ denotes macro uncertainty, $IPM_{t}$ a measure of real activity (in this case industrial production in manufacturing) and $U_{Ft}$ a measure for financial uncertainty and collect the constraints into a system of inequalities
 \begin{equation} \label{eq:svar_ludvi12}
 \begin{split}
-	FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & = \begin{pmatrix}
+	FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})  = 
+	\left[ 
+	\begin{array}{l}
 	FE_1(\overline{\tau}_1, \overline{k}_1)\\
-	 FE_2(\overline{\tau}_2, \overline{k}), \\
-	 FE_3(\overline{\tau}_3, \overline{k}_3)
-	\end{pmatrix} = \\
-	= \begin{pmatrix}
-	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_1= 1987:10} \dot \quad \epsilon_{F\overline{\tau}_1}  \\
-	 \sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in [2007:12, 2009:06]} \dot \quad \epsilon_{F\overline{\tau}_2}  \\
-	\overline{k}_3
-	\end{pmatrix} & - 
-	\begin{pmatrix}
-	\overline{k}_1\\
-	\overline{k}_2  \\
-	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_3 \forall \in [2007:12, 2009:06]} \dot \quad \epsilon_{IPM\overline{\tau}_3} 
-	\end{pmatrix} \geq \vect{0}
+	 FE_2(\overline{\tau}_2, \overline{k}_1, \overline{k}_2), \\
+	 FE_3(\overline{\tau}_3, \overline{k}_4) \\ \hdashline[2pt/2pt]
+	 FE_4(\overline{\tau}_3, \overline{\tau}_4) \\
+	 FE_5(\overline{\tau}_5) \\
+	 FE_6(\overline{\tau}_6)
+	\end{array}
+	\right]
+	 = \\
+	= 
+	\left[\begin{array}{l}
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_1 \in[1987:10]} \dot \quad \epsilon_{F\overline{\tau}_1} \geq  \overline{k}_1 \\	
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in[2008:09]} \dot \quad \epsilon_{F\overline{\tau}_2} \geq \overline{k}_2) \lor 
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_2 \in[2008:09]} \dot \quad \epsilon_{M\overline{\tau}_2} \geq \overline{k}_3) \\
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_3 \in [1970:12]} \dot \quad \epsilon_{M\overline{\tau}_3} \geq \overline{k}_4\\ \hdashline
+	\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_4  \forall \in [2007:12, 2009:06]} \dot \quad \epsilon_{IPM\overline{\tau}_4} \leq 0 \\
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_5 \in [1979:10]} \dot \quad \epsilon_{M\overline{\tau}_5} \geq 0) \land
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_5 \in [1979:10]} \dot \quad \epsilon_{F\overline{\tau}_5} \geq 0) \\
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_6 \forall \in [2011:07, 2011:08]} \dot \quad \epsilon_{M\overline{\tau}_6} \geq 0) \land
+	(\sum\limits_{t=1}^T \mathbbm{1}_{t = \overline{\tau}_6 \forall \in [2011:07, 2011:08]} \dot \quad \epsilon_{F\overline{\tau}_6} \geq 0)
+	\end{array}
+	\right]
 \end{split}								
 \end{equation}
-Each $FE_i(\overline{\tau}_i, \overline{k}_i)$ represents a vector of constraints of magnitude $\overline{k}_i$ on $\epsilon_{it}$ for corresponding $t \in \overline{\tau}_i$. Together, $FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})$ defines inequality constraints based on timing, sign and magnitude that help identification of the underlying structural model. $FE_1$ requires that the financial uncertainty shock that occurred in October 1987 be a large one; $FE_2$ postulates that there must be at least one month during the financial crises 2007-2009 for which the financial uncertainty shock was large and positive and $FC_3$ requires that any real activity shocks found during the Great Recession (the NBER dates for the recession coincide with the financial crisis) do not take any unusually large positive values.\\
-The motivation for the above constraints is that if a potential $\vect{Q}$ implies a corresponding shock series that is difficult to hold on to during the key time episodes, it will be removed from the solution set $\hatt{\mathcal{A}}_0(\phi)$. Correspondingly, in the postulated inequality constraints the values for the $\overline{k}_i$s have to be meaningful and timing of events $\overline{\tau}_i$ accurate otherwise solutions that pass these constraints will be meaningless after all.
+%Each $FE_i(\overline{\tau}_i, \overline{k}_i)$ represents a vector of constraints of magnitude $\overline{k}_i$ on $
+%\epsilon_{it}$ for corresponding $t \in \overline{\tau}_i$. 
+Together, $FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})$ defines inequality constraints based on timing, sign and magnitude that help identification of the underlying structural model. Note that the bounds in $\overline{\vect{k}}$ still have to be chosen. In this set, \citet{ludvigsonetal:19} refer to the first three constraints as the \textit{big shock events} followed by the three \textit{non-negative events} which are visually separated by a horizontal line in~\ref{eq:svar_ludvi12}. $FE_1$ requires that the financial uncertainty shock that occurred in October 1987 be large and exceed the mean by $\overline{k}_1$ standard deviations, $FE_2$ postulates that either the financial uncertainty shock or the macro uncertainty shock or both found in September 2008 (the month when Lehman Brothers filed for bankruptcy) must be large and exceed the mean by $\overline{k}_2$ and/or $\overline{k}_3$ standard deviations, respectively, and $FC_3$ requires the macro uncertainty shock in December 1970 to be large and $\overline{k}_4$ standard deviations above the mean. With respect to the non-negative event constraints, $FC_4$ postulates that real activity shocks during the great recession must be below average (i.e. negative) and $FC_5$ and $FC_6$ demand for financial and macro unceratinty shocks to be negative (i.e., below average) in October 1979 (\citet{ludvigsonetal:19} refer to this episode as the 'Volcker experiment') and during the months of July 2011 and August 2011 (the debt-ceiling crisis).
+
+The motivation for the above constraints is that if a potential $\vect{Q}$ implies a corresponding shock series that is difficult to hold on to during the key time episodes, it will be removed from the solution set $\hatt{\mathcal{A}}_0(\phi)$. Correspondingly, in the postulated inequality constraints the values for the $\overline{k}_i$s have to be meaningful and the timing of events $\overline{\tau}_i$ accurate otherwise solutions that pass these constraints will be meaningless after all.
+
+With regard to the established restrictions for the big shock episodes, \citet[p. 12]{ludvigsonetal:19} point out that they make sure that ``\textit{at least some}\footnote{Author's italics.} of the forecast error variance within the system $\vect{y_t}$ on the respective dates is attributable to the respective shocks. This holds for the shock $\epsilon_{Ft}$ in 1987:10 ($FE_1$), the shock $\epsilon_{Mt}$ in 1970:12 ($FE_3$) and at least one of the shocks $\epsilon_{Mt}$ or $\epsilon_{Ft}$ in 2008:09 ($FE_3$). To clarify, \citet{ludvigsonetal:19} point out that the constraints, however, do \textit{not}\footnote{Author's italics.} require that all or most of the variability in these episodes to come from shocks declared in the restrictions because they do not rule out other large adverse shocks.
+% first two constraints on financial uncertainty for the stock market crash on Black Monday and the recent financial crisis
+% in $\vect{\epsilon}_M$ and $\vect{\epsilon}_{IPM}$
 \\
-\\
-With regard to the first two constraints on financial uncertainty for the stock market crash on Black Monday and the recent financial crisis, \citet{ludvigsonetal:18} declare that the established constraints want to make sure that ``\textit{at least some}\footnote{Author's italics.} of the forecast error variance of $U_F$ in these episodes of most extreme financial uncertainty is attributable to large shocks that originated in financial markets'' which ``is a maintained assumption [...] that we argue is grounded in a broad historical reading of the times'' \citep[p. 8]{ludvigsonetal:18} and here is captured by $\vect{\epsilon}_F$. To clarify, \citet{ludvigsonetal:18} point out that the constraints, however, do not require that all or most of the variability in these episodes should come from shocks originating in financial markets because they do not rule out large adverse shocks in $\vect{\epsilon}_M$ and $\vect{\epsilon}_{IPM}$. 
 
-
-
-
-The second set of constraints considered by \citet{ludvigsonetal:18} are \textbf{\textit{correlation constraints}}\footnote{Alternatively also called \textit{external variable inequality constraints}.} which require that the identified (structural) uncertainty shocks recovered from $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ show a minimum absolute correlation (co-movement) with certain variables that are external to the VAR estimations which they denote with $\vect{S}_t$. In their baseline specification they use an aggregate stock market return and impose restrictions on its correlation with uncertainty shocks. \\
+The second set of constraints considered by \citet{ludvigsonetal:19} are \textbf{\textit{correlation constraints}}\footnote{Alternatively also called \textit{external variable inequality constraints}.} which require that the identified (structural) uncertainty shocks recovered from $\vect{\epsilon}_t = \vect{A}_0\vect{u}_t$ show a minimum absolute correlation (co-movement) with certain variables that are external to the VAR estimations which they denote with $\vect{S}_t$. In their baseline specification they use two external variables $\vect{S}_t =  (S_{1t}, S_{2t})$, with $S_{1t}$ denoting a measure of aggregate stock market returns and $S_{2t}$ denoting the log difference in the real price of gold (a safe-haven asset), arguing that these variables are likely to contain information about uncertainty shocks.\\
 \\
 As a motivating example, \citet{ludvigsonetal:17} consider the following example of a bivariate reduced-form VAR-model:
 \begin{equation} \label{eq:svar_ludvi12_a}
 \begin{split}
 	\vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 
-		\begin{pmatrix}
+		\begin{bmatrix}
 			u_{1t} \\
 			u_{2t}
-		\end{pmatrix} \iff \\
+		\end{bmatrix} \iff \\
 \vect{y_t} & = \sum_{j=1}^{p} \vect{B_j}\vect{y_{t-j}} + 	
-					\begin{pmatrix}
+					\begin{bmatrix}
     			a_{11}^0 &  a_{12}^0 \\
 			a_{21}^0 &  a_{22}^0
- 			\end{pmatrix}^{-1}
-		\begin{pmatrix}
+ 			\end{bmatrix}^{-1}
+		\begin{bmatrix}
 			\epsilon_{1t} \\
 			\epsilon_{2t}
-		\end{pmatrix},\\
-		\begin{pmatrix}
+		\end{bmatrix},\\
+		\begin{bmatrix}
 			\epsilon_1 \\
 			\epsilon_2
-		\end{pmatrix} & \thicksim \mathcal{N}(\vect{0}, \vect{I}_n)
+		\end{bmatrix} & \thicksim \mathcal{N}(\vect{0}, \vect{I}_n)
 \end{split}								
 \end{equation}
 
@@ -1486,63 +1541,58 @@ and $e_{St}$ being a shock specific to $S$ which is assumed to be uncorrelated w
 
 In order to exploit the relationship with $S_t$ external to the VAR in the identification of $ \vect{A_{0}^{-1}}$, in their example \citet{ludvigsonetal:17} assume to reject solutions in $\hatt{\mathcal{A}}_0(\phi)$ that, e.g., result in an absolute correlation between $S_t$ and $e_{2t}$ below a certain threshold (i.e. too small). While the expression $\frac{\lambda_2}{\sqrt{\lambda_{1}^2 + \lambda_{2}^2 + \sigma_S{^2}}} = c(\vect{A_0})$ stands for the correlation between $S_t$ and $e_{2t}$ and depends on the particular $\vect{A_0}$ considered, demanding a minimum absolute correlation equals a non-linear constraint between $S_t$ and $e_{2t}$.\\
 
-\citet{ludvigsonetal:18} see their correlation constraints backed by an asset pricing literature that establishes a link between (macro/financial) uncertainty shocks and stock market returns, arguing that these shocks drive the stock market risk premium variation, a leading example being the Capital Asset Pricing Model (see \citealp{sharpe:64, lintner:65}) and variants thereof.\\
+\citet{ludvigsonetal:19} see their correlation constraint with stock market returns backed by an asset pricing literature that establishes a negative link/correlation between macro/financial uncertainty shocks and (ex post) stock market returns, arguing that these shocks drive the stock market risk premium variation, a leading example being the Capital Asset Pricing Model (see \citealp{sharpe:64, lintner:65}) and variants thereof. With respect to gold, the argument goes that its value is assumed to contain information about uncertainty shocks since ``plausibly exogenous increases in uncertainty [...] have typically been associated with increases in returns on quintessential safe-haven assets, the archetypal example being gold.'' \citep[p. 10]{ludvigsonetal:19}.
 
-To formalize this and further letting $\hat{u}_{St}$ be the first order autoregressive (and orthogonal) residual for $S_t$, $\hat{u}_{St}$, being a reduced-form residual, hence results as a combination of primitive shocks from various sources including, among others, the three shocks modeled within the VAR system (i.e. aggregate stock market returns are assumed to be correlated with the uncertainty shocks), i.e. 
-	\begin{equation} \label{eq:svar_ludvig15}
-		\begin{split}
-S_t = & \lambda_1 \epsilon_{1t} + \lambda_2 \epsilon_{2t} + \lambda_3 \epsilon_{3t} + \lambda_S S_{t-1} + \sigma_S \epsilon_{St} \\
-	= &  \lambda_1 \epsilon_{1t} + \lambda_2 \epsilon_{2t} + \lambda_3 \epsilon_{3t} + \lambda_S S_{t-1} +  u_{St}.
-	     	\end{split}				
-	\end{equation}	
-
-In particular, letting ($c_M(\vect{A}_0)$, $c_{IMP}(\vect{A}_0)$, $c_{F}(\vect{A}_0)$) be the sample correlations between the reduced-form error $\hat{u}_{St}$ of an AR(1)-process estimated for $S_t$ and the structural shocks ($\epsilon_{Mt}(\vect{A}_0)$, $\epsilon_{IPMt}(\vect{A}_0)$, $\epsilon_{Ft}(\vect{A}_0)$) and $\overline{\vect{\lambda}} = (\overline{\lambda}_1, \overline{\lambda}_2, \overline{\lambda}_3)$, \citet{ludvigsonetal:18} establish the following system of inequalities for correlation constraints
+%To formalize this and further letting $\hat{u}_{St}$ be the first order autoregressive (and orthogonal) residual for $S_t$, $\hat{u}_{St}$, being a reduced-form residual, hence results as a combination of primitive shocks from various sources including, among others, the three shocks modeled within the VAR system (i.e. aggregate stock market returns are assumed to be correlated with the uncertainty shocks), i.e. 
+%	\begin{equation} \label{eq:svar_ludvig15}
+%		\begin{split}
+%S_t = & \lambda_1 \epsilon_{1t} + \lambda_2 \epsilon_{2t} + \lambda_3 \epsilon_{3t} + \lambda_S S_{t-1} + \sigma_S \epsilon_{St} \\
+%	= &  \lambda_1 \epsilon_{1t} + \lambda_2 \epsilon_{2t} + \lambda_3 \epsilon_{3t} + \lambda_S S_{t-1} +  u_{St}.
+%	     	\end{split}				
+%	\end{equation}	
+Letting ($c_{M_{t}, S_{1t}}(\vect{A}_0)$, $c_{F_{t}, S_{1t}}(\vect{A}_0)$, $c_{M_{t}, S_{2t}}(\vect{A}_0)$, $c_{F_{t}, S_{2t}}(\vect{A}_0)$) be the sample correlations between the structural shocks ($\epsilon_{Mt}(\vect{A}_0)$, $\epsilon_{Ft}(\vect{A}_0)$) and the series for the stock market return and the log difference in the real price of gold $\vect{S}_t =  (S_{1t}, S_{2t})$, respectively, \citet{ludvigsonetal:19} establish the following system of inequalities as correlation constraints
 \begin{equation} \label{eq:svar_ludvi13}
 \begin{split}
-	FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & = \begin{pmatrix}
-	FC_1(\overline{\lambda}_1 < 0, \vect{S})\\
-	 FC_2(\overline{\lambda}_2 \geq 1, \vect{S}), \\
-	 FC_3(\overline{\lambda}_3, \vect{S})
-	\end{pmatrix} = \\
-	& = \begin{pmatrix}
-	 		\begin{pmatrix}
-	 			\overline{\lambda}_1 - c_M(\vect{A}_0)\\
-				\overline{\lambda}_1 - c_F(\vect{A}_0)
-			\end{pmatrix} \geq \vect{0} \\
-			|c_F(\vect{A}_0)| - \overline{\lambda}_2|c_M(\vect{A}_0| \geq 0 \\
-			c_{MF} - \overline{\lambda}_3 \geq 0; c_{MF}^2 = c_M(\vect{A}_0)^2 + c_F(\vect{A}_0)^2.
-	\end{pmatrix} 
+	FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}) & = \begin{bmatrix}
+	FC_1(\vect{S})\\
+	 FC_2(\vect{S})
+	\end{bmatrix} = \\
+	& = \begin{bmatrix}
+			(c_{M_{t}, S_{1t}}(\vect{A}_0) \leq 0)  \lor  (c_{F_{t}, S_{1t}}(\vect{A}_0) \leq 0) \\
+			(c_{M_{t}, S_{2t}}(\vect{A}_0) \geq 0)  \lor  (c_{F_{t}, S_{2t}}(\vect{A}_0) \geq 0).
+	\end{bmatrix} 
 \end{split}								
 \end{equation}
-The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are (sufficiently large) negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$ (which is based on the findings of \citealp{btz:09}). Therefore the authors set the $\overline{\lambda}_2 > 1$. And without fixing the parameterization exactly by which the collective correlation is attributed to $\vect{\epsilon}_{Mt}$ and $\vect{\epsilon}_{Ft}$, respectively, \citet{ludvigsonetal:18} 'only' require that $|c_F(\vect{A}_0)| - \overline{\lambda}_2|c_M(\vect{A}_0| \geq 0 $. The lower bound for the collective correlation between the two uncertainty shocks and $S_t$ is also derived off of the work of \citet{btz:09}.
+$FC_1(\vect{S})$ states that uncertainty shocks have to be negatively correlated with the series of the stock market returns while $FC_2(\vect{S})$ on the other hand demands them to be positively correlated with the respective series for the log difference in the real price of gold.
 
+%The first and third constraint require that $\epsilon_M$ and $\epsilon_F$ are (sufficiently large) negatively correlated with the external variable $S_t$. In particular, constraint (1) requires that each individual correlation exceed the threshold $\overline{\lambda}_1$ in absolute terms and collectively exceed $\overline{\lambda}_3$. The second constraint requires financial uncertainty shocks to be more highly correlated with the autoregressive residual $e_{St}$ than 'real' (macro) uncertainty shocks bounded by the lower bound $\overline{\lambda}_2$ (which is based on the findings of \citealp{btz:09}). Therefore the authors set the $\overline{\lambda}_2 > 1$. And without fixing the parameterization exactly by which the collective correlation is attributed to $\vect{\epsilon}_{Mt}$ and $\vect{\epsilon}_{Ft}$, respectively, \citet{ludvigsonetal:18} 'only' require that $|c_F(\vect{A}_0)| - \overline{\lambda}_2|c_M(\vect{A}_0| \geq 0 $. The lower bound for the collective correlation between the two uncertainty shocks and $S_t$ is also derived off of the work of \citet{btz:09}.
 Together, the constraints in \ref{eq:svar_ludvi13} provide cross-equation restrictions on the parameters in a potential $\vect{A}_0^{-1}$, whereby the correlations are not invariant to orthonormal rotations (by $\vect{Q}$) so that the generated correlations in each draw will be different. 
 
 \subsubsection{Identified Solution Set and maxG - Solution}
 Combining default covariance structure restrictions with the introduced event and correlation constraints, \citet{ludvigsonetal:18} call the \textit{identifed}\footnote{Author's italics.} solution set 
 \begin{equation} \label{eq:svar_ludvi14}
 \begin{split}
-\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})  = \{\vect{A}_0^{-1} & = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad diag(\vect{A}_0^{-1}) \geq 0\}; \\
+\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \vect{S})  = \{\vect{A}_0^{-1} & = \vect{P}\vect{Q}: \vect{Q} \in \mathbb{Q}_n, \quad diag(\vect{Q}; \phi) \geq 0\}; \\
 			FZ(\vect{Q}; \phi) & = \vect{0}, \\
-			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda}) & \geq \vect{0}, \\
-			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & \geq \vect{0}
+			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k}) & \geq \vect{0}, \\
+			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}) & \geq \vect{0}
 \end{split}								
 \end{equation}
 which only contains estimates of $\vect{A}_0^{-1}$ that satisfy all constraints. Thereby a particular solution can only be in both $\hatt{\mathcal{A}}_0$ (the unconstrained solution set) and $\overline{\vect{\mathcal{A}}}_0$ if all restrictions are satisfied. And while $\overline{\vect{\mathcal{A}}}_0$ will be a set as well it should be notably smaller than $\hatt{\mathcal{A}}_0$ (without any additional restrictions other than the usual covariance restrictions).
 
 Both constraints together generate moment inequalities (together with the standard reduced-form covariance restrictions) that produce a reduction of the set of possible model parameters consistent with the data that is large enough to ultimately unambiguously derive most dynamic relationship in the system.\\
 
-The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ depends in particular on the chosen thresholds for the values $\overline{k}, \overline{\tau}$ and $\overline{\lambda}$ which we will discuss below.
+The ultimate size of the set $\overline{\vect{\mathcal{A}}}_0$ depends in particular on the chosen thresholds for the values $\overline{k}$ which we will discuss in Section~\ref{sec:solutionAlgorithm} below.
 
 And while there is no single solution in $\overline{\vect{\mathcal{A}}}_0$ that is more likely than another one, as a reference point (and following \citealp{ludvigsonetal:18}), we will also refer to the so-called 'maxG' - solution when discussing the results. In particular, the 'maxG' - solution serves as a reference point at which the value of the introduced constraints (inequalities) are jointly maximized. Formally, as the maxG-solution the quadratic norm is chosen so that
 \begin{equation} \label{eq:svar_ludvi16}
 \begin{split}
 \vect{A}_0^{maxG} \equiv \operatorname*{argmax}_{\vect{A}_0 \in \overline{\vect{\mathcal{A}}}_0} \sqrt{\overline{f}(\vect{A}_0)^'\overline{f}(\vect{A}_0)} \quad \text{where} \\
-\quad \overline{f}(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S}) = \begin{pmatrix}
+\quad \overline{f}(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S}) = \begin{bmatrix}
 			FZ(\vect{Q}; \phi)' \\
 			FC(\vect{Q}; \phi, \vect{y}_t, \vect{S}, \overline{\lambda})' \\
 			FE(\vect{Q}; \phi, \vect{y}_t, \overline{\tau}, \overline{k})'	
-		\end{pmatrix}^'
+		\end{bmatrix}^'
 \end{split}								
 \end{equation}
 With respect to the introduced constraints, the inequalities will be large for the most extremely positive financial uncertainty shocks in 1987 and during the Great Recession, for the most negative real activity shocks during the Great Recession and when uncertainty shocks have the highest absolute correlation with the variable external to the VAR (in the baseline case: aggregate stock market returns), both jointly and collectively. With these features, \citet{ludvigsonetal:18} regard the 'maxG' - solution, economically, as the ``worst-case'' - scenario.
@@ -1554,7 +1604,7 @@ With respect to the introduced constraints, the inequalities will be large for t
 \citet{ludvigsonetal:17} point out that their shock-restricted approach in the first place deals with the issue of identification while the issue of inference is yet to be solved. However, to get a sense of the sampling distribution, \citet{ludvigsonetal:17} perform a a Monte Carlo simulation by bootstrapping from the set of shocks $\vect{\epsilon_t}({\vect{A_0}})$ in the \textit{identified set}.
 
 
-\subsection{Solution Algorithm and Implementation}
+\subsection{Solution Algorithm and Parameter Selection}
 \label{sec:solutionAlgorithm}
 As indicated above, a decisive part of the solution algorithm is the construction of the unconstrained solution set $\hatt{\mathcal{A}}_0$ and the derivation of the identified set $\overline{\vect{\mathcal{A}}}_0$. \\
 \\
@@ -1566,15 +1616,19 @@ The unconstrained solution set $\hatt{\mathcal{A}}_0$ is obtained through the fo
 	 \item because $\vect{A}_0^{-1} = \vect{P}\vect{Q}$, the covariance restrictions are imposed by construction 
 \end{enumerate}
 
-Every generated $\vect{A}_0^{-1}$ resulting from one of the 1.5 million rotations is then confronted with the event and correlation-constraints for further processing. This step, however, needs a reasonable choice of the parameters $\overline{\vect{\lambda}}, \overline{\vect{\tau}}$ and $\overline{\vect{k}}$. Using a mix of theory, empirical analysis and economic reasoning, \citet{ludvigsonetal:18} set the parameters to  $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$ and the threshold for the collective correlation to $\overline{\lambda}_3 = 0.18$. The choices for $\overline{k}_1$ and $\overline{k}_2$, are, according to \citet{ludvigsonetal:18} partly guided by \citet{bloom:09} who chooses to study the dynamic effects of four standard deviation shocks to uncertainty in his impulse response analyses. Accordingly, \citet{ludvigsonetal:18} set both $\overline{k}_1 = 4$ and $\overline{k}_2 = 4$.\footnote{This threshold is chosen considering that the shocks are shown to be non-Gaussian with exhibiting excess skewness and kurtosis.} Further, $\overline{k}_3$ is set to 2 to dismiss shocks in real activity that go beyond two standard deviations above their sample mean during 2007-2009.
+Every generated $\vect{A}_0^{-1}$ resulting from one of the 1.5 million rotations is then confronted with the event and correlation-constraints for further processing. This step, however, needs a reasonable choice of the parameters $\overline{\vect{k}}$, which we will discuss below.
 
-At each draw of $\vect{A}_0^{-1} = \hatt{\vect{P}}\vect{Q}$ and the subsequent generation of $\vect{\epsilon}_t = \vect{A}_0\hatt{\vect{u}}_t$, the algorithm will only store those models that fulfill all constraints.\footnote{In a fist attempt we had implemented the novel identification strategy of \citet{ludvigsonetal:18} in R by solely following the descriptions in \citet{ludvigsonetal:18} and \citet{ludvigsonetal:17}. Due to some small subleties in the translation of the algorithm's description into code, our resulting trajectories of the impulse response functions as produced by the identified solution set $\overline{\vect{\mathcal{A}}}_0$ were slightly off in this initial attempt as compared to the IRFs reported in \citet{ludvigsonetal:18}. We are hence grateful to Sai Mia, one of the co-authors of \citet{ludvigsonetal:18}, who kindly provided us with their Matlab-code of the baseline-cases to identify the errors.\\
+Independently of the selected constraints, at each draw of $\vect{A}_0^{-1} = \hatt{\vect{P}}\vect{Q}$ and the subsequent generation of $\vect{\epsilon}_t = \vect{A}_0\hatt{\vect{u}}_t$, the algorithm will only store those models that fulfill the selected set of constraints.\footnote{In a fist attempt we had implemented the novel identification strategy of \citet{ludvigsonetal:18} in R by solely following the descriptions in \citet{ludvigsonetal:18} and \citet{ludvigsonetal:17}. Due to some small subleties in the translation of the algorithm's description into code, our resulting trajectories of the impulse response functions as produced by the identified solution set $\overline{\vect{\mathcal{A}}}_0$ were slightly off in this initial attempt as compared to the IRFs reported in \citet{ludvigsonetal:18}. We are hence grateful to Sai Mia, one of the co-authors of \citet{ludvigsonetal:18}, who kindly provided us with their Matlab-code of the baseline-cases to identify the errors.\\
 \\
 Throughout this exercise we noticed that the authors had computed the variance covariance matrix of the residuals by dividing the residual sum of squares by 652 (the sample size T) while the $var$-package in R applies a degrees of freedom correction via $T-Kp-1 = 652 - 3*6 - 1$ where $K$ stands for the number of variables and $p$ for the number of lags. The applied estimator for the variance-covariance matrix applied by \citet{ludvigsonetal:18} obviously corresponds to the MLE estimator. To be in line with the author's results, we have accordingly applied a correction factor to translate the degrees-of-freedom correction under the OLS-estimation to an MLE-estimator.\label{ftn:MatlabCodeFootnote}}
 
 With the identified set of solutions collected into $\overline{\vect{\mathcal{A}}}_0(\vect{Q}; \phi, \overline{k}, \overline{\tau}, \overline{\lambda}, \vect{S})$ at disposal, the code recursively calculates the coefficients $\vect{\Psi_k}$ (i.e. the MA-weights) of the estimated reduced-form VAR as outlined in Equation~\ref{eq:svar7} from which we subsequently derive the set of SMA-coefficients $\vect{\Theta_k}$ for every respective $\vect{A_{0}^{-1}}$ in the solution set by multiplying all coefficient matrices $\vect{\Psi_k}$ with $\vect{A_{0}^{-1}}$ at every forecast horizon (here: up until 60 steps ahead) as outlined in Equation~\ref{eq:svar8}.
 
-Overall, the combination of event and correlation constraints drastically reduces that possible solution set by about 99\%. HIER NOCH EIN PAAR MEHR WORTE ÜBER DIE R-IMPLEMENTIERUNG VERLIEREN!
+Overall, the combination of event and correlation constraints drastically reduces that possible solution set by about 99\%. HIER NOCH EIN PAAR MEHR WORTE ÜBER DIE R-IMPLEMENTIERUNG VERLIEREN! EVENTUELL AUCH NOCH ÜBER DIE IMPLEMENTIERUNG DER FEVD SCHREIBEN!\\
+
+In a previous version of their paper, \citet{ludvigsonetal:18} had set up their shock-restricted SVAR-approach by exclusively selecting a priori restrictions (as opposed to the combination of restrictions derived directly from the data itself together with a priori restrictions introduced in \citealp{ludvigsonetal:19}). In addition, in \citet{ludvigsonetal:18} they used a mix of theory, empirical analysis and economic reasoning to come up with the specific values for the parameters for $\overline{\vect{\lambda}}$ and $\overline{\vect{k}}$ and thereby used/tested various parameterizations.\footnote{In \citet{ludvigsonetal:18} the authors had used $\overline{\vect{\lambda}}$ to parameterize the correlation constraints. In \citet{ludvigsonetal:19} this is not necessary anymore since the correlation constraints are set to be either larger or smaller (or equal) to $0$. Hence, only the choice of a proper $\overline{\vect{k}}$ is left.} 
+
+In \citet{ludvigsonetal:19}, the authors slightly adjusted their approach and introduce the so-called ``identification uncertainty'' as the variation which is produced in the model's output (primarily for the impulse response analysis) by alternative combinations of (i) the constraints in combination with (ii) alternative specifications/parameterizations for the big shock events $\overline{\vect{k}}$. First, to show how the variation of alternative combinations of constraints influences the dynamic causal effects we refer to Section~\ref{sec:ImpulseResponseAnalysis} where we follow \citet{ludvigsonetal:19} and present the impulse response analysis showing how starting from the solutions of the unconstrained set $\vect{\mathcal{A}}_0$, the subsequent addition of restrictions and shrinkage of permissible solutions stepwise delivers more conclusive results. When adding the big shock-events in a last step, \citet{ludvigsonetal:19} analyze the 1.5 million values of $\vect{A_0}^{-1} \in \hatt{\mathcal{A}}_0$ that give rise to the time series of the system's shocks in $\vect{\epsilon}_t$ to come up with the parameters $\overline{\vect{k}}$. A closer look at the sample's largest shocks (HIER NOCH REFERENZ ZU ANALYSIS IF SHOCKS EINBAUEN) shows that they are typically above four standard deviations for $U_{Ft}$ and $U_{Mt}$. In particular, the 75th-percentile values of $e_{Ft}$ in 1987:10 and 2008:09 are 4.16 and 4.57, respectively, while the 75th-percentile value of $e_{Mt}$ in 1970:12 and 2008:09 is 4.05 and 4.73, respectively, which is another indication of the excess skewness and leptokurtosis of the shocks. The 50th-percentile (i.e. the median) of the respective shock-dates are 2.8 and 1.9 for $e_{Ft}$ in 1987:10 and 2008:09 and 2.3 and 1.9 for $e_{Mt}$ in 1970:12 and 2008:09, respectively. While \citet{ludvigsonetal:19} present results for different values of $\overline{\vect{k}}$ (85th-percentile, 75th-percentile, median), the main results under all of these different parameterizations are qualitatively identical. Hence, in our own implementation of the algorithm we limit ourselves to the case of setting the parameters $\overline{\vect{k}}$ to their 75th-percentiles.
 
 
 \chapter{Data}
@@ -1720,7 +1774,7 @@ Overall, the analysis of the model's residuals confirms the identification schem
 \label{sec:ImpulseResponseAnalysis}
 
 
-Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $\vect{A}_0$ that passed the set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $\vect{A}_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set and following \citet{ludvigsonetal:19} the impulse responses are computed for 60 steps ahead. With respect to the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label at the bottom stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
+Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.SVAR}, Figure~\ref{fig:impulse.responses_all.SVAR} shows the set of trajectories of the impulse response functions produced by the impact matrices $\vect{A}_0$ that passed the complete set of constraints. Hence, the set of trajectories present the solutions in the identified set that shows the response of each variable to a 1 standard deviation increase for each of the respective structural shocks and how they are transmitted through the SVAR-system. As stated previously, the constraints eliminate almost 99\% of all possible resulting $\vect{A}_0$-matrices. For our implementation of the algorithm, exactly xxxxx solutions survived the 1.5 million rotations and ultimately ended up in the solution-set and following \citet{ludvigsonetal:19} the impulse responses are computed for 60 steps ahead. With respect to the combination of labels in Figure~\ref{fig:impulse.responses_all.SVAR}, the top label always stands for the respective shock, while the second label at the bottom stands for the response of the respective variable \textit{to} the respective shock. Hence, the IRF in the second row on the left shows the reaction of macro uncertainty to a shock in $e_{lip}$. The thick dotted line represents the maxG-solution which was defined in Section~\ref{sec:modelSetup}. In our replication exercise, the resulting trajectories match the ones' of the paper of \citet{ludvigsonetal:18} pretty closely. 
 
 
 \begin{figure}[!h]
@@ -1732,25 +1786,22 @@ Having run the algorithm as described in Section~\ref{fig:impulse.responses_all.
       \textit{Note:}  The dashed lines are the maxG solutions. The shaded areas represent sets of solutions that satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR}
 \end{figure}
 
-For sake of comparison, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures} shows the influence of the respective constraints and how either of the two constraints (event \textit{or} correlation constraint) individually still leave a range of possible solutions to the structural shocks. As formulated by \citet{ludvigsonetal:19}, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} shows that the covariance restrictions without event and correlation-constraints produce ambiguous results which is due to the problem of under-identification which was discussed in Section~\ref{sec:strcuturalVARsIdentification}. It is the interplay between both shock-constraints that results in largely conclusive answers for the SVAR-system. 
+For sake of comparison and to get a better understanding of how the variation of alternative combinations of the constraints work together (\citet{ludvigsonetal:19} have dubbed this ``identification uncertainty''; see Section~\ref{sec:solutionAlgorithm}), we refer to Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} in the Appendix~\ref{sec:additionalFigures}. As formulated by \citet{ludvigsonetal:19}, Figure~\ref{fig:impulse.responses_all.SVAR_UNCONSTR} shows that the covariance restrictions alone (i.e. the case for 'No Constraints') without event and correlation-constraints produce ambiguous results (blue shaded areas) which is due to the problem of under-identification which was discussed in Section~\ref{sec:strcuturalVARsIdentification}. The addition of the correlation constraints (external variable constraints; i.e. the case for 'FC Only') gives rise to the salmon-pink IRFs while the cumulative addition of the set of ``non-negative'' event constraints (i.e. the case for 'FC + Non-Negative FE') are the green trajectories. At this stage the big shock events have not yet been introduced. As noted by \citet{ludvigsonetal:19} the identified sets for the 'FC Only' and 'FC + Non-Negative FE' - cases are still largely inconclusive, apart from one observation: subplot (2, 1) already shows that even without the big shock event constraints macro uncertainty falls in response to a positive shock to industrial production which, in other words, means that a \textit{negative} $ip$-shock \textit{increases} macro uncertainty. 
 
-As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
-
-
-
+Adding the big shock event constraints to the picture, Figure~\ref{fig:impulse.responses_all.SVAR} results in more conclusive evidence with respect to the dynamics in the SVAR-system. As pointed out by \citet{ludvigsonetal:18}, the impulse response analysis exhibits the following features: First, looking at the bottom row and the second column shows that positive shocks to financial uncertainty $e_F$ lead to a persistent decline in real activity, while they also cause a sharp increase in $U_{Mt}$. For the former case (reaction of industrial production to a $e_F$-shock), the solution-set is ``[...] bounded well away from zero as the horizon increases'' \citep[p. 19]{ludvigsonetal:18}. With these results, the authors find support for the hypothesis of financial uncertainty being an exogenous impulse leading to a decline in real activity. Contrary to this conclusion, the model gives little support for the impulse going vice versa, i.e., that negative shocks to the real economy induce a heightened and protracted financial uncertainty. Instead, the panel in the second row, third column shows an initial increase of financial uncertainty to a \textit{positive} production-shock. Put differently, a negative production shock \textit{decreases} financial uncertainty at least initially.
 
 Looking at macro uncertainty, \citet{ludvigsonetal:18} find that positive shocks to real activity induce a sharp decline in macro uncertainty $U_{Mt}$. Put differently, a \textit{negative} shock to industrial production would induce a pronounced and protracted \textit{increase} in macro uncertainty as confirmed by the entirety of solutions in the identified set (which is also well away from zero). 
 
 Lastly, interestingly, the SVAR-system (at least for the majority of the solution set as well as the maxG-solution) results in an \textit{increase} in production in response to a macro uncertainty shock $e_{M}$ which \citet{ludvigsonetal:18} see to be consistent with the growth options theory (first row, second column). For some solutions this effect even persists for the long run, while for others the positive effect at impact turns into a negative effect for longer horizons. Independently of the duration of this effect, the results do not support the empirical evidence of many other empirical applications that point at shocks to macro uncertainty reducing real activity. Instead, as the discussion in the previous paragraph showed, the effect seems to go from real activity shocks to an increase in macro uncertainty and hence weaken the often stated causal nexus between macro uncertainty being a compounding factor in recessions. 
 
-In summary, the model suggests that higher macroeconomic uncertainty is an endogenous response to shocks to aggregate output while \textit{financial uncertainty} can be seen as a likely source for protracted declines in aggregate output.\footnote{\citet{ludvigsonetal:18} also run their algorithms for a pre-crisis sample for which they report less conclusive answers. In their conclusion this result shows that the 2007-2009 financial crisis was an ``[...] important rare event that can help distinguish the transmission of financial versus real uncertainty shocks'' \citet[p. 25]{ludvigsonetal:18}. We have not repeated this exercise here.}
+In summary, the model suggests that higher macroeconomic uncertainty is an endogenous response to shocks to aggregate output while \textit{financial uncertainty} can be seen as a likely source for protracted declines in aggregate output.\footnote{\citet{ludvigsonetal:18} also run their algorithms for a pre-crisis sample for which they report less conclusive answers. In their conclusion this result shows that the 2007-2009 financial crisis was an ``[...] important rare event that can help distinguish the transmission of financial versus real uncertainty shocks'' \citet[p. 25]{ludvigsonetal:18}. We have not repeated this exercise here.}\\
 
 
-As analysed by \citet{ludvigsonetal:19}, the opposite effects of macro and financial uncertainty on industrial production at impact can be read off the off-diagonal elements of the estimated $\vect{A}_0^{-1}$-matrices that are part of the identified set. In particular, the elements $A_{0_{YM}}^{-1}$ (which is the response of $ip$ to a macro-uncertainty shock) and $A_{0_{YF}}^{-1}$ (which consequently is the response of $ip$ to a financial uncertainty shock) drive these responses. In particular, as seen in Figure~\ref{fig:impulse.responses_all.SVAR}, for all solutions it holds that $A_{0_{YM}}^{-1} > 0$ and $A_{0_{YF}}^{-1} < 0$.
+As analysed by \citet{ludvigsonetal:19}, the opposite effects of macro and financial uncertainty on industrial production at impact can be read off the off-diagonal elements of the estimated $\vect{A}_0^{-1}$-matrices that are part of the identified set. In particular, the elements $A_{0_{YM}}^{-1}$ (which is the response of $ip$ to a macro-uncertainty shock) and $A_{0_{YF}}^{-1}$ (which consequently is the response of $ip$ to a financial uncertainty shock) drive these responses. In particular, as seen in Figure~\ref{fig:impulse.responses_all.SVAR}, for all solutions it holds that $A_{0_{YM}}^{-1} > 0$ and $A_{0_{YF}}^{-1} < 0$.\\
 
 To better understand the effects of various restrictions and following \citet{ludvigsonetal:19}, Figures~\ref{fig:distribution_impact_matrices_type1} and \ref{fig:distribution_impact_matrices_type2} show the distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$ for various identifying restrictions.
 
-A closer look at Figure~\ref{fig:distribution_impact_matrices_type1} shows that under 'No Constraints' (which includes the covariance constraints) the distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$ include positive and negative values and is hence inconclusive. Adding the event constraints (which includes the covariance constraints), the solutions for $A_{0_{YM}}^{-1}$ are all negative and for $A_{0_{YF}}^{-1}$ all positive which shows that here the event constraints alone are enough to derive the sign of the result at impact. As noted by \citet{ludvigsonetal:19}, adding the correlation constraints (external variables constraints) to arrive at the full set of constraints only slightly changes their magnitudes. 
+A closer look at Figure~\ref{fig:distribution_impact_matrices_type1} shows that under 'No Constraints' (which includes the covariance constraints) the distribution of $A_{0_{YM}}^{-1}$ and $A_{0_{YF}}^{-1}$ include positive and negative values and is hence inconclusive. Cumulatively adding the full set of event constraints, the solutions for $A_{0_{YM}}^{-1}$ are all negative and for $A_{0_{YF}}^{-1}$ all positive which shows that here the event constraints alone are enough to derive the sign of the result at impact. As noted by \citet{ludvigsonetal:19}, adding the correlation constraints (external variables constraints) to arrive at the full set of constraints only slightly changes their magnitudes. 
 
 
 \begin{figure}[!h]
@@ -1908,14 +1959,13 @@ Lastly, at the time of writing this thesis the world is halting in the wake of t
 \end{figure}
 
 
-
 \begin{figure}[!h]
    \centering
    \setlength\fboxsep{0pt}
    \setlength\fboxrule{0pt}
-     \fbox{\includegraphics[trim=8cm -1.0cm -6cm -1cm, width=1.9\textwidth, clip]{impulse_responses_all_SVAR_unconstr_constr.pdf}}
+     \fbox{\includegraphics[trim=5.5cm -1.0cm -6cm -0.5cm, width=1.9\textwidth]{impulse_responses_all_SVAR_unconstr_constr.pdf}}
       \caption[Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).]{Impulse Respones from SVAR ($U_{Macro}, IPM, U_{Fin}$).\\
-      \textit{Note:} The set of solutions under 'No Constraints' are derived from switching off both of the constraints as introduced by \citet{ludvigsonetal:18}. 'Correlation Constraints Only' and 'Event Constraints Only' correspondingly show the set of solutions when only one of the two constraints are turned on. 'All Constraints' displays the \textit{identified set} and equals the solutions as shown in Figure~\ref{fig:impulse.responses_all.SVAR} which satisfy the correlation and event constraints. The selected bounds are $\overline{\lambda}_1 = -0.05$, $\overline{\lambda}_2 = 2$, $\overline{\lambda}_3 = 0.18$, $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = 2$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse).}   \label{fig:impulse.responses_all.SVAR_UNCONSTR}
+      \textit{Note:} The set of solutions under 'No Constraints' are derived from switching off both of the constraints as introduced by \citet{ludvigsonetal:19}. 'FC only' correspondingly shows the set of solutions when only the correlation constraints (external variables constraints) are turned on while under the regime 'FC + Non-Negative FE' the ``non-negative event'' - restrictions are added. The IRFs under the full set of constraints (i.e. FC + all FE (non-negative constraints + big-shock-constraints) is shown in Figure~\ref{fig:impulse.responses_all.SVAR}. The selected bounds are $\overline{k}_1 = 4$, $\overline{k}_2 = 4$, $\overline{k}_3 = NOCH AUSFÜLLEN$, $\overline{k}_4 = NOCH AUSFÜLLEN$. With respect to the labeling, in each panel the bottom label stands for the response of the respective variable to the shock in the top label (the impulse). The sample spans the period 1960:07-2015:04.}   \label{fig:impulse.responses_all.SVAR_UNCONSTR}
 \end{figure}
 
 
