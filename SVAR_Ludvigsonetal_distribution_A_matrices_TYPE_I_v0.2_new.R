@@ -1,14 +1,45 @@
 #########################################################################################
-### Marcel Kropp, 24.06.2018
-### This script estimates SVARs following Ludvigson et al (2018)'s algorithm which
+### Marcel Kropp, 30.05.2020
+### This script estimates SVARs following Ludvigson et al (2019)'s algorithm which
 ### we have described in detail in the main-text;
 
-### In particular, the below runs the SVAR as suggested by Ludvigson et al (2018)
-### for their baseline case which is a VAR consisting of
-### (U_M, IPM, U_F) 
-### where U_M stands for macro uncertainty,
-### IPM for a measure of economic activity (here Industrial Production in M.)
-### and U_F for a measure of financial uncertainty;
+### In particular, the below estimates the model under various alternative 
+### sets of restrictions.
+
+### Because we have implemented the function 'LMN_algorithm' in the script 
+### '20200628_functions_v0.3.R' already, for the below the only thing we needed
+### to do was to add two more scenarios to the selection-operator:
+### (i) FC Only (which we haven't considered so far)
+### (ii) FC without the Lehman Event.
+
+### The case (i) will be relevant for this script, the case of 
+### (ii) will be relevant in another script 
+### 'SVAR_Ludvigsonetal_distribution_A_matrices_TYPE_II_v0.2_new.R' where
+### we replace (i) with (ii) in the comparison of how the restrictions
+### affect the solution-set!
+
+
+###############################
+## loading libraries
+###############################
+if(!exists("foo", mode="function")) source("20200705_load_libraries_v0.1.R")
+
+
+###############################
+## reading in NBER recession dates
+###############################
+if(!exists("foo", mode="function")) source("20200705_nber_recession_dates_v0.1.R")
+
+
+###############################
+## reading in all other necessary scripts
+###############################
+if(!exists("foo", mode="function")) source("Preparation_Price_Of_Gold_v0.1.R")
+if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
+
+## Note that after reading in the above scripts, this script can run 
+## stand-lone (there are not any other dependencies!)
+
 
 
 ###--------------------------------------------------------------------------------------------
