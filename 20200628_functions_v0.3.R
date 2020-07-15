@@ -393,6 +393,66 @@ LMN_algorithm <- function(restr_type, no_of_replications){
         names(A_0_valid)[length(A_0_valid)] <- 
           paste0(c("iteration_"), k)
         }
+      }else if(restr_type == "ALL_NO_LEHM_constr"){
+        if(
+          # EVENT CONSTRAINTS:
+          # big-shock events:
+          # FE_1: financial_uncertainty
+          (epsilon_t %>% dplyr::filter(yearmon == "Oct 1987") %>%
+           dplyr::select(financial_h1) >= k1) &
+          # ----------------------------------------------------#
+          # FE_2: Part 1: financial_uncertainty
+          # ----------------------------------------------------#
+          # FE_3: macro_uncertainty
+          (epsilon_t %>% filter(yearmon == "Dec 1970") %>%
+           dplyr::select(macro_h1) >= k4) &
+          # ----------------------------------------------------#
+          # other constraints:
+          # real activity constraint
+          # FE_4
+          (sum(epsilon_t %>% filter(yearmon >= "Dec 2007" &
+                                    yearmon <= "Jun 2009") %>%
+               dplyr::select(lip) < k5) == 19) &
+          # ----------------------------------------------------#
+          # non-negative constraints
+          # FE_5: Part 1
+          (epsilon_t %>% filter(yearmon == "Oct 1979") %>%
+           dplyr::select(financial_h1) >= 0) &             
+          # FE_5: Part 2
+          (epsilon_t %>% filter(yearmon == "Oct 1979") %>%
+           dplyr::select(macro_h1) >= 0) &
+          # ----------------------------------------------------#
+          # FE_6: Part 1
+          (sum(epsilon_t %>% filter(yearmon >= "Jul 2011" & 
+                                    yearmon <= "Aug 2011") %>%
+               dplyr::select(financial_h1) >= 0) == 2) &             
+          # FE_6: Part 2  
+          (sum(epsilon_t %>% filter(yearmon >= "Jul 2011" & 
+                                    yearmon <= "Aug 2011") %>%
+               dplyr::select(macro_h1) >= 0) == 2)  &
+          # ----------------------------------------------------#
+          # CORRELATION CONSTRAINTS:
+          # ----------------------------------------------------#
+          # FC_1
+          (c_M.S1 <= 0 & c_F.S1 <= 0) &
+          # FC_2
+          (c_M.S2 >= 0 & c_F.S2 >= 0)
+        ){
+          x <- x + 1
+          print(x)
+          
+          #------------------------
+          ## identified solution set and calculation of IRFs
+          #------------------------
+          
+          epsilon_t_valid[[length(epsilon_t_valid)+1]] <- epsilon_t
+          names(epsilon_t_valid)[length(epsilon_t_valid)] <- 
+            paste0(c("iteration_"), k)
+          
+          A_0_valid[[length(A_0_valid)+1]] <- A_0
+          names(A_0_valid)[length(A_0_valid)] <- 
+            paste0(c("iteration_"), k)
+        }
       }
     
     

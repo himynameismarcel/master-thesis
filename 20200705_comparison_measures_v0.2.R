@@ -268,6 +268,7 @@ comparison_plot_combined <- ggplot(scaled_comparison_measures,
         legend.text = element_text(size = 15),
         axis.text=element_text(size=15),
         axis.title=element_text(size=15,face="bold"),
+        strip.text.x = element_text(size = 15)
         #legend.text=element_text(size=14)
         ) + 
   # note that panel.grid.major.x = element_blank() suppresses vertical grid lines!

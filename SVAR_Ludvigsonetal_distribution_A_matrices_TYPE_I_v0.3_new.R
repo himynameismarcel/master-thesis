@@ -185,32 +185,39 @@ A_0_valid.NO_CONSTR.comb <- as_tibble(
     
     ggplot(data=A_0_valid.NO_CONSTR.tidy) + 
       geom_histogram(aes(x=data, y=(..count..)/sum(..count..),
-                         fill="#288cc9"),
-                     color="black", 
-                     alpha = 0.8,
-                     binwidth=0.1) + 
+                         fill=TYPE_CONSTR),
+                     colour="black",
+                     alpha = 1,
+                     binwidth=0.145) + 
       geom_histogram(data=A_0_valid.FE_CONSTR.tidy,
                    aes(x=data, y=(..count..)/sum(..count..),
-                       fill="#c92222"),
-                   color="black", 
+                       fill=TYPE_CONSTR),
+                   colour="black",
                    alpha = 0.8,
                    binwidth=0.02) +
       geom_histogram(data=A_0_valid.ALL_CONSTR.tidy,
                      aes(x=data, y=(..count..)/sum(..count..),
-                         fill="black"),
-                     color="black",  
-                     alpha = 0.5,
+                         fill=TYPE_CONSTR),
+                     colour="black",
+                     alpha = 0.8,
                      binwidth=0.009) + 
-      scale_x_continuous(name = NULL, 
-                         breaks = seq(-0.6, 0.6, by = 0.2),
-                         minor_breaks = NULL, labels=comma) +
+      scale_x_continuous(name = NULL
+                         # ,
+                         # breaks = seq(-0.6, 0.6, by = 0.2),
+                         # minor_breaks = NULL, labels=comma
+                         ) +
+      theme(legend.position="top",
+            legend.title = element_blank(),
+            legend.text = element_text(size = 15),
+            axis.text=element_text(size=15),
+            strip.text.x = element_text(size = 15)) +
       scale_y_continuous(name = NULL) +
       # very useful blog-post about how to include and color 
       # a legend:
       # https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
-      scale_fill_identity(guide = "legend",
+      scale_colour_discrete(guide = "legend",
                           name="",
-                          labels=c("No Constraints", 
+                          labels=c("No Constraints",
                                    "Event Constraints Only",
                                    "All Constraints")) +
       theme(legend.position = "top",aspect.ratio=0.5) +
@@ -225,7 +232,7 @@ A_0_valid.NO_CONSTR.comb <- as_tibble(
 # Analysis of Recursive Schemes
 ###
       
-# having created A_0_validALL_CONSTR, we want to extract to sets of
+# having created A_0_validALL_CONSTR, we want to extract two sets of
 # values: these are A_0_YM (which is the elemtn [2, 1]) and
 # A_0_YF (Which is the element [2, 3]);
 # to be able to extract these values, we have to run through the list
@@ -269,13 +276,19 @@ ggplot(data=A_0_valid.ALL_CONSTR.tidy.recurs) +
                  binwidth=0.1) + 
   scale_y_continuous(name = NULL) +
   scale_x_continuous(name = NULL) + 
+  theme(legend.position="top",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 15),
+        axis.text=element_text(size=15),
+        strip.text.x = element_text(size = 15)) +
+  scale_y_continuous(name = NULL) +
   # very useful blog-post about how to include and color 
   # a legend:
   # https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
   theme(legend.position = "none",aspect.ratio=0.5) +
   facet_wrap(.~series)
 
-ggsave(file="distribution_impact_matrices_type3.pdf")
+#ggsave(file="distribution_impact_matrices_type3.pdf")
 
 
 
