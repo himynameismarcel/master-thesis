@@ -416,7 +416,7 @@ With regard to this thesis, I want to thank my supervisor, Prof. Dr. Johann Scha
 
 I am indebted to Dr. Martin Geiger as well as Max Breitenlechner, PhD who have helped me kick-start my research into the world of uncertainty and business cycles in valuable and helpful sessions in their office at the University of Innsbruck. 
 
-Having studied the paper of \citet{ludvigsonetal:18} and after setting up a first preliminary test-version of their shock-restricted SVAR-algorithm in R, I detected implausible discrepancies in comparison to the author's IRFs and experienced severe bottle-necks with respect to computing power due to the inefficient way I had implement the recursion for the derivation of the $\Psi$-matrices to be able to ultimately calculate the IRFs derived off of the $\Theta$-matrices. Thankfully, Sai Ma, PhD (one of the co-authors) kindly provided me with the Matlab-code of the algorithm of their Baseline-scenario as well as the exact time series they had used which greatly helped me to detect errors in my own implementation.\\
+Having studied the paper of \citet{ludvigsonetal:18} and after setting up a first preliminary test-version (without the correlation constraints) of their shock-restricted SVAR-algorithm in R, I detected implausible discrepancies in comparison to the author's IRFs and experienced severe bottle-necks with respect to computing power due to the inefficient way I had implement the recursion for the derivation of the $\Psi$-matrices to be able to ultimately calculate the IRFs derived off of the $\Theta$-matrices. Thankfully, Sai Ma, PhD (one of the co-authors) kindly provided me with the Matlab-code of the algorithm of their Baseline-scenario as well as the exact time series they had used which greatly helped me to detect errors in my own implementation.\\
 \\
 \\
 %\newpage
@@ -1645,7 +1645,7 @@ Based on the above definitions, \citet{juradoetal:15} emphasize two features tha
 
 \begin{table}[t]
 \centering
-\caption{Periods of high uncertainty according to macro uncertainty index h=1.  \textit{Note:} Periods of elevated uncertainty are calculated as months where the value of the respective uncertainty time series is above 1.65 standard deviations of the unconditional mean.}
+\caption[Periods of high uncertainty according to macro uncertainty index h=1.]{Periods of high uncertainty according to macro uncertainty index h=1.  \textit{Note:} Periods of elevated uncertainty are calculated as months where the value of the respective uncertainty time series is above 1.65 standard deviations of the unconditional mean.}
 \scalebox{0.8}{
     \begin{tabular}{ccccc}
     \hline
@@ -1663,7 +1663,7 @@ Based on the above definitions, \citet{juradoetal:15} emphasize two features tha
 
 \begin{table}[t]
 \centering
-\caption{Periods of high uncertainty according to financial uncertainty index. \textit{Note:} Periods of elevated uncertainty are calculated as months where the value of the respective uncertainty time series is above 1.65 standard deviations of the unconditional mean.}
+\caption[Periods of high uncertainty according to financial uncertainty index.]{Periods of high uncertainty according to financial uncertainty index. \textit{Note:} Periods of elevated uncertainty are calculated as months where the value of the respective uncertainty time series is above 1.65 standard deviations of the unconditional mean.}
 \scalebox{0.8}{
     \begin{tabular}{ccccc}
     \hline
