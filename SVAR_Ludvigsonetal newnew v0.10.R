@@ -55,8 +55,27 @@ if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
 ###-------------------------------
 ### Reading in Data
 ###-------------------------------
-SVAR.data <- read_excel("Replication_data_Ludvigson.xlsx", 
-                        sheet = "Data")
+
+    # estimation window: 1960 - 2015:04 with CRSP-data
+    # SVAR.data <- read_excel("20200718_data_LMN_incl_CRSP_201504_v0.2.xlsx",
+    #                         sheet = "Tabelle1")
+    # 
+    # estimation window: 1960 - 2015:04 with CRSP-data
+    SVAR.data <- read_excel("Replication_data_Ludvigson.xlsx",
+                            sheet = "Data")
+    
+    # estimation window: 1960 - 2015:04 with S&P500-data
+    # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_201504_v0.2.xlsx",
+    #                         sheet = "Tabelle1")
+    
+    # # estimation window: 1960 - 2020:04
+    # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_202004_v0.2.xlsx", 
+    #                         sheet = "Tabelle1")
+    
+    # estimation window: 1960 - 2019:04
+    # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_201904_v0.2.xlsx",
+    #                         sheet = "Tabelle1")
+
 
 # a quick check shows us that the columns are already correctly
 # named, but the type for the 'Date'-column is set to num;
@@ -100,7 +119,7 @@ external.data <- as_tibble(
 ### Algorithm
 ###-------------------------------
 
-    set.seed(1)
+    #set.seed(1)
     ##----------------------------
     ## STEP 1:
     ## Estimation of the reduced-form model and initialization of A_0^{-1} as the
@@ -170,10 +189,11 @@ external.data <- as_tibble(
     # k3 <- 4.7 # 4.7 std. dev. above mean in 2008:09 for e_Mt
     # k4 <- 4   # 4 std. dev. above mean in 1970:12 for e_Mt
     
-    k1 <- 4.16 # 2.8 std. dev. above mean in 1987:10 for e_Ft
-    k2 <- 4.57 # 4.6 std. dev. above mean in 2008:09 for e_Ft
-    k3 <- 4.73 # 4.7 std. dev. above mean in 2008:09 for e_Mt
-    k4 <- 4.05   # 4 std. dev. above mean in 1970:12 for e_Mt   
+    k1 <- 4.16 # 4.16 std. dev. above mean in 1987:10 for e_Ft
+    k2 <- 4.58 # 4.57 std. dev. above mean in 2008:09 for e_Ft
+    k3 <- 4.74 # 4.73 std. dev. above mean in 2008:09 for e_Mt
+    k4 <- 4.05 # 4.05 std. dev. above mean in 1970:12 for e_Mt  
+    # k4 <- 3.92 # 4.05 std. dev. above mean in 1987:11 for e_Mt  
     k5 <- 2    # k5 requires real activity shocks found during the great
                #  recession to not take on unusually large positive values
     
@@ -1161,9 +1181,9 @@ external.data <- as_tibble(
                  size=1) +
       scale_x_continuous(name = NULL) + 
       scale_y_continuous(name = NULL) +
-      theme(axis.text=element_text(size=8),
-            plot.title = element_text(size=10, face="bold", hjust = 0.5),
-            axis.title=element_text(size=10),
+      theme(axis.text=element_text(size=10),
+            plot.title = element_text(size=15, face="bold", hjust = 0.5),
+            axis.title=element_text(size=15),
             legend.position="none",
             # legend.text=element_text(size=5),
             #axis.text.x=element_blank(),
@@ -1429,7 +1449,7 @@ external.data <- as_tibble(
             #legend.text=element_text(size=14),
             #axis.text.x=element_blank(),
             plot.margin = unit(c(1,1,1,1), "mm"),
-            strip.text.y = element_text(size = 12, colour = "black")
+            strip.text.y = element_text(size = 15, colour = "black")
       ) +
       # change ratio of y and x - axis
       # coord_cartesian(ylim = c(2, 5)) + 

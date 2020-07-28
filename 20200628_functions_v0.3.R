@@ -28,9 +28,27 @@ LMN_algorithm <- function(restr_type, no_of_replications){
   ###-------------------------------
   ### Reading in Data
   ###-------------------------------
-  SVAR.data <- read_excel("Replication_data_Ludvigson.xlsx", 
-                          sheet = "Data")
   
+      # estimation window: 1960 - 2015:04 with CRSP-data
+      # SVAR.data <- read_excel("20200718_data_LMN_incl_CRSP_201504_v0.2.xlsx",
+      #                         sheet = "Tabelle1")
+      
+      # estimation window: 1960 - 2015:04 with CRSP-data
+      SVAR.data <- read_excel("Replication_data_Ludvigson.xlsx",
+                              sheet = "Data")
+      
+      # estimation window: 1960 - 2015:04 with S&P500-data
+      # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_201504_v0.2.xlsx",
+      #                         sheet = "Tabelle1")
+
+      # # estimation window: 1960 - 2020:04
+      # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_202004_v0.2.xlsx", 
+      #                         sheet = "Tabelle1")
+      
+      # estimation window: 1960 - 2019:04
+      # SVAR.data <- read_excel("20200718_data_LMN_incl_SP500_201904_v0.2.xlsx",
+      #                         sheet = "Tabelle1")
+
   SVAR.data$yearmon <- as.yearmon(as.character(SVAR.data$Date), "%Y%m")
   
   
@@ -53,7 +71,7 @@ LMN_algorithm <- function(restr_type, no_of_replications){
   ### Algorithm
   ###-------------------------------
   
-  set.seed(999)
+  # set.seed(999)
   ##----------------------------
   ## STEP 1:
   ## Estimation of the reduced-form model and initialization of A_0^{-1} as the
@@ -105,9 +123,21 @@ LMN_algorithm <- function(restr_type, no_of_replications){
   k4 <- 4.05     
   k5 <- 2 
   
-  # date-column for the structural errors
-  dates = seq(from = as.Date("1961-01-01"), 
-              to = as.Date("2015-04-01"), by = 'month')
+      # date-column for the structural errors for estimation-window
+      # 1960 - 2015:
+      dates = seq(from = as.Date("1961-01-01"),
+                  to = as.Date("2015-04-01"), by = 'month')
+      
+      # date-column for the structural errors for estimation-window
+      # 1960 - 2020:04: 
+      # dates = seq(from = as.Date("1961-01-01"), 
+      #             to = as.Date("2020-04-01"), by = 'month')
+      
+      # date-column for the structural errors for estimation-window
+      # 1960 - 2019:04: 
+      # dates = seq(from = as.Date("1961-01-01"), 
+      #             to = as.Date("2019-04-01"), by = 'month')
+  
   
   # to check how many draws actually pass all the tests,
   # we create the object x
@@ -453,11 +483,54 @@ LMN_algorithm <- function(restr_type, no_of_replications){
           names(A_0_valid)[length(A_0_valid)] <- 
             paste0(c("iteration_"), k)
         }
+      }else if(restr_type == "FC_FE_BIG_constr"){
+        if(
+          # EVENT CONSTRAINTS:
+          # big-shock events:
+          # FE_1: financial_uncertainty
+          (epsilon_t %>% dplyr::filter(yearmon == "Oct 1987") %>%
+           dplyr::select(financial_h1) >= k1) &
+          # ----------------------------------------------------#
+          # FE_2: Part 1: financial_uncertainty
+          (
+            (epsilon_t %>% filter(yearmon == "Sep 2008") %>%
+             dplyr::select(financial_h1) >= k2) |
+            # FE_2: Part 2: macro_uncertainty
+            (epsilon_t %>% filter(yearmon == "Sep 2008") %>%
+             dplyr::select(macro_h1) >= k3)
+          ) &
+          # ----------------------------------------------------#
+          # FE_3: macro_uncertainty
+          (epsilon_t %>% filter(yearmon == "Dec 1970") %>%
+           dplyr::select(macro_h1) >= k4) &
+          # ----------------------------------------------------#
+          # CORRELATION CONSTRAINTS:
+          # ----------------------------------------------------#
+          # FC_1
+          (c_M.S1 <= 0 & c_F.S1 <= 0) &
+          # FC_2
+          (c_M.S2 >= 0 & c_F.S2 >= 0)
+        ){
+          x <- x + 1
+          print(x)
+          
+          #------------------------
+          ## identified solution set and calculation of IRFs
+          #------------------------
+          
+          epsilon_t_valid[[length(epsilon_t_valid)+1]] <- epsilon_t
+          names(epsilon_t_valid)[length(epsilon_t_valid)] <- 
+            paste0(c("iteration_"), k)
+          
+          A_0_valid[[length(A_0_valid)+1]] <- A_0
+          names(A_0_valid)[length(A_0_valid)] <- 
+            paste0(c("iteration_"), k)
+        }
       }
     
     
     }
-    return(list(A_0_valid, my.var))
+    return(list(A_0_valid, my.var, epsilon_t_valid))
 }
 
 

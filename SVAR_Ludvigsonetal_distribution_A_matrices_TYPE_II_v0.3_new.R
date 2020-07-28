@@ -66,7 +66,7 @@ A_0_valid.ALL_NO_LEHM_CONSTR.comb <- as_tibble(cbind(A_0_valid.ALL_NO_LEHM_CONST
     # and ultimately we add another column called NO_CONSTR
     # and muliply the data-series with 100:
     A_0_valid.ALL_NO_LEHM_CONSTR.tidy <- A_0_valid.ALL_NO_LEHM_CONSTR.tidy %>%
-                            mutate(TYPE_CONSTR = "ALL CONSTRAINTS w.o. LEHMAN") %>%
+                            mutate(TYPE_CONSTR = "All Constr. w.o. LEHMAN") %>%
                             mutate(data = data*100)
 
     
@@ -81,13 +81,13 @@ A_0_valid.ALL_NO_LEHM_CONSTR.comb <- as_tibble(cbind(A_0_valid.ALL_NO_LEHM_CONST
                        fill=TYPE_CONSTR),
                    colour="black",
                    alpha = 0.8,
-                   binwidth=0.01) +
+                   binwidth=0.012) +
       geom_histogram(data=A_0_valid.ALL_CONSTR.tidy,
                      aes(x=data, y=(..count..)/sum(..count..),
                          fill=TYPE_CONSTR),
                      colour="black",
                      alpha = 0.8,
-                     binwidth=0.009) + 
+                     binwidth=0.008) + 
       scale_x_continuous(name = NULL
                          # ,
                          # breaks = seq(-0.6, 0.6, by = 0.2),

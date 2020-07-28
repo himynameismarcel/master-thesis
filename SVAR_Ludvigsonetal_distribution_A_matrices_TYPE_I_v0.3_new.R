@@ -165,19 +165,19 @@ A_0_valid.NO_CONSTR.comb <- as_tibble(
     # and ultimately we add another column called NO_CONSTR
     # and muliply the data-series with 100:
     A_0_valid.FE_CONSTR.tidy <- A_0_valid.FE_CONSTR.tidy %>%
-                            mutate(TYPE_CONSTR = "EVENT CONSTRAINTS ONLY") %>%
+                            mutate(TYPE_CONSTR = "Event Constr. Only") %>%
                             mutate(data = data*100)
     
     A_0_valid.NO_CONSTR.tidy <- A_0_valid.NO_CONSTR.comb   %>%
                             gather(series, data)   
     A_0_valid.NO_CONSTR.tidy <- A_0_valid.NO_CONSTR.tidy %>%
-                            mutate(TYPE_CONSTR = "NO CONSTRAINTS") %>%
+                            mutate(TYPE_CONSTR = "No Constr.") %>%
                             mutate(data = data*100)    
     
     A_0_valid.ALL_CONSTR.tidy <- A_0_valid.ALL_CONSTR.comb   %>%
                             gather(series, data)
     A_0_valid.ALL_CONSTR.tidy <- A_0_valid.ALL_CONSTR.tidy %>%
-                            mutate(TYPE_CONSTR = "ALL CONSTRAINTS") %>%
+                            mutate(TYPE_CONSTR = "All Constr.") %>%
                             mutate(data = data*100)       
   
     
@@ -194,13 +194,13 @@ A_0_valid.NO_CONSTR.comb <- as_tibble(
                        fill=TYPE_CONSTR),
                    colour="black",
                    alpha = 0.8,
-                   binwidth=0.02) +
+                   binwidth=0.019) +
       geom_histogram(data=A_0_valid.ALL_CONSTR.tidy,
                      aes(x=data, y=(..count..)/sum(..count..),
                          fill=TYPE_CONSTR),
                      colour="black",
                      alpha = 0.8,
-                     binwidth=0.009) + 
+                     binwidth=0.008) + 
       scale_x_continuous(name = NULL
                          # ,
                          # breaks = seq(-0.6, 0.6, by = 0.2),
@@ -215,9 +215,7 @@ A_0_valid.NO_CONSTR.comb <- as_tibble(
       # very useful blog-post about how to include and color 
       # a legend:
       # https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
-      scale_colour_discrete(guide = "legend",
-                          name="",
-                          labels=c("No Constraints",
+      scale_colour_discrete(labels=c("No Constraints",
                                    "Event Constraints Only",
                                    "All Constraints")) +
       theme(legend.position = "top",aspect.ratio=0.5) +

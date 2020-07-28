@@ -97,7 +97,7 @@ if(!exists("foo", mode="function")) source("20200705_additional_vars_v0.1.R")
 ###############################
 ## reading in the script that holds all functions
 ###############################
-if(!exists("foo", mode="function")) source("20200628_functions_v0.2.R")
+if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
 # Note: at the moment this script cannot be run because we still have 
 # to fix the functions for the IRFs!
 
@@ -124,6 +124,11 @@ uncert_measures.stats <- data.frame("macroUncert_h1" = macroUncertainty_index$h1
                               "year" = macroUncertainty_index$year,
                               "month" = macroUncertainty_index$month,
                               "Date" = macroUncertainty_index$Date)
+
+# 27.07.2020:
+# we might have to slightly move the variable 'my':
+uncert_measures.stats <- uncert_measures.stats %>%
+                    mutate(my = my + 1/12)
 
 # Then we join in the other uncertainty measures one after the other: 
 # (note that we have skipped the addition of the GTU-index!)

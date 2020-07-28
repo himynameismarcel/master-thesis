@@ -196,7 +196,7 @@ comparison_measures.plot <- ggplot(comparison_measures_plot,
              labeller = as_labeller(supp.labs), scales="free_y") +
   scale_y_continuous(name = "") +
   scale_x_continuous(name = "", 
-                     breaks = seq(1960, 2018, by = 5),
+                     breaks = seq(1960, 2020, by = 5),
                      minor_breaks = NULL) + 
   scale_color_manual(values = c("Macro" = "#0586ff",
                                 "VXO" = "#0fa31e",
@@ -214,7 +214,7 @@ comparison_measures.plot <- ggplot(comparison_measures_plot,
 
 comparison_measures.plot
 
-ggsave("comparison_plot.pdf")
+# ggsave("comparison_plot.pdf")
 
 
 

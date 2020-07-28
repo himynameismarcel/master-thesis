@@ -706,14 +706,235 @@ NO_constr <- LMN_algorithm("NO_constr", 500)
 #                         "plot_SVAR.irfs.all.NO_CONSTR"
 #                         )))
 
+    
+    
+###--------------------------------------------------------------------------------------------
+### Algorithm Only With BIG SHOCK EVENTS 
+### in combination with the CORRELATION CONSTRAINTS
+###--------------------------------------------------------------------------------------------
+
+FC_FE_BIG_constr <- LMN_algorithm("FC_FE_BIG_constr", 10000)
+
+#######################
+### Calculation of Impulse Response-Functions for the
+### set only containing the 
+### Correlation Constraints + non-negative constr. + RA constr.
+#######################
+
+l <- 3 # number of equations
+p <- 6 # number of lags
+
+B_block <- t(sapply(FC_FE_BIG_constr[[2]]$varresult, `[[`, 1))
+
+#---------------------------------------------------------------------------
+# 28.06.2020 (Marcel)
+# Note, the function 'matsplitter' was moved to the R-Script 
+# 20200628_functions.R    
+#---------------------------------------------------------------------------  
+
+B_array <- matsplitter(B_block, 3, 3)
+B_list <- lapply(seq(dim(B_array)[3]), function(x) B_array[ , , x])
+constant <- as.matrix(B_block[, ncol(B_block)])
+
+## STEP 2: 
+psi_list <- list()
+
+# Psi0:
+psi_list[[1]] <- diag(3)
+# Psi1:
+psi_list[[2]] <- B_list[[1]]
+# Psi2:
+psi_list[[3]] <- cbind(B_list[[1]], B_list[[2]]) %*%
+  rbind(psi_list[[2]], psi_list[[1]])
+# Psi3:
+psi_list[[4]] <- cbind(B_list[[1]], B_list[[2]], 
+                       B_list[[3]]) %*%
+  rbind(psi_list[[3]], psi_list[[2]], 
+        psi_list[[1]])  
+# Psi4:
+psi_list[[5]] <- cbind(B_list[[1]], B_list[[2]], 
+                       B_list[[3]], B_list[[4]]) %*%
+  rbind(psi_list[[4]], psi_list[[3]], 
+        psi_list[[2]], psi_list[[1]]) 
+# Psi5:
+psi_list[[6]] <- cbind(B_list[[1]], B_list[[2]], 
+                       B_list[[3]], B_list[[4]],
+                       B_list[[5]]) %*%
+  rbind(psi_list[[5]], psi_list[[4]], 
+        psi_list[[3]], psi_list[[2]],
+        psi_list[[1]])  
+# Psi6:
+psi_list[[7]] <- cbind(B_list[[1]], B_list[[2]], 
+                       B_list[[3]], B_list[[4]],
+                       B_list[[5]], B_list[[6]]) %*%
+  rbind(psi_list[[6]], psi_list[[5]], 
+        psi_list[[4]], psi_list[[3]],
+        psi_list[[2]], psi_list[[1]])
+
+for(i in 8:61){
+  psi_list[[i]] <- B_block[, 1:18] %*%
+    rbind(psi_list[[i-1]], psi_list[[i-2]], 
+          psi_list[[i-3]], psi_list[[i-4]],
+          psi_list[[i-5]], psi_list[[i-6]])
+}
+
+# at last, we rename the matrices:
+for(i in 0:length(psi_list)-1){
+  names(psi_list)[i+1] <- 
+    paste0(c("psi_"), i)            
+}
+
+## STEP 3: having the list 'psi_list' at our
+## disposal, we can finally calculate the Thetas
+## (which are the coefficients of the structural 
+## MA-representation and which will then finally hold
+## the coefficients for the impulse-response-functions
+## that we want/need for plotting below!)
+#----------------------------------------------
+Thetas <- list()
+
+for(z in 0:(length(FC_FE_BIG_constr[[1]])-1)){
+  
+  Thetas[[z+1]] <- 
+    lapply(psi_list, function(x){
+      x %*% inv(FC_FE_BIG_constr[[1]][[z+1]])
+    })
+  names(Thetas)[length(Thetas)] <- paste0(c("A_0_"), z)
+  
+}
+
+
+#-------------------------------------------------------------------
+# extract coefficients to create impulse-responses:
+# now all that is left is to efficiently extract the respective
+# coefficients;
+
+#---------------------------------------------------------------------------
+# 28.06.2020 (Marcel)
+# Note, the function 'extract.coefs.irf' was moved to the R-Script 
+# 20200628_functions.R  
+#--------------------------------------------------------------------------- 
+
+Fin_Macro.coefs <- 100*extract.coefs.irf("Fin", "Macro", 1, 3)
+Fin_Ipm.coefs <- 100*extract.coefs.irf("Fin", "Ipm", 2, 3)
+Fin_Fin.coefs <- 100*extract.coefs.irf("Fin", "Fin", 3, 3)
+Macro_Macro.coefs <- 100*extract.coefs.irf("Macro", "Macro", 1, 1)
+Macro_Ipm.coefs <- 100*extract.coefs.irf("Macro", "Ipm", 2, 1)
+Macro_Fin.coefs <- 100*extract.coefs.irf("Macro", "Fin", 3, 1)
+Ipm_Macro.coefs <- 100*extract.coefs.irf("Ipm", "Macro", 1, 2)
+Ipm_Ipm.coefs <- 100*extract.coefs.irf("Ipm", "Ipm", 2, 2)
+Ipm_Fin.coefs <- 100*extract.coefs.irf("Ipm", "Fin", 3, 2)
+
+# 14.06.2020
+# Damit wir um die Kollektion der IRFs die Ränder beim
+# Plotten etwas dicker zeichnen können, müssen wir hier
+# an dieser Stelle dedicated data.frames anlegen, in denen
+# wir genau diese max und min-values abspeichern;
+# die zugehörige Funktion findet sich weiter unten in diesem Skript
+# (in letzer Instant wäre es am besten, sämtliche Funktionen
+# in einem dedicated R-Skrpt abzuspeichern, das man einlesen kann
+# )
+
+# Wichtig: der unten stehende Befehl funktioniert nur, wenn
+# die Funktion extract.min.max() vorher eingelesen wurde:
+output.min.max <- extract.min.max(
+  Fin_Macro.coefs, Fin_Ipm.coefs, Fin_Fin.coefs, 
+  Macro_Macro.coefs, Macro_Ipm.coefs, Macro_Fin.coefs,
+  Ipm_Macro.coefs, Ipm_Ipm.coefs, Ipm_Fin.coefs)
+
+
+# we add a step-counter to each of the separate data-frames:
+Fin_Macro.coefs$step <- seq.int(nrow(Fin_Macro.coefs))
+Fin_Ipm.coefs$step <- seq.int(nrow(Fin_Ipm.coefs))
+Fin_Fin.coefs$step <- seq.int(nrow(Fin_Fin.coefs))
+Macro_Macro.coefs$step <- seq.int(nrow(Macro_Macro.coefs))
+Macro_Ipm.coefs$step <- seq.int(nrow(Macro_Ipm.coefs))
+Macro_Fin.coefs$step <- seq.int(nrow(Macro_Fin.coefs))
+Ipm_Macro.coefs$step <- seq.int(nrow(Ipm_Macro.coefs))
+Ipm_Ipm.coefs$step <- seq.int(nrow(Ipm_Ipm.coefs))
+Ipm_Fin.coefs$step <- seq.int(nrow(Ipm_Fin.coefs))
+
+
+# 14.06.2020:
+# Da wir bei der Erstellung des data.frames für den Fall 
+# ohne constraints die Funktion 'generate.irfs.plot' gebaut
+# haben, um nicht mehrmals das gleiche aufzurufen zu müssen,
+# können wir auch hier an dieser Stelle auf diese Funktion 
+# zugreifen;
+# Wichtig: diese Funktion sollte am besten schlussendlich
+# zusammmen mit allen anderen von mir gebauten Funktionen
+# in einem separaten R-Skript geparkt und dann eingelesen
+# werden!
+
+plot_SVAR.irfs.all <- generate.irfs.plots(
+  Macro_Macro.coefs, Macro_Ipm.coefs, Macro_Fin.coefs, 
+  Ipm_Macro.coefs, Ipm_Ipm.coefs, Ipm_Fin.coefs,
+  Fin_Macro.coefs, Fin_Ipm.coefs, Fin_Fin.coefs 
+)
+
+# 14.06.2020:
+# the below command does the same as the above command
+# but only for the data.frames with the respective
+# min/max-series:
+
+plot_SVAR.irfs.min.max <- generate.irfs.plots(                        
+  output.min.max[[4]],
+  output.min.max[[5]],
+  output.min.max[[6]],
+  output.min.max[[7]],
+  output.min.max[[8]],
+  output.min.max[[9]],
+  output.min.max[[1]], 
+  output.min.max[[2]],
+  output.min.max[[3]]
+)
+
+
+# we need to create ordered factors, otherwise 'facet_wrap' combines the plots
+# in alphabetical order:
+plot_SVAR.irfs.all.FC_FE_big <- plot_SVAR.irfs.all %>%
+  ungroup %>%
+  mutate(series_name = factor(series_name, 
+                              ordered = TRUE,
+                              levels=unique(series_name)),
+         response = factor(response,
+                           ordered = TRUE,
+                           levels=unique(response)),
+         impulse = factor(impulse,
+                          ordered = TRUE,
+                          levels=unique(impulse)))
+
+# next, we do the exact same for the min.max-series:
+# 14.06.2020
+plot_SVAR.irfs.min.max.FC_FE_big <- plot_SVAR.irfs.min.max %>%
+  ungroup %>%
+  mutate(series_name = factor(series_name, 
+                              ordered = TRUE,
+                              levels=unique(series_name)),
+         response = factor(response,
+                           ordered = TRUE,
+                           levels=unique(response)),
+         impulse = factor(impulse,
+                          ordered = TRUE,
+                          levels=unique(impulse)))  
+
+# remove all but one object from work-space    
+# rm(list=setdiff(ls(), c("plot_SVAR.irfs.all.FE_only",
+#                         "plot_SVAR.irfs.maxG.CONSTR_ALL")))
+#       
+    
+## ----------------------------------------------------------------------------    
 ## before plotting, we have to add one more column to each of the data
 ## frames to be able to use that information for the aes in ggplot:
+## ----------------------------------------------------------------------------
 plot_SVAR.irfs.all.FE_FC <- plot_SVAR.irfs.all.FE_FC %>%
-                          mutate(type = "FE_FC")
+                          mutate(type = "FE_NN_FE_RA_FE")
 plot_SVAR.irfs.all.FC_only <- plot_SVAR.irfs.all.FC_only %>%
                           mutate(type = "FC_only")                
 plot_SVAR.irfs.all.NO_CONSTR <- plot_SVAR.irfs.all.NO_CONSTR %>%
                           mutate(type = "NO_CONSTR") 
+plot_SVAR.irfs.all.FC_FE_big <- plot_SVAR.irfs.all.FC_FE_big %>%
+                          mutate(type = "FC_FE_Big") 
 
 # 14.06.2020:
 # here we add the columns to the newly created data.frames that
@@ -723,10 +944,12 @@ plot_SVAR.irfs.min.max.NO_CONSTR <- plot_SVAR.irfs.min.max.NO_CONSTR %>%
 plot_SVAR.irfs.min.max.FC_only <- plot_SVAR.irfs.min.max.FC_only %>%
                           mutate(type = "FC_only")
 plot_SVAR.irfs.min.max.FE_FC <- plot_SVAR.irfs.min.max.FE_FC %>%
-                          mutate(type = "FE_FC")
+                          mutate(type = "FE_NN_FE_RA_FE")
+plot_SVAR.irfs.min.max.FC_FE_big <- plot_SVAR.irfs.min.max.FC_FE_big %>%
+                          mutate(type = "FC_FE_Big")
 
 ###----------------------------------------------------------------------------------------
-### finally we plot the impulse responses:  
+### finally we plot the impulse responses for the first plot
 ###----------------------------------------------------------------------------------------    
     impulse.responses_all.SVAR.COMPLETE <- 
       ggplot(data=plot_SVAR.irfs.all.NO_CONSTR, aes(x=step, y=series_value)) + 
@@ -789,5 +1012,71 @@ plot_SVAR.irfs.min.max.FE_FC <- plot_SVAR.irfs.min.max.FE_FC %>%
        
       ## ggsave(file="impulse_responses_all_SVAR_unconstr_constr.pdf")
       
-       
+
+      
+###----------------------------------------------------------------------------------------
+### finally we plot the impulse responses for the SECOND Plot
+###----------------------------------------------------------------------------------------    
+impulse.responses_all.SVAR.COMPLETE.2 <- 
+  ggplot(data=plot_SVAR.irfs.all.NO_CONSTR, aes(x=step, y=series_value)) + 
+  geom_line(aes(group=series_name, colour=type), alpha=0.01, size=0.9) +
+  # here we add the borders to the unconstrained set
+  geom_line(data=plot_SVAR.irfs.min.max.NO_CONSTR, 
+            aes(x=step, y=series_value,
+            group=series_name, colour=type),
+            alpha = 1, size = 1, linetype = "dashed") +
+        geom_line(data=plot_SVAR.irfs.all.FC_only, 
+                  aes(x=step, y=series_value,
+                      group=series_name, colour=type),
+                  alpha = 0.09, size = 0.3) +
+        # here we add the borders to the set with CORR Constraints only:
+        geom_line(data=plot_SVAR.irfs.min.max.FC_only, 
+                  aes(x=step, y=series_value,
+                      group=series_name, colour=type),
+                  alpha = 1, size = 1, linetype = "dashed") + 
+        facet_wrap(impulse ~ response,
+                   scales="free_y", strip.position = "top") +        
+    geom_line(data=plot_SVAR.irfs.all.FC_FE_big, 
+              aes(x=step, y=series_value,
+                  group=series_name, colour=type),
+              alpha = 0.1, size = 0.1) +
+    # here we add the borders to the set with CORR Constraints 
+    # and the non-negative event constraints:
+    geom_line(data=plot_SVAR.irfs.min.max.FC_FE_big, 
+              aes(x=step, y=series_value,
+                  group=series_name, colour=type),
+              alpha = 1, size = 1, linetype = "dashed") + 
+  labs(color=NULL) + 
+  geom_hline(yintercept=0, color = "#514e4e", 
+             size=1) +
+  scale_x_continuous(name = NULL) + 
+  scale_y_continuous(name = NULL) +
+  theme(axis.text=element_text(size=8),
+        plot.title = element_text(size=10, face="bold", hjust = 0.5),
+        axis.title=element_text(size=10),
+        legend.position="top",
+        #legend.text=element_text(size=14),
+        #axis.text.x=element_blank(),
+        plot.margin = unit(c(1,1,1,1), "mm"),
+        #panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        aspect.ratio = 0.95,
+        strip.text = element_text(size = 8, 
+                                  margin = margin(0.7, 0.7, 0.7, 0.7, "mm")),
+        strip.background = element_rect(colour="black", 
+                                        fill="white", 
+                                        size=0.5, 
+                                        linetype="solid")) + 
+  coord_cartesian(ylim = c(-3, 3)) + 
+  guides(colour = guide_legend(override.aes = list(size = 5))) +
+  #https://stackoverflow.com/questions/35712062/scale-fill-discrete-does-not-change-label-names
+  scale_colour_discrete(
+    labels = c("FC Only", 
+               "FC + Big Shock FE", 
+               "No Constraints"))
+
+
+impulse.responses_all.SVAR.COMPLETE.2
+
+## ggsave(file="impulse_responses_all_SVAR_unconstr_constr_2.pdf")       
 
