@@ -83,12 +83,11 @@ if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
 # hence we have to proceed as follows to change that:
 SVAR.data$yearmon <- as.yearmon(as.character(SVAR.data$Date), "%Y%m")
 
-# the data in SVAR.data runs from 07/1960 until 04/2015;
-# without further ado, we subset SVAR.data into SVAR.data.sub
-# which then only includes the two uncertainty measures (Um, Uf)
-# and the time-series for industrial production:
-SVAR.data.sub <- SVAR.data %>%
-                        dplyr::select(Um, ip, Uf)
+# then we extract year and month and store them in two separate
+# and distinct columns:
+SVAR.data <- SVAR.data %>%
+  mutate(year = year(yearmon),
+         month = month(yearmon))
 
 
 # the returns-data is also already available in the Excel-file

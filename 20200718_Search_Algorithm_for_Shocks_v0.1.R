@@ -50,7 +50,7 @@ if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
 
 # To perform the above, we simply call the function 'LMN_algorithm' from the 
 # script '20200628_functions_v0.3.R':
-search.shocks <- LMN_algorithm("NO_constr", 100000)
+search.shocks <- LMN_algorithm("NO_constr", 1500000)
 
 # now to extract the epsilon_t_valid, we have to access the third 
 # list-item of the function's return-obejct:

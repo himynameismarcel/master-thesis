@@ -20,7 +20,7 @@ if(!exists("foo", mode="function")) source("20200705_nber_recession_dates_v0.1.R
 ###############################
 ## reading in the script 20200628_functions_v0.2.R
 ###############################
-if(!exists("foo", mode="function")) source("20200628_functions_v0.2.R")
+if(!exists("foo", mode="function")) source("20200628_functions_v0.3.R")
 
 
 
@@ -247,8 +247,8 @@ LMN_Shocks_plot_combined <- ggplot(SVAR.data, aes(x=my,
   scale_x_continuous(name = "", 
                      breaks = seq(1960, 2018, by = 5),
                      minor_breaks = NULL) + 
-  scale_color_manual(values = c("Um" = "blue", 
-                                "Uf" = "red")) + 
+  scale_color_manual(values = c("Um" = "#0586ff", 
+                                "Uf" = "#00f572")) + 
   theme(legend.position="bottom",
         strip.text.y = element_text(size = 12, colour = "black")) + 
   labs(color=NULL) +
@@ -264,7 +264,7 @@ LMN_Shocks_plot_combined <- ggplot(SVAR.data, aes(x=my,
 
 LMN_Shocks_plot_combined
 
-ggsave("LMN_Shocks_plot_combined.pdf")
+# ggsave("LMN_Shocks_plot_combined.pdf")
 
 ## -------------------------------------------------------------------
 # ultimately, we also want to add the NBER recession dates to the
