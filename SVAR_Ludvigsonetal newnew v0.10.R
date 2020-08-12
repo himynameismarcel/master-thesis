@@ -1476,6 +1476,15 @@ external.data <- as_tibble(
       
       epsilon_t_maxG %>% arrange(desc(financial_h1))
       
+      
+      # 11.08.2020
+      # In addition to the above, we also explicitly want to run tests
+      # for normality for the respective time-series of the maxG-solutions;
+      # these are the Shapiro-Wil, and Jauqe-Berra-Test:
+      jarque.bera.test(epsilon_t_maxG$macro_h1)
+      jarque.bera.test(epsilon_t_maxG$lip)
+      jarque.bera.test(epsilon_t_maxG$financial_h1)
+      
 ## 12.07.2020
 ## Initially we had repeated the complete algorithm for the generation of the 
 ## identified solution set above to also calculate

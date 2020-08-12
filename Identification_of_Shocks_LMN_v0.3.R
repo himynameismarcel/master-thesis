@@ -136,6 +136,12 @@ shocks_stacked <- shocks_stacked %>%
 SVAR.data <- SVAR.data %>%
               dplyr::select(my, Um, Uf)
 
+# 11.08.2020
+# Here, we add a little step to save the data 
+# in the non-tidy format so that we can run
+# stationarity-tests on the data:
+SVAR.data.adf_test <- SVAR.data 
+
 # to bring the dataset into a useful shape for our purposes,
 # we 'gather()' the variables with the variable-Names
 # together;

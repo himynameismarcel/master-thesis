@@ -78,7 +78,7 @@ other.data <- other.data %>%
 # to bring the dataset into a useful shape for our purposes,
 # we 'gather()' the variables with the variable-Names
 # together;
-other.data <- other.data%>%
+other.data.tidy <- other.data%>%
                 gather( 
                   series, value, 
                   -my, na.rm=TRUE)
@@ -94,7 +94,7 @@ supp.labs <- c(`ip`= "log(ind. production)",
 # note: the below plot marks both entire periods with 'significant'
 # volatility;
 # 
-other_data_plot_combined <- ggplot(other.data, aes(x=my,
+other_data_plot_combined <- ggplot(other.data.tidy, aes(x=my,
                                                   y=value,
                                                   color = series)) +
   geom_rect(data=recessions_start_end[16:23, ], inherit.aes = FALSE,
@@ -137,6 +137,17 @@ other_data_plot_combined
 # ggsave("other_data_plot_combined.pdf")
 
 
+## 11.08.2020
+## At this point, we want to run a test for stationarity for the respective series:
+## We test for stationarity by means of the adf.test:
+
+adf.test(other.data$ip, k = 0)
+stationary.test(other.data$S1, nlag = 13)
+stationary.test(other.data$S2, nlag = 13)
+stationary.test(other.data$ip, nlag = 13)
+
+stationary.test(SVAR.data.adf_test$Uf, nlag = 13)
+stationary.test(SVAR.data.adf_test$Uf, nlag = 13)
 
 
 
